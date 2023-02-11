@@ -1,0 +1,18 @@
+Package: MargIntTmle
+Title: Marginal interaction estimation using g-computation, IPTW or TMLE
+Version: 0.0.0.9000
+Authors@R: 
+    person("Benoit", "Lepage", , "benoit.lepage@univ-tlse3.fr", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-1586-2055"))
+Description: Functions to estimate the marginal interaction effect of 2 categorical variables on an outcome, and to describe the results according to Knol and VanderWeele recommendations (2012).
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: 
+    ltmle,
+    stats,
+    SuperLearner
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

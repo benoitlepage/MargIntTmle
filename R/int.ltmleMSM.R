@@ -4,7 +4,7 @@
 #'
 #' Details to detail..
 #'
-#' @param data data frame following the time-ordering of the nodes. Should follow the format recommended for the ltmle package
+#' @param data data frame following the time-ordering of the nodes. Should follow the format recommended for the \code{ltmle} package
 #' @param Anodes column names in \code{data} for the two exposures \code{c(A1,A2)}
 #' @param Cnodes used for censoring nodes in ltmleMSM function. \code{NULL} by default, survival is not yet implemented for the \code{int.ltmleMSM function}
 #' @param Lnodes column names in \code{data} for confounders of the A1 -> Y and A2 -> Y relationships
@@ -44,9 +44,9 @@
 #'
 #' # Define Q and g formulas
 #' # an A1 * A2 interaction term is recommended in the Q formula for the estimation of interaction effects
-#' Q_formulas = c(Y="Q.kplus1 ~ conf.fac1 + conf.fac2 + conf.fac3 + A1 * A2")
-#' g_formulas = c("A1 ~ conf.fac1 + conf.fac2",
-#'                "A2 ~ conf.fac1 + conf.fac3")
+#' Q_formulas = c(Y="Q.kplus1 ~ conf1 + conf2 + conf3 + A1 * A2")
+#' g_formulas = c("A1 ~ conf1 + conf2",
+#'                "A2 ~ conf1 + conf3")
 #'
 #' # Define SuperLearner libraries
 #' SL.library = list(Q=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"),
@@ -57,7 +57,7 @@
 #'                                   Qform = Q_formulas,
 #'                                   gform = g_formulas,
 #'                                   Anodes = c("sex", "env"),
-#'                                   Lnodes = c("conf.fac1", "conf.fac2", "conf.fac3"),
+#'                                   Lnodes = c("conf1", "conf2", "conf3"),
 #'                                   Ynodes = c("hlth.outcome"),
 #'                                   SL.library = SL.library,
 #'                                   gcomp = FALSE,
@@ -70,7 +70,7 @@
 #'                                   Qform = Q_formulas,
 #'                                   gform = g_formulas,
 #'                                   Anodes = c("sex", "env"),
-#'                                   Lnodes = c("conf.fac1", "conf.fac2", "conf.fac3"),
+#'                                   Lnodes = c("conf1", "conf2", "conf3"),
 #'                                   Ynodes = c("hlth.outcome"),
 #'                                   SL.library = list(Q="SL.lm", g="SL.mean"),
 #'                                   gcomp = TRUE,

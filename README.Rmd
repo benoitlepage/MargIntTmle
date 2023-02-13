@@ -1,5 +1,6 @@
 ---
 output: github_document
+always_allow_html: true
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -18,7 +19,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of MargIntTmle is to estimate marginal interaction effects using g-computation, IPTW or TMLE.
+The goal of MargIntTmle is to estimate marginal interaction effects using g-computation, IPTW or TMLE. Interaction effects are calculated from the parameters of a Marginal Structural Model (MSM) estimated using the [`ltmle`](https://github.com/joshuaschwab/ltmle) R package.
 
 ## Installation
 
@@ -35,7 +36,6 @@ In this first example, we simulate a data set of `N` = 1000 rows, with three bas
 
 ```{r simulate_data}
 require(MargIntTmle)
-
 set.seed(12345)
 df <- generate.data(N = 1000, b = param.causal.model())
 head(df)
@@ -45,17 +45,14 @@ The `int.ltmleMSM` function is used to call the `ltmleMSM` function from the `lt
 
 Several quantities of interest are than calculated using the `estim.int.effects` function.
 
-```{r example, eval=FALSE}
+```{r example, message=FALSE, warning=FALSE}
 require(ltmle)
 require(SuperLearner)
-
 # define Q and g formulas following the argument notation of the ltmle package:
 Q_formulas = c(hlth.outcome="Q.kplus1 ~ conf1 + conf2 + conf3 + sex * env")
 g_formulas = c("sex ~ conf1 + conf2","env ~ conf1 + conf3")
-
 # choose a set of fitting libraries to pass to SuperLearner:
 SL.library = list(Q=list("SL.glm"),g=list("SL.glm"))
-
 # apply the int.ltmleMSM function. In order to apply the TMLE and IPTW estimators, 
 # gcomp argument is set to FALSE.
 interaction.ltmle <- int.ltmleMSM(data = df,
@@ -69,7 +66,6 @@ interaction.ltmle <- int.ltmleMSM(data = df,
                                   iptw.only = FALSE,
                                   survivalOutcome = FALSE,
                                   variance.method = "ic")
-
 # several quantities of interest for interaction effects are calculated using the 
 # estim.int.effects() function
 est.tmle <- estim.int.effects(interaction.ltmle, estimator = "tmle")
@@ -78,12 +74,10 @@ est.tmle <- estim.int.effects(interaction.ltmle, estimator = "tmle")
 The results can be presented in a table following Know and VanderWeele recommendations (2012). The out.table object contains the table and the interaction.effects object contains the additive, multiplicative interaction effects and the RERI.
 
 The interaction table can be rendered using the `kableExtra` package.
-```{r table_interaction, eval = FALSE}
+```{r table_interaction}
 table_inter <- out.int.table(int.r = est.tmle)
-
 table_inter$out.table
 table_inter$interaction.effects
-
 library(kableExtra)
 kbl(table_inter$out.table,
     caption = "Interaction effects estimated by TMLE") %>%
@@ -93,6 +87,6 @@ kbl(table_inter$out.table,
 
 We can also plot the results using the `out.int.fig()` function from the output of the `estim.int.effects()` function.
 
-```{r interaction_plot, eval = FALSE}
+```{r interaction_plot}
 out.int.fig(est.tmle)
 ```

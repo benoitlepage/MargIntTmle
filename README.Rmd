@@ -43,7 +43,7 @@ head(df)
 
 The `int.ltmleMSM` function is used to call the `ltmleMSM` function from the `ltmle` package, in order to estimate marginal interaction effects from a Marginal structural model. In this example, we use the TMLE estimator.
 
-Several quantities of interest are than calculated using the `estim.int.effects` function.
+Several quantities of interest are then calculated using the `estim.int.effects` function.
 
 ```{r example, message=FALSE, warning=FALSE}
 require(ltmle)
@@ -71,7 +71,7 @@ interaction.ltmle <- int.ltmleMSM(data = df,
 est.tmle <- estim.int.effects(interaction.ltmle, estimator = "tmle")
 ```
 
-The results can be presented in a table following Know and VanderWeele recommendations (2012). The out.table object contains the table and the interaction.effects object contains the additive, multiplicative interaction effects and the RERI.
+The results can be presented in a table following [`Knol and VanderWeele`](https://doi-org.proxy.insermbiblio.inist.fr/10.1093/ije/dyr218) recommendations (2012). The out.table object contains the table and the interaction.effects object contains the additive, multiplicative interaction effects and the RERI.
 
 The interaction table can be rendered using the `kableExtra` package.
 ```{r table_interaction}

@@ -48,7 +48,7 @@ the `ltmle` package, in order to estimate marginal interaction effects
 from a Marginal structural model. In this example, we use the TMLE
 estimator.
 
-Several quantities of interest are than calculated using the
+Several quantities of interest are then calculated using the
 `estim.int.effects` function.
 
 ``` r
@@ -77,7 +77,8 @@ interaction.ltmle <- int.ltmleMSM(data = df,
 est.tmle <- estim.int.effects(interaction.ltmle, estimator = "tmle")
 ```
 
-The results can be presented in a table following Know and VanderWeele
+The results can be presented in a table following
+[`Knol and VanderWeele`](https://doi-org.proxy.insermbiblio.inist.fr/10.1093/ije/dyr218)
 recommendations (2012). The out.table object contains the table and the
 interaction.effects object contains the additive, multiplicative
 interaction effects and the RERI.

@@ -7,7 +7,9 @@
 \method{summary}{int}(ltmle_MSM = ltmle_MSM, estimator = c("gcomp", "iptw", "tmle"))
 }
 \arguments{
-\item{estimator}{}
+\item{ltmle_MSM}{an output from \code{int.ltmleMSM} function}
+
+\item{estimator}{estimator of the marginal interaction effect. One of "gcomp", "iptw" or "tmle".}
 }
 \description{
 Estimate mean results, relative risks and differences

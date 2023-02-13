@@ -1,7 +1,7 @@
 #' Estimate mean results, relative risks and differences
 #'
-#' @param ltmle_MSM
-#' @param estimator
+#' @param ltmle_MSM an output from \code{int.ltmleMSM} function
+#' @param estimator estimator of the marginal interaction effect. One of "gcomp", "iptw" or "tmle".
 #'
 #' @return
 #' @export

@@ -7,7 +7,7 @@
 out.int.fig(int.r = int.r)
 }
 \arguments{
-\item{int.r}{}
+\item{int.r}{an output from \code{summary.int} function}
 }
 \description{
 Create plot of the marginal interaction effects

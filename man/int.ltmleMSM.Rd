@@ -33,28 +33,118 @@ int.ltmleMSM(
 )
 }
 \arguments{
-\item{data}{data frame following the time-ordering of the nodes. Should follow the format recommended for the ltmle package}
+\item{data}{data frame following the time-ordering of the nodes. See help of
+\code{ltmle} package.}
 
-\item{Anodes}{column names in \code{data} for the two exposures \code{c(A1,A2)}}
+\item{Anodes}{column names or indicies in \code{data} of treatment nodes
+\code{c(A1,A2)}}
 
-\item{Cnodes}{used for censoring nodes in ltmleMSM function. \code{NULL} by default, survival is not yet implemented for the \code{int.ltmleMSM function}}
+\item{Cnodes}{olumn names or indicies in \code{data} of censoring nodes.
+\code{NULL} by default, survival is not yet implemented for the
+\code{int.ltmleMSM function}}
 
-\item{Lnodes}{column names in \code{data} for confounders of the A1 -> Y and A2 -> Y relationships}
+\item{Lnodes}{column names or indicies in \code{data} of time-dependent
+covariate nodes (confounders of the A1 -> Y and A2 -> Y
+relationships)}
 
-\item{Ynodes}{column names in \code{data} for the outcome node}
+\item{Ynodes}{column names or indicies in \code{data} of outcome nodes}
 
-\item{survivalOutcome}{column names in \code{data} for the outcome node. \code{FALSE} by default, survival is not yet implemented for the \code{int.ltmleMSM function}}
+\item{survivalOutcome}{If \code{TRUE}, then Y nodes are indicators of an
+event, and if Y at some time point is 1, then all following should be 1.
+Required to be \code{TRUE} or \code{FALSE} if outcomes are binary and there
+are multiple Ynodes. \code{FALSE} by default, survival is not yet implemented
+for the \code{int.ltmleMSM function}}
 
-\item{boot.seed}{}
+\item{Qform}{character vector of regression formulas for \eqn{\bar{Q}} function.
+See 'Examples' and help of \code{ltmle} package.}
+
+\item{gform}{character vector of regression formulas for gg or a matrix/array of
+prob(A1=1) and prob(A2=1). See 'Examples' and help of \code{ltmle} package.}
+
+\item{gbounds}{lower and upper bounds on estimated cumulative probabilities for
+g-factors. Vector of length 2, order unimportant.}
+
+\item{Yrange}{specify the range of all Y nodes. See 'Details'. See help of
+\code{ltmle} package.}
+
+\item{deterministic.g.function}{optional information on A and C nodes that are
+given deterministically. See help of \code{ltmle} package. Default NULL
+indicates no deterministic links. (? does not work with MSM ?)}
+
+\item{SL.library}{optional character vector of libraries to pass to
+\code{\link[SuperLearner:SuperLearner]{SuperLearner}}. \code{NULL} indicates
+\link{glm} should be called instead of
+\code{\link[SuperLearner:SuperLearner]{SuperLearner}}. '\code{default}'
+indicates a standard set of libraries. May be separately specified for
+\eqn{Q} and \eqn{g}. See help of \code{ltmle} package.}
+
+\item{SL.cvControl}{optional list to be passed as \code{cvControl} to
+\code{\link[SuperLearner:SuperLearner]{SuperLearner}}}
+
+\item{final.Ynodes}{vector subset of Ynodes - used in MSM to pool over a set
+of outcome nodes.}
+
+\item{stratify}{if TRUE stratify on following abar when estimating Q and g.
+If FALSE, pool over abar.}
+
+\item{msm.weights}{projection weights for the working MSM. If "empirical",
+weight by empirical proportions of rows matching each regime for each
+final.Ynode, with duplicate regimes given zero weight. If \code{NULL}, no
+weights. Or an array of user-supplied weights with dimensions c(n,
+num.regimes, num.final.Ynodes) or c(num.regimes, num.final.Ynodes).}
+
+\item{estimate.time}{if \code{TRUE}, run an initial estimate using only 50
+observations and use this to print a very rough estimate of the total time
+to completion. No action if there are fewer than 50 observations. \code{FALSE}
+by default.}
+
+\item{gcomp}{if \code{TRUE}, run the maximum likelihood based G-computation
+estimate \emph{instead} of TMLE. 95\% confidence intervals will be estimated
+by boostratp}
+
+\item{iptw.only}{by default (\code{iptw.only = FALSE}), both TMLE and IPTW
+are run in \code{ltmleMSM}. If \code{iptw.only = TRUE},
+only IPTW is run, which is faster.}
+
+\item{deterministic.Q.function}{deterministic.Q.function optional information
+on Q given deterministically. See help of \code{ltmle} package. Default
+\code{NULL} indicates no deterministic links.}
+
+\item{variance.method}{Method for estimating variance of TMLE.
+One of "ic", "tmle", "iptw". If "tmle", compute both the robust variance
+estimate using TMLE and the influence curve based variance estimate (use the
+larger of the two). If "iptw", compute both the robust variance
+estimate using IPTW and the influence curve based variance estimate (use the
+larger of the two). If "ic", only compute the influence curve based
+variance estimate. "ic" is fastest, but may be substantially
+anti-conservative if there are positivity violations or rare outcomes. "tmle" is
+slowest but most robust if there are positivity violations or rare outcomes.
+"iptw" is a compromise between speed and robustness.
+variance.method="tmle" or "iptw" are not yet available with non-binary outcomes,
+gcomp=TRUE, stratify=TRUE, or deterministic.Q.function.
+variance.method="tmle" or "iptw" are not available with gcomp=TRUE (only a
+bootstrap method will be applied).}
+
+\item{observation.weights}{observation (sampling) weights. Vector of length
+n. If \code{NULL}, assumed to be all 1.}
+
+\item{id}{Household or subject identifiers. Vector of length n or \code{NULL}.
+Integer, factor, or character recommended, but any type that can be coerced
+to factor will work. \code{NULL} means all distinct ids.}
+
+\item{B}{if g-comp=TRUE, number of boostrap sample}
+
+\item{boot.seed}{if g-comp=TRUE, seed for sampling bootstrap data sets}
 }
 \value{
 \code{int.ltmleMSM} returns 3 objects:
 \itemize{ \item \code{ltmle_MSM} the output from the ltmleMSM function
-\item \code{df.int} the data frame where the exposures names are \code{c(A1,A2)} and the outcome name is \code{Y}}
-\item \code{bootstrap.res} a data frame containing estimation from bootstrap samples (for g-computation only)
+\item \code{df.int} the data frame where the exposures names are \code{c(A1,A2)} and the outcome name is \code{Y}
+\item \code{bootstrap.res} a data frame containing estimation from bootstrap samples (for g-computation only)}
 }
 \description{
-\code{int.ltmleMSM} is used to fit a MSM using the ltmleMSM function, from the \code{ltmle} package.
+\code{int.ltmleMSM} is used to fit a MSM using the ltmleMSM function, from the
+\code{ltmle} package.
 }
 \details{
 Details to detail..
@@ -66,10 +156,11 @@ df <- generate.data(N = 10000, b = b)
 summary(df)
 
 # Define Q and g formulas
-# an A1 * A2 interaction term is recommended in the Q formula for the estimation of interaction effects
-Q_formulas = c(Y="Q.kplus1 ~ conf.fac1 + conf.fac2 + conf.fac3 + A1 * A2")
-g_formulas = c("A1 ~ conf.fac1 + conf.fac2",
-               "A2 ~ conf.fac1 + conf.fac3")
+# an A1 * A2 interaction term is recommended in the Q formula for the estimation
+# of interaction effects
+Q_formulas = c(Y="Q.kplus1 ~ conf1 + conf2 + conf3 + A1 * A2")
+g_formulas = c("A1 ~ conf1 + conf2",
+               "A2 ~ conf1 + conf3")
 
 # Define SuperLearner libraries
 SL.library = list(Q=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"),
@@ -80,7 +171,7 @@ interaction.ltmle <- int.ltmleMSM(data = df,
                                   Qform = Q_formulas,
                                   gform = g_formulas,
                                   Anodes = c("sex", "env"),
-                                  Lnodes = c("conf.fac1", "conf.fac2", "conf.fac3"),
+                                  Lnodes = c("conf1", "conf2", "conf3"),
                                   Ynodes = c("hlth.outcome"),
                                   SL.library = SL.library,
                                   gcomp = FALSE,
@@ -93,13 +184,13 @@ interaction.gcomp <- int.ltmleMSM(data = df,
                                   Qform = Q_formulas,
                                   gform = g_formulas,
                                   Anodes = c("sex", "env"),
-                                  Lnodes = c("conf.fac1", "conf.fac2", "conf.fac3"),
+                                  Lnodes = c("conf1", "conf2", "conf3"),
                                   Ynodes = c("hlth.outcome"),
                                   SL.library = list(Q="SL.lm", g="SL.mean"),
                                   gcomp = TRUE,
                                   iptw.only = FALSE,
                                   survivalOutcome = FALSE,
                                   variance.method = "ic",
-                                  B = 100,
+                                  B = 5,
                                   boot.seed = 54321)
 }

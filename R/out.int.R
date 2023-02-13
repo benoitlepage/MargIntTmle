@@ -1,6 +1,6 @@
 #' Create table of the marginal interaction effects
 #'
-#' @param int.r an output from \code{summary.int} function
+#' @param int.r an output from \code{estim.int.effects} function
 #'
 #' @return
 #' @export

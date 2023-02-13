@@ -7,8 +7,8 @@
 #' @export
 #'
 #' @examples
-summary.int <- function(ltmle_MSM = ltmle_MSM,
-                        estimator = c("gcomp", "iptw", "tmle")) {
+estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
+                              estimator = c("gcomp", "iptw", "tmle")) {
 
   data <- ltmle_MSM$df.int
 

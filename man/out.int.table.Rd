@@ -7,7 +7,7 @@
 out.int.table(int.r = int.r)
 }
 \arguments{
-\item{int.r}{an output from \code{summary.int} function}
+\item{int.r}{an output from \code{estim.int.effects} function}
 }
 \description{
 Create table of the marginal interaction effects

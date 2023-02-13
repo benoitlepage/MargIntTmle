@@ -4,11 +4,58 @@
 \alias{out.int.table}
 \title{Create table of the marginal interaction effects}
 \usage{
-out.int.table(int.r = int.r)
+out.int.table(int.r = int.r, probab.digits = 3, RR.digits = 2)
 }
 \arguments{
-\item{int.r}{an output from \code{estim.int.effects} function}
+\item{int.r}{an \code{int.r} data frame from the output obtained by the \code{estim.int.effects} function}
+
+\item{probab.digits}{integer indicating the number of decimal places to be used for probabilities and risk differences (with \code{round()} function)}
+
+\item{RR.digits}{integer indicating the number of decimal places to be used for relative risks, RERI and multiplicative interaction effect (with \code{round()} function)}
+}
+\value{
+\code{out.int.table} returns a list of 2 objects:
+\itemize{ \item \code{out.table} a data frame with the estimation of various quantities of interest for the interaction effect of A1 * A2 -> Y. The table is presented following the recommendations of Knol and VanderWeele (2012)
+\item \code{Anodes} names of the exposure \code{c("A1","A2")},
+\item \code{Ynodes} name of the outcome node,
+\item \code{bootstrap.res} only for g-computation estimation: a data frame of length \code{int.ltmleMSM(B)} with the estimation of the MSM parameters from each bootstrap sample}
 }
 \description{
 Create table of the marginal interaction effects
+}
+\examples{
+set.seed(12345)
+df <- generate.data(N = 10000, b = param.causal.model())
+
+# Define Q and g formulas
+# an A1 * A2 interaction term is recommended in the Q formula for the estimation
+# of interaction effects
+Q_formulas = c(hlth.outcome="Q.kplus1 ~ conf1 + conf2 + conf3 + sex * env")
+g_formulas = c("sex ~ conf1 + conf2",
+               "env ~ conf1 + conf3")
+
+# Define SuperLearner libraries
+SL.library = list(Q=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"),
+                  g=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"))
+
+# Estimate MSM parameters by IPTW and TMLE
+interaction.ltmle <- int.ltmleMSM(data = df,
+                                  Qform = Q_formulas,
+                                  gform = g_formulas,
+                                  Anodes = c("sex", "env"),
+                                  Lnodes = c("conf1", "conf2", "conf3"),
+                                  Ynodes = c("hlth.outcome"),
+                                  SL.library = SL.library,
+                                  gcomp = FALSE,
+                                  iptw.only = FALSE,
+                                  survivalOutcome = FALSE,
+                                  variance.method = "ic")
+
+# Estimate quantities of interest for the interaction effect of A1 * A2 -> Y
+interaction.det <- estim.int.effects(interaction.ltmle, estimator = "tmle")
+
+# Show results in a table and give interaction effects
+table.interactions <- out.int.table(int.r = interaction.det)
+table.interactions$out.table
+table.interactions$interaction.effects
 }

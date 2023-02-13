@@ -14,6 +14,44 @@ estim.int.effects(
 
 \item{estimator}{estimator of the marginal interaction effect. One of "gcomp", "iptw" or "tmle".}
 }
+\value{
+\code{estim.int.effects} returns a list of 4 objects:
+\itemize{ \item \code{int.r} a data frame with the estimation of various quantities of interest for the interaction effect of A1 * A2 -> Y,
+\item \code{Anodes} names of the exposure \code{c("A1","A2")},
+\item \code{Ynodes} name of the outcome node,
+\item \code{bootstrap.res} only for g-computation estimation: a data frame of length \code{int.ltmleMSM(B)} with the estimation of the MSM parameters from each bootstrap sample}
+}
 \description{
 Estimate mean results, relative risks and differences
+}
+\examples{
+set.seed(12345)
+df <- generate.data(N = 10000, b = param.causal.model())
+
+# Define Q and g formulas
+# an A1 * A2 interaction term is recommended in the Q formula for the estimation
+# of interaction effects
+Q_formulas = c(hlth.outcome="Q.kplus1 ~ conf1 + conf2 + conf3 + sex * env")
+g_formulas = c("sex ~ conf1 + conf2",
+               "env ~ conf1 + conf3")
+
+# Define SuperLearner libraries
+SL.library = list(Q=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"),
+                  g=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"))
+
+# Estimate MSM parameters by IPTW and TMLE
+interaction.ltmle <- int.ltmleMSM(data = df,
+                                  Qform = Q_formulas,
+                                  gform = g_formulas,
+                                  Anodes = c("sex", "env"),
+                                  Lnodes = c("conf1", "conf2", "conf3"),
+                                  Ynodes = c("hlth.outcome"),
+                                  SL.library = SL.library,
+                                  gcomp = FALSE,
+                                  iptw.only = FALSE,
+                                  survivalOutcome = FALSE,
+                                  variance.method = "ic")
+
+# Estimate quantities of interest for the interaction effect of (A1 * A2) on Y
+estim.int.effects(interaction.ltmle, estimator = "tmle")
 }

@@ -7,8 +7,45 @@
 out.int.fig(int.r = int.r)
 }
 \arguments{
-\item{int.r}{an output from \code{summary.int} function}
+\item{int.r}{an \code{int.r} data frame from the output obtained by the \code{estim.int.effects} function}
+}
+\value{
+A plot of the marginal interaction effects using \code{ggplot2} package.
 }
 \description{
 Create plot of the marginal interaction effects
+}
+\examples{
+set.seed(12345)
+df <- generate.data(N = 10000, b = param.causal.model())
+
+# Define Q and g formulas
+# an A1 * A2 interaction term is recommended in the Q formula for the estimation
+# of interaction effects
+Q_formulas = c(hlth.outcome="Q.kplus1 ~ conf1 + conf2 + conf3 + sex * env")
+g_formulas = c("sex ~ conf1 + conf2",
+               "env ~ conf1 + conf3")
+
+# Define SuperLearner libraries
+SL.library = list(Q=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"),
+                  g=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"))
+
+# Estimate MSM parameters by IPTW and TMLE
+interaction.ltmle <- int.ltmleMSM(data = df,
+                                  Qform = Q_formulas,
+                                  gform = g_formulas,
+                                  Anodes = c("sex", "env"),
+                                  Lnodes = c("conf1", "conf2", "conf3"),
+                                  Ynodes = c("hlth.outcome"),
+                                  SL.library = SL.library,
+                                  gcomp = FALSE,
+                                  iptw.only = FALSE,
+                                  survivalOutcome = FALSE,
+                                  variance.method = "ic")
+
+# Estimate quantities of interest for the interaction effect of A1 * A2 -> Y
+interaction.det <- estim.int.effects(interaction.ltmle, estimator = "tmle")
+
+# Show results in a plot
+plot <- out.int.fig(interaction.det)
 }

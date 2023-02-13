@@ -3,14 +3,47 @@
 #' @param ltmle_MSM an output from \code{int.ltmleMSM} function
 #' @param estimator estimator of the marginal interaction effect. One of "gcomp", "iptw" or "tmle".
 #'
-#' @return
+#' @return \code{estim.int.effects} returns a list of 4 objects:
+#'          \itemize{ \item \code{int.r} a data frame with the estimation of various quantities of interest for the interaction effect of A1 * A2 -> Y,
+#'                    \item \code{Anodes} names of the exposure \code{c("A1","A2")},
+#'                    \item \code{Ynodes} name of the outcome node,
+#'                    \item \code{bootstrap.res} only for g-computation estimation: a data frame of length \code{int.ltmleMSM(B)} with the estimation of the MSM parameters from each bootstrap sample}
 #' @export
 #'
 #' @examples
+#' set.seed(12345)
+#' df <- generate.data(N = 10000, b = param.causal.model())
+#'
+#' # Define Q and g formulas
+#' # an A1 * A2 interaction term is recommended in the Q formula for the estimation
+#' # of interaction effects
+#' Q_formulas = c(hlth.outcome="Q.kplus1 ~ conf1 + conf2 + conf3 + sex * env")
+#' g_formulas = c("sex ~ conf1 + conf2",
+#'                "env ~ conf1 + conf3")
+#'
+#' # Define SuperLearner libraries
+#' SL.library = list(Q=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"),
+#'                   g=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"))
+#'
+#' # Estimate MSM parameters by IPTW and TMLE
+#' interaction.ltmle <- int.ltmleMSM(data = df,
+#'                                   Qform = Q_formulas,
+#'                                   gform = g_formulas,
+#'                                   Anodes = c("sex", "env"),
+#'                                   Lnodes = c("conf1", "conf2", "conf3"),
+#'                                   Ynodes = c("hlth.outcome"),
+#'                                   SL.library = SL.library,
+#'                                   gcomp = FALSE,
+#'                                   iptw.only = FALSE,
+#'                                   survivalOutcome = FALSE,
+#'                                   variance.method = "ic")
+#'
+#' # Estimate quantities of interest for the interaction effect of (A1 * A2) on Y
+#' estim.int.effects(interaction.ltmle, estimator = "tmle")
 estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
                               estimator = c("gcomp", "iptw", "tmle")) {
 
-  data <- ltmle_MSM$df.int
+  data <- ltmle_MSM$data
 
   if(estimator == "gcomp") {
     try(if(ltmle_MSM$ltmle_MSM$gcomp == FALSE) stop("The ltmle function did not use the gcomp estimator, but the iptw +/- tmle estimator"))
@@ -35,7 +68,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
   # on va enregitrer l'ensemble des résultats pertinent dans une table de longueur k1 x k2
   int.r <- matrix(NA,
                   ncol = 34,
-                  nrow = nlevels(as.factor(data$A1)) * nlevels(as.factor(data$A2)))
+                  nrow = nlevels(as.factor(ltmle_MSM$data[,ltmle_MSM$Anodes[1]])) * nlevels(as.factor(ltmle_MSM$data[,ltmle_MSM$Anodes[2]])))
   int.r <- as.data.frame(int.r)
   names(int.r) <- c("A1","A2","p","sd.p","p.lo","p.up",
                     "RD.A1","sd.RD.A1","RD.A1.lo","RD.A1.up","RD.A2","sd.RD.A2","RD.A2.lo","RD.A2.up",
@@ -50,17 +83,17 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
 
   # A1 = 1 et A2 = 0
   int.r$p[int.r$A1 == 1 & int.r$A2 == 0] <- plogis(beta["(Intercept)"] +
-                                                     beta["A1"])
+                                                     beta[ltmle_MSM$Anodes[1]]) # beta["A1"]
 
   # A1 = 0 et A2 = 1
   int.r$p[int.r$A1 == 0 & int.r$A2 == 1] <- plogis(beta["(Intercept)"] +
-                                                     beta["A2"])
+                                                     beta[ltmle_MSM$Anodes[2]]) # beta["A2"]
 
   # A1 = 1 et A2 = 1
   int.r$p[int.r$A1 == 1 & int.r$A2 == 1] <- plogis(beta["(Intercept)"] +
-                                                     beta["A1"] +
-                                                     beta["A2"] +
-                                                     beta["A1:A2"])
+                                                     beta[ltmle_MSM$Anodes[1]] +         # beta["A1"]
+                                                     beta[ltmle_MSM$Anodes[2]] +         # beta["A2"]
+                                                     beta[paste0(ltmle_MSM$Anodes[1],":",ltmle_MSM$Anodes[2])])       # beta["A1:A2"]
 
   # RD.A1.A2is0
   int.r$RD.A1[int.r$A1 == 1 & int.r$A2 == 0] <- int.r$p[int.r$A1 == 1 & int.r$A2 == 0] - int.r$p[int.r$A1 == 0 & int.r$A2 == 0]
@@ -104,7 +137,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
     # A1 = 0 et A2 = 0
     grad <- c(int.r$p[int.r$A1 == 0 & int.r$A2 == 0] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 0]),0,0,0)
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.p[int.r$A1 == 0 & int.r$A2 == 0] <- sqrt(v / nrow(data))
+    int.r$sd.p[int.r$A1 == 0 & int.r$A2 == 0] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$p.lo[int.r$A1 == 0 & int.r$A2 == 0] <- int.r$p[int.r$A1 == 0 & int.r$A2 == 0] -
       qnorm(0.975) * int.r$sd.p[int.r$A1 == 0 & int.r$A2 == 0]
@@ -115,7 +148,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
     grad <- c(int.r$p[int.r$A1 == 1 & int.r$A2 == 0] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 0]),
               int.r$p[int.r$A1 == 1 & int.r$A2 == 0] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 0]),0,0)
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.p[int.r$A1 == 1 & int.r$A2 == 0] <- sqrt(v / nrow(data))
+    int.r$sd.p[int.r$A1 == 1 & int.r$A2 == 0] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$p.lo[int.r$A1 == 1 & int.r$A2 == 0] <- int.r$p[int.r$A1 == 1 & int.r$A2 == 0] -
       qnorm(0.975) * int.r$sd.p[int.r$A1 == 1 & int.r$A2 == 0]
@@ -126,7 +159,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
     grad <- c(int.r$p[int.r$A1 == 0 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 1]), 0,
               int.r$p[int.r$A1 == 0 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 1]), 0)
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.p[int.r$A1 == 0 & int.r$A2 == 1] <- sqrt(v / nrow(data))
+    int.r$sd.p[int.r$A1 == 0 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$p.lo[int.r$A1 == 0 & int.r$A2 == 1] <- int.r$p[int.r$A1 == 0 & int.r$A2 == 1] -
       qnorm(0.975) * int.r$sd.p[int.r$A1 == 0 & int.r$A2 == 1]
@@ -136,7 +169,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
     # A1 = 1 et A2 = 1
     grad <- rep(int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1]), 4)
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.p[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(data))
+    int.r$sd.p[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$p.lo[int.r$A1 == 1 & int.r$A2 == 1] <- int.r$p[int.r$A1 == 1 & int.r$A2 == 1] -
       qnorm(0.975) * int.r$sd.p[int.r$A1 == 1 & int.r$A2 == 1]
@@ -148,7 +181,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
                 int.r$p[int.r$A1 == 0 & int.r$A2 == 0] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 0]),
               int.r$p[int.r$A1 == 1 & int.r$A2 == 0] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 0]), 0, 0)
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.RD.A1[int.r$A1 == 1 & int.r$A2 == 0] <- sqrt(v / nrow(data))
+    int.r$sd.RD.A1[int.r$A1 == 1 & int.r$A2 == 0] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$RD.A1.lo[int.r$A1 == 1 & int.r$A2 == 0] <- int.r$RD.A1[int.r$A1 == 1 & int.r$A2 == 0] -
       qnorm(0.975) * int.r$sd.RD.A1[int.r$A1 == 1 & int.r$A2 == 0]
@@ -163,7 +196,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
                 int.r$p[int.r$A1 == 0 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 1]),
               int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1]) )
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.RD.A1[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(data))
+    int.r$sd.RD.A1[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$RD.A1.lo[int.r$A1 == 1 & int.r$A2 == 1] <- int.r$RD.A1[int.r$A1 == 1 & int.r$A2 == 1] -
       qnorm(0.975) * int.r$sd.RD.A1[int.r$A1 == 1 & int.r$A2 == 1]
@@ -175,7 +208,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
                 int.r$p[int.r$A1 == 0 & int.r$A2 == 0] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 0]), 0,
               int.r$p[int.r$A1 == 0 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 1]), 0 )
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.RD.A2[int.r$A1 == 0 & int.r$A2 == 1] <- sqrt(v / nrow(data))
+    int.r$sd.RD.A2[int.r$A1 == 0 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$RD.A2.lo[int.r$A1 == 0 & int.r$A2 == 1] <- int.r$RD.A2[int.r$A1 == 0 & int.r$A2 == 1] -
       qnorm(0.975) * int.r$sd.RD.A2[int.r$A1 == 0 & int.r$A2 == 1]
@@ -190,7 +223,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
               int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1]),
               int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1]))
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.RD.A2[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(data))
+    int.r$sd.RD.A2[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$RD.A2.lo[int.r$A1 == 1 & int.r$A2 == 1] <- int.r$RD.A2[int.r$A1 == 1 & int.r$A2 == 1] -
       qnorm(0.975) * int.r$sd.RD.A2[int.r$A1 == 1 & int.r$A2 == 1]
@@ -201,7 +234,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
     grad <- c(int.r$p[int.r$A1 == 0 & int.r$A2 == 0] - int.r$p[int.r$A1 == 1 & int.r$A2 == 0],
               1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 0], 0, 0)
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.lnRR.A1[int.r$A1 == 1 & int.r$A2 == 0] <- sqrt(v / nrow(data))
+    int.r$sd.lnRR.A1[int.r$A1 == 1 & int.r$A2 == 0] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$RR.A1.lo[int.r$A1 == 1 & int.r$A2 == 0] <- exp(log(int.r$RR.A1[int.r$A1 == 1 & int.r$A2 == 0]) -
                                                            qnorm(0.975) * int.r$sd.lnRR.A1[int.r$A1 == 1 & int.r$A2 == 0])
@@ -214,7 +247,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
               int.r$p[int.r$A1 == 0 & int.r$A2 == 1] - int.r$p[int.r$A1 == 1 & int.r$A2 == 1],
               1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1] )
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.lnRR.A1[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(data))
+    int.r$sd.lnRR.A1[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$RR.A1.lo[int.r$A1 == 1 & int.r$A2 == 1] <- exp(log(int.r$RR.A1[int.r$A1 == 1 & int.r$A2 == 1] -
                                                                qnorm(0.975) * int.r$sd.lnRR.A1[int.r$A1 == 1 & int.r$A2 == 1]))
@@ -225,7 +258,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
     grad <- c(int.r$p[int.r$A1 == 0 & int.r$A2 == 0] - int.r$p[int.r$A1 == 0 & int.r$A2 == 1], 0,
               1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 1], 0 )
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.lnRR.A2[int.r$A1 == 0 & int.r$A2 == 1] <- sqrt(v / nrow(data))
+    int.r$sd.lnRR.A2[int.r$A1 == 0 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$RR.A2.lo[int.r$A1 == 0 & int.r$A2 == 1] <- exp(log(int.r$RR.A2[int.r$A1 == 0 & int.r$A2 == 1]) -
                                                            qnorm(0.975) * int.r$sd.lnRR.A2[int.r$A1 == 0 & int.r$A2 == 1])
@@ -238,7 +271,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
               1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1],
               1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1])
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.lnRR.A2[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(data))
+    int.r$sd.lnRR.A2[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$RR.A2.lo[int.r$A1 == 1 & int.r$A2 == 1] <- exp(log(int.r$RR.A2[int.r$A1 == 1 & int.r$A2 == 1]) -
                                                            qnorm(0.975) * int.r$sd.lnRR.A2[int.r$A1 == 1 & int.r$A2 == 1])
@@ -256,7 +289,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
                 int.r$p[int.r$A1 == 0 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 1]),
               int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1]) )
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.a.INT[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(data))
+    int.r$sd.a.INT[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$a.INT.lo[int.r$A1 == 1 & int.r$A2 == 1] <- int.r$a.INT[int.r$A1 == 1 & int.r$A2 == 1] -
       qnorm(0.975) * int.r$sd.a.INT[int.r$A1 == 1 & int.r$A2 == 1]
@@ -283,7 +316,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
                 (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] - int.r$p[int.r$A1 == 1 & int.r$A2 == 0] -
                    int.r$p[int.r$A1 == 0 & int.r$A2 == 1] + int.r$p[int.r$A1 == 0 & int.r$A2 == 0]) )
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(data))
+    int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$RERI.lo[int.r$A1 == 1 & int.r$A2 == 1] <- exp(log(int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1]) -
                                                           qnorm(0.975) * int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1])
@@ -297,7 +330,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
               int.r$p[int.r$A1 == 0 & int.r$A2 == 1] - int.r$p[int.r$A1 == 1 & int.r$A2 == 1],
               1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1])
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.ln.m.INT[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(data))
+    int.r$sd.ln.m.INT[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
 
     int.r$m.INT.lo[int.r$A1 == 1 & int.r$A2 == 1] <- exp(log(int.r$m.INT[int.r$A1 == 1 & int.r$A2 == 1]) -
                                                            qnorm(0.975) * int.r$sd.ln.m.INT[int.r$A1 == 1 & int.r$A2 == 1])
@@ -450,5 +483,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
   }
 
   return(list(int.r = int.r,
+              Anodes = ltmle_MSM$Anodes,
+              Ynodes = ltmle_MSM$Ynodes,
               bootstrap.res = bootstrap.res))
 }

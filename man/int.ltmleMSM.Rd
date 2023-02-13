@@ -37,7 +37,7 @@ int.ltmleMSM(
 \code{ltmle} package.}
 
 \item{Anodes}{column names or indicies in \code{data} of treatment nodes
-\code{c(A1,A2)}}
+\code{c("A1","A2")}}
 
 \item{Cnodes}{olumn names or indicies in \code{data} of censoring nodes.
 \code{NULL} by default, survival is not yet implemented for the
@@ -137,9 +137,11 @@ to factor will work. \code{NULL} means all distinct ids.}
 \item{boot.seed}{if g-comp=TRUE, seed for sampling bootstrap data sets}
 }
 \value{
-\code{int.ltmleMSM} returns 3 objects:
+\code{int.ltmleMSM} returns a list 5 objects:
 \itemize{ \item \code{ltmle_MSM} the output from the ltmleMSM function
-\item \code{df.int} the data frame where the exposures names are \code{c(A1,A2)} and the outcome name is \code{Y}
+\item \code{data} the data frame where the exposures names are \code{c(A1,A2)} and the outcome name is \code{Y}
+\item \code{Anodes} the vector c("A1","A2") of exposure nodes
+\item \code{Ynodes} the outcome variable Y
 \item \code{bootstrap.res} a data frame containing estimation from bootstrap samples (for g-computation only)}
 }
 \description{
@@ -158,9 +160,9 @@ summary(df)
 # Define Q and g formulas
 # an A1 * A2 interaction term is recommended in the Q formula for the estimation
 # of interaction effects
-Q_formulas = c(Y="Q.kplus1 ~ conf1 + conf2 + conf3 + A1 * A2")
-g_formulas = c("A1 ~ conf1 + conf2",
-               "A2 ~ conf1 + conf3")
+Q_formulas = c(hlth.outcome="Q.kplus1 ~ conf1 + conf2 + conf3 + sex * env")
+g_formulas = c("sex ~ conf1 + conf2",
+               "env ~ conf1 + conf3")
 
 # Define SuperLearner libraries
 SL.library = list(Q=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"),
@@ -191,6 +193,6 @@ interaction.gcomp <- int.ltmleMSM(data = df,
                                   iptw.only = FALSE,
                                   survivalOutcome = FALSE,
                                   variance.method = "ic",
-                                  B = 5,
+                                  B = 5, # it should be at least 1000 or 2000
                                   boot.seed = 54321)
 }

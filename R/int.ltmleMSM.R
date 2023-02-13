@@ -8,7 +8,7 @@
 #' @param data data frame following the time-ordering of the nodes. See help of
 #' \code{ltmle} package.
 #' @param Anodes column names or indicies in \code{data} of treatment nodes
-#' \code{c(A1,A2)}
+#' \code{c("A1","A2")}
 #' @param Cnodes olumn names or indicies in \code{data} of censoring nodes.
 #' \code{NULL} by default, survival is not yet implemented for the
 #' \code{int.ltmleMSM function}
@@ -84,9 +84,11 @@
 #' @param B if g-comp=TRUE, number of boostrap sample
 #' @param boot.seed if g-comp=TRUE, seed for sampling bootstrap data sets
 #'
-#' @return \code{int.ltmleMSM} returns 3 objects:
+#' @return \code{int.ltmleMSM} returns a list 5 objects:
 #'                 \itemize{ \item \code{ltmle_MSM} the output from the ltmleMSM function
-#'                           \item \code{df.int} the data frame where the exposures names are \code{c(A1,A2)} and the outcome name is \code{Y}
+#'                           \item \code{data} the data frame where the exposures names are \code{c(A1,A2)} and the outcome name is \code{Y}
+#'                           \item \code{Anodes} the vector c("A1","A2") of exposure nodes
+#'                           \item \code{Ynodes} the outcome variable Y
 #'                           \item \code{bootstrap.res} a data frame containing estimation from bootstrap samples (for g-computation only)}
 #' @export
 #'
@@ -99,9 +101,9 @@
 #' # Define Q and g formulas
 #' # an A1 * A2 interaction term is recommended in the Q formula for the estimation
 #' # of interaction effects
-#' Q_formulas = c(Y="Q.kplus1 ~ conf1 + conf2 + conf3 + A1 * A2")
-#' g_formulas = c("A1 ~ conf1 + conf2",
-#'                "A2 ~ conf1 + conf3")
+#' Q_formulas = c(hlth.outcome="Q.kplus1 ~ conf1 + conf2 + conf3 + sex * env")
+#' g_formulas = c("sex ~ conf1 + conf2",
+#'                "env ~ conf1 + conf3")
 #'
 #' # Define SuperLearner libraries
 #' SL.library = list(Q=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"),
@@ -132,13 +134,13 @@
 #'                                   iptw.only = FALSE,
 #'                                   survivalOutcome = FALSE,
 #'                                   variance.method = "ic",
-#'                                   B = 5,
+#'                                   B = 5, # it should be at least 1000 or 2000
 #'                                   boot.seed = 54321)
 int.ltmleMSM <- function(data = data,
-                         Anodes = Anodes, # c(A1, A2)
+                         Anodes = Anodes, # c("A1", "A2")
                          Cnodes = NULL,
-                         Lnodes = NULL, # c(L1, L2, L3)
-                         Ynodes = Ynodes, # Y
+                         Lnodes = NULL, # c("L1", "L2", "L3")
+                         Ynodes = Ynodes, # "Y"
                          survivalOutcome = FALSE,
                          Qform = Qform,
                          gform = gform,
@@ -162,10 +164,10 @@ int.ltmleMSM <- function(data = data,
                          boot.seed = NULL) {
   # format data set with baseline confounders, 2 exposures (A1,A2) and the outcome Y
   # TO DO: modify to enable intermediate confounders between A1 and A2
-  df.int <- data.frame(data[,which(names(data) == Lnodes)],
-                       A1 = data[,which(names(data) == Anodes[1])],
-                       A2 = data[,which(names(data) == Anodes[2])],
-                       Y = data[,which(names(data) == Ynodes)])
+  # df.int <- data.frame(data[,which(names(data) == Lnodes)],          +++++ DELETE +++++++++++
+  #                      A1 = data[,which(names(data) == Anodes[1])],  +++++ DELETE +++++++++++
+  #                      A2 = data[,which(names(data) == Anodes[2])],  +++++ DELETE +++++++++++
+  #                      Y = data[,which(names(data) == Ynodes)])      +++++ DELETE +++++++++++
 
   # regime=
   # binary array: n x numAnodes x numRegimes of counterfactual treatment or a list of 'rule' functions
@@ -185,11 +187,14 @@ int.ltmleMSM <- function(data = data,
                                         0, 1, 0, # effet de A2 isolé
                                         1, 1, 1), # effet de A1 + A2 + A1:A2
                                       ncol = 3, nrow = 4, byrow = TRUE)
-  colnames(summary.measures.reg) <- c("A1", "A2", "A1:A2")
+  colnames(summary.measures.reg) <- c(Anodes[1],
+                                      Anodes[2],
+                                      paste0(Anodes[1],":",Anodes[2]))
+  # colnames(summary.measures.reg) <- c("A1", "A2", "A1:A2") +++++ DELETE +++++++++++
 
   if(gcomp == TRUE) {
     # test length SL.library$Q
-    SL.library$Q <- ifelse(length(SL.library$Q) > 1, "SL.glm", SL.library$Q)
+    SL.library$Q <- ifelse(length(SL.library$Q) > 1, "SL.glm", SL.library$Q) # +++++ DELETE +++++++++++ ?????
 
     # simplify SL.library$g because g functions are useless with g-computation
     SL.library$g <- "SL.mean"
@@ -197,11 +202,13 @@ int.ltmleMSM <- function(data = data,
     iptw.only <- FALSE
   }
 
-  ltmle_MSM <- ltmle::ltmleMSM(data = df.int,
-                               Anodes = c("A1","A2"),
+  working.msm <- paste0("Y ~ ",Anodes[1]," + ",Anodes[2]," + ",Anodes[1],":",Anodes[2])
+
+  ltmle_MSM <- ltmle::ltmleMSM(data = data,
+                               Anodes = Anodes,
                                Cnodes = Cnodes,
                                Lnodes = Lnodes,
-                               Ynodes = c("Y"),
+                               Ynodes = Ynodes,
                                survivalOutcome = survivalOutcome,
                                Qform = Qform,
                                gform = gform,
@@ -211,7 +218,7 @@ int.ltmleMSM <- function(data = data,
                                SL.library = SL.library,
                                SL.cvControl = SL.cvControl,
                                regimes = regimes.MSM, # instead of abar
-                               working.msm= "Y ~ A1 + A2 + A1:A2",
+                               working.msm= working.msm,
                                summary.measures = summary.measures.reg,
                                final.Ynodes = final.Ynodes,
                                stratify = stratify,
@@ -223,13 +230,14 @@ int.ltmleMSM <- function(data = data,
                                variance.method = variance.method,
                                observation.weights = observation.weights,
                                id = id)
-
-  bootstrap.res <- data.frame("beta.Intercept" = rep(NA, B),
-                              "beta.A1" = rep(NA, B),
-                              "beta.A2" = rep(NA, B),
-                              "beta.A1A2" = rep(NA, B))
+  bootstrap.res <- NULL
 
   if(gcomp == TRUE) {
+    bootstrap.res <- data.frame("beta.Intercept" = rep(NA, B),
+                                "beta.A1" = rep(NA, B),
+                                "beta.A2" = rep(NA, B),
+                                "beta.A1A2" = rep(NA, B))
+
     try(if(is.null(boot.seed))
       stop("boot.seed argument is null, please add a seed in the int.ltmleMSM function"))
     set.seed <- boot.seed
@@ -237,14 +245,14 @@ int.ltmleMSM <- function(data = data,
     for (b in 1:B){
       # sample the indices 1 to n with replacement
       bootIndices <- sample(1:nrow(data), replace=T)
-      bootData <- df.int[bootIndices,]
+      bootData <- data[bootIndices,]
 
       if ( round(b/100, 0) == b/100 ) print(paste0("bootstrap number ",b))
 
       boot_ltmle_MSM <- ltmle::ltmleMSM(data = bootData,
-                                        Anodes = c("A1","A2"),
+                                        Anodes = Anodes,
                                         Lnodes = Lnodes,
-                                        Ynodes = c("Y"),
+                                        Ynodes = Ynodes,
                                         survivalOutcome = survivalOutcome,
                                         Qform = Qform,
                                         gform = gform,
@@ -254,7 +262,7 @@ int.ltmleMSM <- function(data = data,
                                         SL.library = SL.library,
                                         SL.cvControl = SL.cvControl,
                                         regimes = regimes.MSM, # instead of abar
-                                        working.msm= "Y ~ A1 + A2 + A1:A2",
+                                        working.msm= working.msm,
                                         summary.measures = summary.measures.reg,
                                         final.Ynodes = final.Ynodes,
                                         stratify = stratify,
@@ -268,13 +276,15 @@ int.ltmleMSM <- function(data = data,
                                         id = id)
 
       bootstrap.res$beta.Intercept[b] <- boot_ltmle_MSM$beta["(Intercept)"]
-      bootstrap.res$beta.A1[b] <- boot_ltmle_MSM$beta["A1"]
-      bootstrap.res$beta.A2[b] <- boot_ltmle_MSM$beta["A2"]
-      bootstrap.res$beta.A1A2[b] <- boot_ltmle_MSM$beta["A1:A2"]
+      bootstrap.res$beta.A1[b] <- boot_ltmle_MSM$beta[Anodes[1]]
+      bootstrap.res$beta.A2[b] <- boot_ltmle_MSM$beta[Anodes[2]]
+      bootstrap.res$beta.A1A2[b] <- boot_ltmle_MSM$beta[paste0(Anodes[1],":",Anodes[2])]
     }
   }
 
   return(list(ltmle_MSM = ltmle_MSM,
-              df.int = df.int,
+              data = data,
+              Anodes = Anodes,
+              Ynodes = Ynodes,
               bootstrap.res = bootstrap.res))
 }

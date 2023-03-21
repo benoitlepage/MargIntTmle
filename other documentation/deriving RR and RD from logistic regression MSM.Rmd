@@ -1,0 +1,231 @@
+---
+title: "Standard errors of probabilities, RR and RD estimations using a logistic MSM"
+author: "Benoît Lepage"
+date: "March 21, 2023"
+output:
+  pdf_document: default
+---
+
+# 1) Introduction
+The `ltmleMSM` function from the `ltmle` package estimates parameters of a working Marginal Structural Model (MSM). The MSM is a logistic regression from which OR estimates can be easily calculated using the exponential of the estimated coefficients.
+
+Applying delta method, it is possible to estimate relative risks and risk diffenrences from the same logistic regression MSM.
+
+In order to estimate the marginal interaction effect between two binary exposures $A_1$ and $A_2$, the following MSM is applied:
+\begin{equation*}
+  \text{logit} m_\beta(A_1,A_2) = \ln \frac{P\left(Y_{A_1,A_2}=1 \right)}{P\left(Y_{A_1,A_2}=0 \right)} = \beta_0 +\beta_1 A_1 + \beta_2 A_2 + \beta_3 (A_1 \times A_2)
+\end{equation*}
+
+For given values $A_1 = a_1$ and $A_2 = a_2$, we note the predicted probability:
+\begin{equation*}
+  m_\beta(a_1,a_2) = \frac{\exp\left(\beta_0 +\beta_1 a_1 + \beta_2 a_2 + \beta_3 (a_1 \times a_2)\right)}{1 + \exp\left(\beta_0 +\beta_1 a_1 + \beta_2 a_2 + \beta_3 (a_1 \times a_2)\right)}
+\end{equation*}
+
+We also note:
+\begin{equation*}
+  e_{a_1,a_2} = \exp\left(-\beta_0 -\beta_1 a_1 - \beta_2 a_2 - \beta_3 (a_1 \times a_2)\right)
+\end{equation*}
+so that:
+\begin{equation*}
+  m_\beta(a_1,a_2) = \frac{1}{1 + e_{a_1,a_2}}
+\end{equation*}
+
+and
+\begin{align*}
+  P\left( Y_{A_1=0,A_2=0}=1 \right) = m_\beta(0,0) &= \frac{1}{1 + \exp(-\beta_0) } = \frac{1}{1 + e_{00}} \\
+  P\left( Y_{A_1=1,A_2=0}=1 \right) = m_\beta(1,0) &= \frac{1}{1+\exp(-\beta_0 - \beta_1)} = \frac{1}{1 + e_{10}} \\
+  P\left( Y_{A_1=0,A_2=1}=1 \right) = m_\beta(0,1) &= \frac{1}{1+\exp(-\beta_0 - \beta_2)} = \frac{1}{1 + e_{01}} \\
+  P\left( Y_{A_1=1,A_2=1}=1 \right) = m_\beta(1,1) &= \frac{1}{1+\exp(-\beta_0 - \beta_1 - \beta_2 - \beta_3)} = \frac{1}{1 + e_{11}} 
+\end{align*}
+
+For a given function $f(\beta)$ of the $\beta = \{\beta_0,\beta_1,\beta_2,\beta_3\}$ coefficients such as $m_\beta(a_1,a_2)$, by Delta method, the variance of $f(\beta)$ can be calculed by:
+\begin{equation*}
+  var\left[f(\beta)\right]=\left( \frac{\partial f(\beta)}{\partial \beta} \right)^T var(\beta) \left( \frac{\partial f(\beta)}{\partial \beta} \right)
+\end{equation*}
+where $var(\beta)$ is a $4 \times 4$ covariance matrix, that can be estimated using the variance of the influence curve (`IC`) of the MSM coefficients given in the output values of the `ltmleMSM` function, divided by the sample size: `var(IC) / n`.
+
+
+<!-- ######################################################################## -->
+# 2) Standard errors of point estimates of the probabilities of interest
+## 2.1) Standard error of $P\left( Y_{A_1=0,A_2=0}=1\right) = m_\beta(0,0)$
+\begin{equation*}
+  m_\beta(0,0) = \frac{1}{1+ e_{00}} \text{, where } e_{00} = \exp(-\beta_0) 
+\end{equation*}
+
+The partial derivative of $f(\beta)=m_\beta(0,0)$ with respect to $\beta$ is:
+\begin{equation*}
+  \left( \frac{\partial m_\beta(0,0)}{\partial \beta} \right) = \frac{-\left(\frac{\partial e_{00}}{\partial \beta}\right)}{(1+e_{00})^2}
+\end{equation*}
+
+where $\left(\frac{\partial e_{00}}{\partial \beta_0} \right) = - e_{00}$ and $\left(\frac{\partial e_{00}}{\partial \beta_1} \right) = \left(\frac{\partial e_{00}}{\partial \beta_2} \right) = \left(\frac{\partial e_{00}}{\partial \beta_3} \right) = 0$.
+
+\begin{align*}
+  \left( \frac{\partial m_\beta(0,0)}{\partial \beta_0}\right) &= \frac{-(-e_{00})}{(1+e_{00})^2}= \frac{1+e_{00}-1}{(1+e_{00})} \times \frac{1}{1+e_{00}} \\
+                                                            &= \left[1-m_\beta(0,0)\right] \times m_\beta(0,0)
+\end{align*}
+
+\begin{equation*}
+  \left( \frac{\partial m_\beta(0,0)}{\partial \beta} \right) = \begin{pmatrix} 
+    \left( \frac{\partial m_\beta(0,0)}{\partial \beta_0} \right) \\
+    \left( \frac{\partial m_\beta(0,0)}{\partial \beta_1} \right) \\
+    \left( \frac{\partial m_\beta(0,0)}{\partial \beta_2} \right) \\
+    \left( \frac{\partial m_\beta(0,0)}{\partial \beta_3} \right) \end{pmatrix} = \begin{pmatrix}
+        \left[1 - m_\beta(0,0) \right] \times m_\beta(0,0) \\
+        \frac{-0}{(1+e_{00})^2} \\
+        \frac{-0}{(1+e_{00})^2} \\
+        \frac{-0}{(1+e_{00})^2} \end{pmatrix} = \begin{pmatrix}
+                                                    \left[1 - m_\beta(0,0) \right] \times m_\beta(0,0) \\
+                                                    0 \\
+                                                    0 \\
+                                                    0 \end{pmatrix}
+\end{equation*}
+
+The variance of $m_\beta(0,0)$ can then be calculated by:
+\begin{equation*}
+  var\left( m_\beta(0,0)\right) = \begin{pmatrix} \left[1 - m_\beta(0,0) \right] \times m_\beta(0,0) \\ 0 \\ 0 \\ 0 \end{pmatrix}^T \times \frac{var(IC)}{n} \times \begin{pmatrix}
+          \left[1 - m_\beta(0,0) \right] \times m_\beta(0,0) \\
+          0 \\
+          0 \\
+          0 \end{pmatrix}
+\end{equation*}
+
+<!-- ######################################################################## -->
+\newpage
+## 2.2) Standard error of $P\left( Y_{A_1=1,A_2=0}=1 \right) = m_\beta(1,0)$
+\begin{equation*}
+  m_\beta(1,0) = \frac{1}{1+ e_{10}} \text{, where } e_{10} = \exp(-\beta_0 - \beta_1) 
+\end{equation*}
+
+The partial derivative of $f(\beta)=m_\beta(1,0)$ with respect to $\beta$ is:
+\begin{equation*}
+  \left( \frac{\partial m_\beta(1,0)}{\partial \beta} \right) = \frac{-\left(\frac{\partial e_{10}}{\partial \beta}\right)}{(1+e_{10})^2}
+\end{equation*}
+
+where $\left(\frac{\partial e_{10}}{\partial \beta_0} \right) = \left(\frac{\partial e_{10}}{\partial \beta_1} \right) = - e_{10}$ and $\left(\frac{\partial e_{10}}{\partial \beta_2} \right) = \left(\frac{\partial e_{10}}{\partial \beta_3} \right) = 0$.
+
+\begin{align*}
+  \left( \frac{\partial m_\beta(1,0)}{\partial \beta_0}\right) = \left( \frac{\partial m_\beta(1,0)}{\partial \beta_1}\right) &= \frac{-(-e_{10})}{(1+e_{10})^2}= \frac{1+e_{10}-1}{(1+e_{10})} \times \frac{1}{1+e_{10}} \\
+                                                            &= \left[1-m_\beta(1,0)\right] \times m_\beta(1,0)
+\end{align*}
+
+
+\begin{equation*}
+  \left( \frac{\partial m_\beta(1,0)}{\partial \beta} \right) = \begin{pmatrix}
+    \left[1 - m_\beta(1,0) \right] \times m_\beta(1,0) \\
+    \left[1 - m_\beta(1,0) \right] \times m_\beta(1,0) \\
+    \frac{-0}{(1+e_{10})^2} \\
+    \frac{-0}{(1+e_{10})^2} \end{pmatrix} = \begin{pmatrix}
+                                                \left[1 - m_\beta(1,0) \right] \times m_\beta(1,0) \\
+                                                \left[1 - m_\beta(1,0) \right] \times m_\beta(1,0) \\
+                                                0 \\
+                                                0 \end{pmatrix}
+\end{equation*}
+
+The variance of $m_\beta(1,0)$ can then be calculated by:
+\begin{equation*}
+  var\left( m_\beta(1,0)\right) = \begin{pmatrix} 
+      \left[1 - m_\beta(1,0) \right] \times m_\beta(1,0) \\ 
+      \left[1 - m_\beta(1,0) \right] \times m_\beta(1,0) \\ 
+      0 \\ 
+      0 \end{pmatrix}^T \times \frac{var(IC)}{n} \times \begin{pmatrix}
+          \left[1 - m_\beta(1,0) \right] \times m_\beta(1,0) \\
+          \left[1 - m_\beta(1,0) \right] \times m_\beta(1,0) \\
+          0 \\
+          0 \end{pmatrix}
+\end{equation*}
+
+
+<!-- ######################################################################## -->
+\newpage
+## 2.3) Standard error of $P\left( Y_{A_1=0,A_2=1}=1 \right) = m_\beta(0,1)$
+\begin{equation*}
+  m_\beta(0,1) = \frac{1}{1+ e_{01}} \text{, where } e_{01} = \exp(-\beta_0 - \beta_2) 
+\end{equation*}
+
+The partial derivative of $f(\beta)=m_\beta(0,1)$ with respect to $\beta$ is:
+\begin{equation*}
+  \left( \frac{\partial m_\beta(0,1)}{\partial \beta} \right) = \frac{-\left(\frac{\partial e_{01}}{\partial \beta}\right)}{(1+e_{01})^2}
+\end{equation*}
+
+where $\left(\frac{\partial e_{01}}{\partial \beta_0} \right) = \left(\frac{\partial e_{01}}{\partial \beta_2} \right) = - e_{01}$ and $\left(\frac{\partial e_{01}}{\partial \beta_1} \right) = \left(\frac{\partial e_{01}}{\partial \beta_3} \right) = 0$.
+
+\begin{align*}
+  \left( \frac{\partial m_\beta(0,1)}{\partial \beta_0}\right) = \left( \frac{\partial m_\beta(0,1)}{\partial \beta_2}\right) &= \frac{-(-e_{01})}{(1+e_{01})^2}= \frac{1+e_{01}-1}{(1+e_{01})} \times \frac{1}{1+e_{01}} \\
+                                                            &= \left[1-m_\beta(0,1)\right] \times m_\beta(0,1)
+\end{align*}
+
+\begin{equation*}
+  \left( \frac{\partial m_\beta(0,1)}{\partial \beta} \right) = \begin{pmatrix}
+    \left[1 - m_\beta(0,1) \right] \times m_\beta(0,1) \\
+    \frac{-0}{(1+e_{01})^2} \\
+    \left[1 - m_\beta(0,1) \right] \times m_\beta(0,1) \\
+    \frac{-0}{(1+e_{01})^2} \end{pmatrix} = \begin{pmatrix}
+                                                \left[1 - m_\beta(0,1) \right] \times m_\beta(0,1) \\
+                                                0 \\
+                                                \left[1 - m_\beta(0,1) \right] \times m_\beta(0,1) \\
+                                                0 \end{pmatrix}
+\end{equation*}
+
+The variance of $m_\beta(0,1)$ can then be calculated by:
+\begin{equation*}
+  var\left( m_\beta(0,1)\right) = \begin{pmatrix} 
+      \left[1 - m_\beta(0,1) \right] \times m_\beta(0,1) \\ 
+      0 \\ 
+      \left[1 - m_\beta(0,1) \right] \times m_\beta(0,1) \\ 
+      0 \end{pmatrix}^T \times \frac{var(IC)}{n} \times \begin{pmatrix}
+          \left[1 - m_\beta(0,1) \right] \times m_\beta(0,1) \\
+          0 \\
+          \left[1 - m_\beta(0,1) \right] \times m_\beta(0,1) \\
+          0 \end{pmatrix}
+\end{equation*}
+
+<!-- ######################################################################## -->
+\newpage
+## 2.4) Standard error of $P\left( Y_{A_1=1,A_2=1}=1 \right) = m_\beta(1,1)$
+\begin{equation*}
+  m_\beta(1,1) = \frac{1}{1+ e_{11}} \text{, where } e_{11} = \exp(-\beta_0 - \beta_1 - \beta_2 - \beta_3) 
+\end{equation*}
+
+The partial derivative of $f(\beta)=m_\beta(1,1)$ with respect to $\beta$ is:
+\begin{equation*}
+  \left( \frac{\partial m_\beta(1,1)}{\partial \beta} \right) = \frac{-\left(\frac{\partial e_{11}}{\partial \beta}\right)}{(1+e_{11})^2}
+\end{equation*}
+
+where $\left(\frac{\partial e_{11}}{\partial \beta_0} \right) = \left(\frac{\partial e_{11}}{\partial \beta_2} \right) = \left(\frac{\partial e_{11}}{\partial \beta_1} \right) = \left(\frac{\partial e_{11}}{\partial \beta_3} \right) = - e_{11}$.
+
+\begin{align*}
+  \left( \frac{\partial m_\beta(1,1)}{\partial \beta_0}\right) = \left( \frac{\partial m_\beta(1,1)}{\partial \beta_1}\right) = \left( \frac{\partial m_\beta(1,1)}{\partial \beta_2}\right) = \left( \frac{\partial m_\beta(1,1)}{\partial \beta_3}\right) &= \frac{-(-e_{11})}{(1+e_{11})^2}= \frac{1+e_{11}-1}{(1+e_{11})} \times \frac{1}{1+e_{11}} \\
+                                                            &= \left[1-m_\beta(1,1)\right] \times m_\beta(1,1)
+\end{align*}
+
+\begin{equation*}
+  \left( \frac{\partial m_\beta(1,1)}{\partial \beta} \right) = \begin{pmatrix}
+        \left[1 - m_\beta(1,1) \right] \times m_\beta(1,1) \\
+        \left[1 - m_\beta(1,1) \right] \times m_\beta(1,1) \\
+        \left[1 - m_\beta(1,1) \right] \times m_\beta(1,1) \\
+        \left[1 - m_\beta(1,1) \right] \times m_\beta(1,1) \end{pmatrix}
+\end{equation*}
+
+The variance of $m_\beta(1,1)$ can then be calculated by:
+\begin{equation*}
+  var\left( m_\beta(1,1)\right) = \begin{pmatrix} 
+      \left[1 - m_\beta(1,1) \right] \times m_\beta(1,1) \\ 
+      \left[1 - m_\beta(1,1) \right] \times m_\beta(1,1) \\ 
+      \left[1 - m_\beta(1,1) \right] \times m_\beta(1,1) \\ 
+      \left[1 - m_\beta(1,1) \right] \times m_\beta(1,1) \end{pmatrix}^T \times \frac{var(IC)}{n} \times \begin{pmatrix}
+          \left[1 - m_\beta(1,1) \right] \times m_\beta(1,1) \\
+          \left[1 - m_\beta(1,1) \right] \times m_\beta(1,1) \\
+          \left[1 - m_\beta(1,1) \right] \times m_\beta(1,1) \\
+          \left[1 - m_\beta(1,1) \right] \times m_\beta(1,1) \end{pmatrix}
+\end{equation*}
+
+<!-- ######################################################################## -->
+\newpage
+# Standard errors of risk differences
+
+
+<!-- ######################################################################## -->
+\newpage
+# Standard errors of relative risks
+
+

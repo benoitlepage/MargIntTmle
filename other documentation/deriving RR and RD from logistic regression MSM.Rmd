@@ -405,6 +405,23 @@ The variance of $RD_{A_2 \mid A_1 = 1}$ can then be calculated by:
 
 <!-- ######################################################################## -->
 \newpage
-# Standard errors of relative risks
+# 4) Standard errors of relative risks
+## 4.1) Relative risk for the effect of $A_1$, setting $A_2=0$
+Applying a log transformation of the relative risk,
+\begin{equation*}
+  \log RR_{A_1 \mid A_2 = 0} = \log \frac{m_\beta(1,0)}{m_\beta(0,0)}  = \log m_\beta(1,0) - \log m_\beta(0,0)
+\end{equation*}
 
+and the variance of $\log RR$ is:
+\begin{equation*}
+  var(\log RR) = \left( \frac{\partial \log RR}{\partial \beta}\right)^T \times var(\beta) \times \left( \frac{\partial \log RR}{\partial \beta}\right)
+\end{equation*}
+
+With $p=\frac{1}{1+e}$, we have: $(\log p)^\prime = \frac{p^\prime}{p} = \frac{-e^\prime}{(1+e)^2} \times (1+e) = \frac{-e^\prime}{1+e}$
+
+\begin{equation*}
+\frac{\partial}{\partial \beta} (\log p) = \frac{\frac{\partial p}{\partial \beta}}{p} =\frac{-\frac{\partial e}{\partial \beta}}{(1+e)p^2} \times (1 + e)=\frac{\frac{\partial e}{\partial \beta}}{1+e} 
+\end{equation*}
+
+where $e_{00} = \exp(-\beta_0)$ and $e_{10} = \exp(-\beta_0 - \beta_1)$.
 

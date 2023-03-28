@@ -296,7 +296,7 @@ The partial derivative of the risk difference $m_\beta(1,1) - m_\beta(0,1)$ with
 \end{equation*}
 
 \begin{equation*}
-  \frac{\partial }{\partial \beta} \left( m_\beta(1,0) - m_\beta(0,0) \right) = \begin{pmatrix}
+  \frac{\partial }{\partial \beta} \left( m_\beta(1,1) - m_\beta(0,1) \right) = \begin{pmatrix}
         [1 - m_\beta(1,1)] \times m_\beta(1,1) - [1 - m_\beta(0,1)] \times m_\beta(0,1) \\
         [1 - m_\beta(1,1)] \times m_\beta(1,1)  \\
         [1 - m_\beta(1,1)] \times m_\beta(1,1) - [1 - m_\beta(0,1)] \times m_\beta(0,1) \\
@@ -307,6 +307,101 @@ The variance of $RD_{A_1 \mid A_2 = 1}$ can then be calculated by:
 \begin{equation*}
   var\left( RD_{A_1 \mid A_2 = 0}\right) = \Delta^T \times \frac{var(IC)}{n} \times \Delta
 \end{equation*}
+
+
+<!-- ######################################################################## -->
+\newpage
+## 3.3) Risk difference for the effect of $A_2$, setting $A_1=0$
+
+\begin{equation*}
+  RD_{A_2 \mid A_1 = 0} = m_\beta(0,1) - m_\beta(0,0) = \frac{1}{1 + e_{01}} - \frac{1}{1 + e_{00}}
+\end{equation*}
+where $e_{01} = \exp(-\beta_0 - \beta_2)$ and $e_{00} = \exp(-\beta_0)$.
+
+The partial derivative of the risk difference $m_\beta(0,1) - m_\beta(0,0)$ with respect to $\beta$ is:
+\begin{equation*}
+   \frac{\partial }{\partial \beta} \left(m_\beta(0,1) - m_\beta(0,0) \right) = \frac{-\left(\frac{\partial e_{01}}{\partial \beta}\right)}{(1+e_{01})^2} - \frac{-\left(\frac{\partial e_{00}}{\partial \beta}\right)}{(1+e_{00})^2}
+\end{equation*}
+
+\begin{align*}
+   \frac{\partial }{\partial \beta_0} \left(m_\beta(0,1) - m_\beta(0,0) \right) &= \frac{-(-e_{01})}{(1+e_{01})^2} - \frac{-(-e_{00})}{(1+e_{00})^2} \\
+     &= [1 - m_\beta(0,1)] \times m_\beta(0,1) - [1 - m_\beta(0,0)] \times m_\beta(0,0)
+\end{align*}
+
+\begin{equation*}
+   \frac{\partial }{\partial \beta_1} \left(m_\beta(0,1) - m_\beta(0,0) \right) = 0
+\end{equation*}
+
+\begin{align*}
+   \frac{\partial }{\partial \beta_2} \left(m_\beta(0,1) - m_\beta(0,0) \right) &= \frac{-(-e_{01})}{(1+e_{01})^2} - 0 \\
+     &= [1 - m_\beta(0,1)] \times m_\beta(0,1)
+\end{align*}
+
+\begin{equation*}
+   \frac{\partial }{\partial \beta_3} \left(m_\beta(0,1) - m_\beta(0,0) \right) = 0
+\end{equation*}
+
+\begin{equation*}
+  \frac{\partial }{\partial \beta} \left( m_\beta(0,1) - m_\beta(0,0) \right) = \begin{pmatrix}
+        [1 - m_\beta(0,1)] \times m_\beta(0,1) - [1 - m_\beta(0,0)] \times m_\beta(0,0)  \\
+        0  \\
+        [1 - m_\beta(0,1)] \times m_\beta(0,1)\\
+        0 \end{pmatrix} = \Delta
+\end{equation*}
+
+The variance of $RD_{A_2 \mid A_1 = 0}$ can then be calculated by:
+\begin{equation*}
+  var\left( RD_{A_2 \mid A_1 = 0}\right) = \Delta^T \times \frac{var(IC)}{n} \times \Delta
+\end{equation*}
+
+
+<!-- ######################################################################## -->
+\newpage
+## 3.4) Risk difference for the effect of $A_2$, setting $A_1=1$
+
+\begin{equation*}
+  RD_{A_2 \mid A_1 = 1} = m_\beta(1,1) - m_\beta(1,0) = \frac{1}{1 + e_{11}} - \frac{1}{1 + e_{10}}
+\end{equation*}
+where $e_{11} = \exp(-\beta_0 - \beta_1 - \beta_2 - \beta_3)$ and $e_{10} = \exp(-\beta_0 - \beta_1)$.
+
+The partial derivative of the risk difference $m_\beta(1,1) - m_\beta(1,0)$ with respect to $\beta$ is:
+\begin{equation*}
+   \frac{\partial }{\partial \beta} \left(m_\beta(1,1) - m_\beta(1,0) \right) = \frac{-\left(\frac{\partial e_{11}}{\partial \beta}\right)}{(1+e_{11})^2} - \frac{-\left(\frac{\partial e_{10}}{\partial \beta}\right)}{(1+e_{10})^2}
+\end{equation*}
+
+\begin{align*}
+   \frac{\partial }{\partial \beta_0} \left(m_\beta(1,1) - m_\beta(1,0) \right) &= \frac{-(-e_{11})}{(1+e_{11})^2} - \frac{-(-e_{10})}{(1+e_{10})^2} \\
+     &= [1 - m_\beta(1,1)] \times m_\beta(1,1) - [1 - m_\beta(1,0)] \times m_\beta(1,0)
+\end{align*}
+
+\begin{align*}
+   \frac{\partial }{\partial \beta_1} \left(m_\beta(1,1) - m_\beta(1,0) \right) &= \frac{-(-e_{11})}{(1+e_{11})^2} - \frac{-(-e_{10})}{(1+e_{10})^2} \\
+     &= [1 - m_\beta(1,1)] \times m_\beta(1,1) - [1 - m_\beta(1,0)] \times m_\beta(1,0)
+\end{align*}
+
+\begin{align*}
+   \frac{\partial }{\partial \beta_2} \left(m_\beta(1,1) - m_\beta(1,0) \right) &= \frac{-(-e_{11})}{(1+e_{11})^2} - 0 \\
+     &= [1 - m_\beta(1,1)] \times m_\beta(1,1)
+\end{align*}
+
+\begin{align*}
+   \frac{\partial }{\partial \beta_3} \left(m_\beta(1,1) - m_\beta(1,0) \right) &= \frac{-(-e_{11})}{(1+e_{11})^2} - 0 \\
+     &= [1 - m_\beta(1,1)] \times m_\beta(1,1)
+\end{align*}
+
+\begin{equation*}
+  \frac{\partial }{\partial \beta} \left( m_\beta(1,1) - m_\beta(1,0) \right) = \begin{pmatrix}
+        [1 - m_\beta(1,1)] \times m_\beta(1,1) - [1 - m_\beta(1,0)] \times m_\beta(1,0)  \\
+        [1 - m_\beta(1,1)] \times m_\beta(1,1) - [1 - m_\beta(1,0)] \times m_\beta(1,0)  \\
+        [1 - m_\beta(1,1)] \times m_\beta(1,1)\\
+        [1 - m_\beta(1,1)] \times m_\beta(1,1) \end{pmatrix} = \Delta
+\end{equation*}
+
+The variance of $RD_{A_2 \mid A_1 = 1}$ can then be calculated by:
+\begin{equation*}
+  var\left( RD_{A_2 \mid A_1 = 1}\right) = \Delta^T \times \frac{var(IC)}{n} \times \Delta
+\end{equation*}
+
 
 <!-- ######################################################################## -->
 \newpage

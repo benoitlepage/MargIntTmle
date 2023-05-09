@@ -234,3 +234,87 @@ out.int.fig(est.tmle)
 ```
 
 <img src="man/figures/README-interaction_plot-1.png" width="100%" />
+
+## Second example, with a continuous outcome
+
+``` r
+# require(MargIntTmle)
+set.seed(54321)
+beta <- param.causal.model(Y_type = "continuous", b_Y = 100, b_L1_Y = 10, b_L2_Y = 30,
+                           b_L3_Y = -20, b_A1_Y = 10, b_A2_Y = 30, b_A1A2_Y = 20,
+                           se_Y = 20)
+df.cont.Y <- generate.data(N = 1000, b = beta, Y_type = "continuous")
+summary(df.cont.Y)
+#>      conf1           conf2           conf3            sex            env       
+#>  Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.00   Min.   :0.000  
+#>  1st Qu.:0.000   1st Qu.:0.000   1st Qu.:0.000   1st Qu.:0.00   1st Qu.:0.000  
+#>  Median :0.000   Median :0.000   Median :1.000   Median :0.00   Median :0.000  
+#>  Mean   :0.483   Mean   :0.185   Mean   :0.702   Mean   :0.21   Mean   :0.375  
+#>  3rd Qu.:1.000   3rd Qu.:0.000   3rd Qu.:1.000   3rd Qu.:0.00   3rd Qu.:1.000  
+#>  Max.   :1.000   Max.   :1.000   Max.   :1.000   Max.   :1.00   Max.   :1.000  
+#>   hlth.outcome   
+#>  Min.   : 15.41  
+#>  1st Qu.: 87.53  
+#>  Median :109.06  
+#>  Mean   :111.41  
+#>  3rd Qu.:131.82  
+#>  Max.   :227.60
+```
+
+When using the `int.ltmleMSM`, the `ltmleMSM` function from the `ltmle`
+package transforms the outcome on a 0 to 1 scale:
+
+$Z = \frac{Y - \min(Y)}{\max(Y) - \min(Y)}$
+
+The Marginal structural model estimated by the `ltmle` package is a
+quasi-binomial regression of $Z$ conditional on the exposures $A_1$ and
+$A_2$
+
+$\text{logit} Z = \beta_0 + \beta_{A_1} A_1 + \beta_{A_2} A_2 + \beta_{A_1 \ast A_2} (A_1 \ast A_2)$
+
+``` r
+require(ltmle)
+require(SuperLearner)
+# define Q and g formulas following the argument notation of the ltmle package:
+Q_formulas = c(hlth.outcome="Q.kplus1 ~ conf1 + conf2 + conf3 + sex * env")
+g_formulas = c("sex ~ conf1 + conf2","env ~ conf1 + conf3")
+# choose a set of fitting libraries to pass to SuperLearner:
+SL.library = list(Q=list("SL.glm"),g=list("SL.glm"))
+# apply the int.ltmleMSM function. In order to apply the TMLE and IPTW estimators, 
+# gcomp argument is set to FALSE.
+continuous.interaction <- int.ltmleMSM(data = df.cont.Y,
+                                       Qform = Q_formulas,
+                                       gform = g_formulas,
+                                       Anodes = c("sex", "env"),
+                                       Lnodes = c("conf1", "conf2", "conf3"),
+                                       Ynodes = c("hlth.outcome"),
+                                       SL.library = SL.library,
+                                       gcomp = FALSE,
+                                       iptw.only = FALSE,
+                                       survivalOutcome = FALSE,
+                                       variance.method = "ic")
+
+# We can see that the outcome has been transformed. 
+# The range used to transform the outcome is given in the output
+continuous.interaction$ltmle_MSM$transformOutcome
+#> [1] TRUE
+#> attr(,"Yrange")
+#> [1]  15.41274 227.60003
+attr(continuous.interaction$ltmle_MSM$transformOutcome, "Yrange")
+#> [1]  15.41274 227.60003
+
+# The parameters of the MSM are estimated on the logit scale
+continuous.interaction$ltmle_MSM$msm$family
+#> 
+#> Family: quasibinomial 
+#> Link function: logit
+# where the coefficients beta_0, beta_A1, beta_A2, and beta_A1_A2 are respectively
+continuous.interaction$ltmle_MSM$msm$coefficients
+#>         S1         S2         S3         S4 
+#> -0.5114610  0.2447366  0.6130341  0.3743373
+
+## OLD TO UPDATE
+# several quantities of interest for interaction effects are calculated using the 
+# estim.int.effects() function
+# est.tmle <- estim.int.effects(interaction.ltmle, estimator = "tmle")
+```

@@ -238,7 +238,7 @@ out.int.fig(est.tmle)
 ## Second example, with a continuous outcome
 
 ``` r
-# require(MargIntTmle)
+require(MargIntTmle)
 set.seed(54321)
 beta <- param.causal.model(Y_type = "continuous", b_Y = 100, b_L1_Y = 10, b_L2_Y = 30,
                            b_L3_Y = -20, b_A1_Y = 10, b_A2_Y = 30, b_A1A2_Y = 20,
@@ -313,8 +313,43 @@ continuous.interaction$ltmle_MSM$msm$coefficients
 #>         S1         S2         S3         S4 
 #> -0.5114610  0.2447366  0.6130341  0.3743373
 
-## OLD TO UPDATE
 # several quantities of interest for interaction effects are calculated using the 
 # estim.int.effects() function
-# est.tmle <- estim.int.effects(interaction.ltmle, estimator = "tmle")
+est.tmle <- estim.int.effects(continuous.interaction, estimator = "tmle")
+est.tmle
+#> $int.r
+#>   A1 A2         p        sd.p      p.lo      p.up      RD.A1   sd.RD.A1
+#> 1  0  0 0.3748511 0.005187509 0.3646838 0.3850184         NA         NA
+#> 2  1  0 0.4337114 0.009643527 0.4148105 0.4526124 0.05886033 0.01047149
+#> 3  0  1 0.5253715 0.006364550 0.5128972 0.5378458         NA         NA
+#> 4  1  1 0.6727495 0.014577025 0.6441790 0.7013199 0.14737800 0.01558962
+#>     RD.A1.lo   RD.A1.up     RD.A2    sd.RD.A2  RD.A2.lo  RD.A2.up    RR.A1
+#> 1         NA         NA        NA          NA        NA        NA       NA
+#> 2 0.03833659 0.07938407        NA          NA        NA        NA 1.157023
+#> 3         NA         NA 0.1505204 0.007594585 0.1356353 0.1654055       NA
+#> 4 0.11682291 0.17793309 0.2390380 0.017179539 0.2053668 0.2727093 1.280522
+#>   sd.lnRR.A1 RR.A1.lo RR.A1.up    RR.A2 sd.lnRR.A2 RR.A2.lo RR.A2.up      a.INT
+#> 1         NA       NA       NA       NA         NA       NA       NA         NA
+#> 2 0.02495640 1.101791 1.215024       NA         NA       NA       NA         NA
+#> 3         NA       NA       NA 1.401547 0.01699454 1.355632 1.449017         NA
+#> 4 0.02425017 1.232992 1.328051 1.551145 0.03046984 1.461223 1.646601 0.08851767
+#>     sd.a.INT   a.INT.lo  a.INT.up      RERI sd.lnRERI   RERI.lo   RERI.up
+#> 1         NA         NA        NA        NA        NA        NA        NA
+#> 2         NA         NA        NA        NA        NA        NA        NA
+#> 3         NA         NA        NA        NA        NA        NA        NA
+#> 4 0.01877567 0.05171803 0.1253173 0.2361409 0.2093574 0.1566628 0.3559398
+#>      m.INT sd.ln.m.INT m.INT.lo m.INT.up
+#> 1       NA          NA       NA       NA
+#> 2       NA          NA       NA       NA
+#> 3       NA          NA       NA       NA
+#> 4 1.106738  0.03476694 1.033835 1.184782
+#> 
+#> $Anodes
+#> [1] "sex" "env"
+#> 
+#> $Ynodes
+#> [1] "hlth.outcome"
+#> 
+#> $bootstrap.res
+#> NULL
 ```

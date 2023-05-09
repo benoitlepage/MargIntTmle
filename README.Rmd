@@ -99,7 +99,7 @@ out.int.fig(est.tmle)
 
 ## Second example, with a continuous outcome
 ```{r simulate_data_continuous}
-# require(MargIntTmle)
+require(MargIntTmle)
 set.seed(54321)
 beta <- param.causal.model(Y_type = "continuous", b_Y = 100, b_L1_Y = 10, b_L2_Y = 30,
                            b_L3_Y = -20, b_A1_Y = 10, b_A2_Y = 30, b_A1A2_Y = 20,
@@ -149,8 +149,8 @@ continuous.interaction$ltmle_MSM$msm$family
 # where the coefficients beta_0, beta_A1, beta_A2, and beta_A1_A2 are respectively
 continuous.interaction$ltmle_MSM$msm$coefficients
 
-## OLD TO UPDATE
 # several quantities of interest for interaction effects are calculated using the 
 # estim.int.effects() function
-# est.tmle <- estim.int.effects(interaction.ltmle, estimator = "tmle")
+est.tmle <- estim.int.effects(continuous.interaction, estimator = "tmle")
+est.tmle
 ```

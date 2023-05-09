@@ -132,6 +132,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
   int.r$m.INT[int.r$A1 == 1 & int.r$A2 == 1] <- exp(log(int.r$p[int.r$A1 == 1 & int.r$A2 == 1]) - log(int.r$p[int.r$A1 == 1 & int.r$A2 == 0]) -
                                                       log(int.r$p[int.r$A1 == 0 & int.r$A2 == 1]) + log(int.r$p[int.r$A1 == 0 & int.r$A2 == 0]))
 
+
   ## IC95%
   if(estimator == "iptw" | estimator == "tmle") {
     # A1 = 0 et A2 = 0
@@ -478,6 +479,88 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
                                                            qnorm(0.975) * int.r$sd.ln.m.INT[int.r$A1 == 1 & int.r$A2 == 1])
     int.r$m.INT.up[int.r$A1 == 1 & int.r$A2 == 1] <- exp(log(int.r$m.INT[int.r$A1 == 1 & int.r$A2 == 1]) +
                                                            qnorm(0.975) * int.r$sd.ln.m.INT[int.r$A1 == 1 & int.r$A2 == 1])
+
+    # back transformation for continous outcomes
+    back.trfs <- function(y, range) {
+      return((y * (range[2] - range[1])) + range[1])
+    }
+
+    if (ltmle_MSM$ltmle_MSM$transformOutcome == TRUE) {
+      range.Y <- attr(ltmle_MSM$ltmle_MSM$transformOutcome, "Yrange")
+
+      # A1 = 0 et A2 = 0
+      int.r$p[int.r$A1 == 0 & int.r$A2 == 0] <- back.trfs(int.r$p[int.r$A1 == 0 & int.r$A2 == 0], range.Y)
+      # A1 = 1 et A2 = 0
+      int.r$p[int.r$A1 == 1 & int.r$A2 == 0] <- back.trfs(int.r$p[int.r$A1 == 1 & int.r$A2 == 0], range.Y)
+      # A1 = 0 et A2 = 1
+      int.r$p[int.r$A1 == 0 & int.r$A2 == 1] <- back.trfs(int.r$p[int.r$A1 == 0 & int.r$A2 == 1], range.Y)
+      # A1 = 1 et A2 = 1
+      int.r$p[int.r$A1 == 1 & int.r$A2 == 1] <- back.trfs(int.r$p[int.r$A1 == 1 & int.r$A2 == 1], range.Y)
+
+      # RR.A1.A2is0
+      int.r$RR.A1[int.r$A1 == 1 & int.r$A2 == 0] <- NA
+      # RR.A1.A2is1
+      int.r$RR.A1[int.r$A1 == 1 & int.r$A2 == 1] <- NA
+      # RR.A2.A1is0
+      int.r$RR.A2[int.r$A1 == 0 & int.r$A2 == 1] <- NA
+      # RR.A2.A1is1
+      int.r$RR.A2[int.r$A1 == 1 & int.r$A2 == 1] <- NA
+
+      # RERI
+      int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1] <- NA
+
+      # multiplicative interaction
+      int.r$m.INT[int.r$A1 == 1 & int.r$A2 == 1] <- NA
+
+      # A1 = 0 et A2 = 0
+      int.r$p.lo[int.r$A1 == 0 & int.r$A2 == 0] <- back.trfs(int.r$p.lo[int.r$A1 == 0 & int.r$A2 == 0], range.Y)
+      int.r$p.up[int.r$A1 == 0 & int.r$A2 == 0] <- back.trfs(int.r$p.up[int.r$A1 == 0 & int.r$A2 == 0], range.Y)
+      # A1 = 1 et A2 = 0
+      int.r$p.lo[int.r$A1 == 1 & int.r$A2 == 0] <- back.trfs(int.r$p.lo[int.r$A1 == 1 & int.r$A2 == 0], range.Y)
+      int.r$p.up[int.r$A1 == 1 & int.r$A2 == 0] <- back.trfs(int.r$p.up[int.r$A1 == 1 & int.r$A2 == 0], range.Y)
+      # A1 = 0 et A2 = 1
+      int.r$p.lo[int.r$A1 == 0 & int.r$A2 == 1] <- back.trfs(int.r$p.lo[int.r$A1 == 0 & int.r$A2 == 1], range.Y)
+      int.r$p.up[int.r$A1 == 0 & int.r$A2 == 1] <- back.trfs(int.r$p.up[int.r$A1 == 0 & int.r$A2 == 1], range.Y)
+      # A1 = 1 et A2 = 1
+      int.r$p.lo[int.r$A1 == 1 & int.r$A2 == 1] <- back.trfs(int.r$p.lo[int.r$A1 == 1 & int.r$A2 == 1], range.Y)
+      int.r$p.up[int.r$A1 == 1 & int.r$A2 == 1] <- back.trfs(int.r$p.up[int.r$A1 == 1 & int.r$A2 == 1], range.Y)
+
+      # RD.A1.A2is0
+      int.r$RD.A1.lo[int.r$A1 == 1 & int.r$A2 == 0] <- back.trfs(int.r$RD.A1.lo[int.r$A1 == 1 & int.r$A2 == 0], range.Y)
+      int.r$RD.A1.up[int.r$A1 == 1 & int.r$A2 == 0] <- back.trfs(int.r$RD.A1.up[int.r$A1 == 1 & int.r$A2 == 0], range.Y)
+      # RD.A1.A2is1
+      int.r$RD.A1.lo[int.r$A1 == 1 & int.r$A2 == 1] <- back.trfs(int.r$RD.A1.lo[int.r$A1 == 1 & int.r$A2 == 1], range.Y)
+      int.r$RD.A1.up[int.r$A1 == 1 & int.r$A2 == 1] <- back.trfs(int.r$RD.A1.up[int.r$A1 == 1 & int.r$A2 == 1], range.Y)
+      # RD.A2.A1is0
+      int.r$RD.A2.lo[int.r$A1 == 0 & int.r$A2 == 1] <- back.trfs(int.r$RD.A2.lo[int.r$A1 == 0 & int.r$A2 == 1], range.Y)
+      int.r$RD.A2.up[int.r$A1 == 0 & int.r$A2 == 1] <- back.trfs(int.r$RD.A2.up[int.r$A1 == 0 & int.r$A2 == 1], range.Y)
+      # RD.A2.A1is1
+      int.r$RD.A2.lo[int.r$A1 == 1 & int.r$A2 == 1] <- back.trfs(int.r$RD.A2.lo[int.r$A1 == 1 & int.r$A2 == 1], range.Y)
+      int.r$RD.A2.up[int.r$A1 == 1 & int.r$A2 == 1] <- back.trfs(int.r$RD.A2.up[int.r$A1 == 1 & int.r$A2 == 1], range.Y)
+
+      # RR.A1.A2is0
+      int.r$RR.A1.lo[int.r$A1 == 1 & int.r$A2 == 0] <- NA
+      int.r$RR.A1.up[int.r$A1 == 1 & int.r$A2 == 0] <- NA
+      # RR.A1.A2is1
+      int.r$RR.A1.lo[int.r$A1 == 1 & int.r$A2 == 1] <- NA
+      int.r$RR.A1.up[int.r$A1 == 1 & int.r$A2 == 1] <- NA
+      # RR.A2.A1is0
+      int.r$RR.A2.lo[int.r$A1 == 0 & int.r$A2 == 1] <- NA
+      int.r$RR.A2.up[int.r$A1 == 0 & int.r$A2 == 1] <- NA
+      # RR.A2.A1is1
+      int.r$RR.A2.lo[int.r$A1 == 1 & int.r$A2 == 1] <- NA
+      int.r$RR.A2.up[int.r$A1 == 1 & int.r$A2 == 1] <- NA
+
+      # additive interaction
+      int.r$a.INT.lo[int.r$A1 == 1 & int.r$A2 == 1] <- back.trfs(int.r$a.INT.lo[int.r$A1 == 1 & int.r$A2 == 1], range.Y)
+      int.r$a.INT.up[int.r$A1 == 1 & int.r$A2 == 1] <- back.trfs(int.r$a.INT.up[int.r$A1 == 1 & int.r$A2 == 1], range.Y)
+      # RERI
+      int.r$RERI.lo[int.r$A1 == 1 & int.r$A2 == 1] <- NA
+      int.r$RERI.up[int.r$A1 == 1 & int.r$A2 == 1] <- NA
+      # multiplicative interaction
+      int.r$m.INT.lo[int.r$A1 == 1 & int.r$A2 == 1] <- NA
+      int.r$m.INT.up[int.r$A1 == 1 & int.r$A2 == 1] <- NA
+    }
 
     bootstrap.res <- ltmle_MSM$bootstrap.res
   }

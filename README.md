@@ -26,7 +26,7 @@ devtools::install_github("benoitlepage/MargIntTmle")
 # devtools::install_github("benoitlepage/MargIntTmle", INSTALL_opts=c("--no-multiarch"))
 ```
 
-## First example
+## First example, with a binary outcome
 
 In this first example, we simulate a data set of `N` = 1000 rows, with
 three baseline confounders (`conf1`, `conf2`, and `conf3`), two

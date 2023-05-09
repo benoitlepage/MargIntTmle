@@ -19,6 +19,11 @@ You can install the development version of MargIntTmle from
 ``` r
 # install.packages("devtools")
 devtools::install_github("benoitlepage/MargIntTmle")
+
+# in case of error message "ERROR: loading failed for 'i386'"
+# use the following command instead
+# (which should force it to only build the package for your currently running R version.):
+# devtools::install_github("benoitlepage/MargIntTmle", INSTALL_opts=c("--no-multiarch"))
 ```
 
 ## First example

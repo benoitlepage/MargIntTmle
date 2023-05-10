@@ -233,8 +233,6 @@ output of the `estim.int.effects()` function.
 out.int.fig(est.tmle)
 ```
 
-<img src="man/figures/README-interaction_plot-1.png" width="100%" />
-
 ## Second example, with a continuous outcome
 
 ``` r
@@ -318,31 +316,26 @@ continuous.interaction$ltmle_MSM$msm$coefficients
 est.tmle <- estim.int.effects(continuous.interaction, estimator = "tmle")
 est.tmle
 #> $int.r
-#>   A1 A2         p        sd.p      p.lo      p.up      RD.A1   sd.RD.A1
-#> 1  0  0 0.3748511 0.005187509 0.3646838 0.3850184         NA         NA
-#> 2  1  0 0.4337114 0.009643527 0.4148105 0.4526124 0.05886033 0.01047149
-#> 3  0  1 0.5253715 0.006364550 0.5128972 0.5378458         NA         NA
-#> 4  1  1 0.6727495 0.014577025 0.6441790 0.7013199 0.14737800 0.01558962
-#>     RD.A1.lo   RD.A1.up     RD.A2    sd.RD.A2  RD.A2.lo  RD.A2.up    RR.A1
-#> 1         NA         NA        NA          NA        NA        NA       NA
-#> 2 0.03833659 0.07938407        NA          NA        NA        NA 1.157023
-#> 3         NA         NA 0.1505204 0.007594585 0.1356353 0.1654055       NA
-#> 4 0.11682291 0.17793309 0.2390380 0.017179539 0.2053668 0.2727093 1.280522
-#>   sd.lnRR.A1 RR.A1.lo RR.A1.up    RR.A2 sd.lnRR.A2 RR.A2.lo RR.A2.up      a.INT
-#> 1         NA       NA       NA       NA         NA       NA       NA         NA
-#> 2 0.02495640 1.101791 1.215024       NA         NA       NA       NA         NA
-#> 3         NA       NA       NA 1.401547 0.01699454 1.355632 1.449017         NA
-#> 4 0.02425017 1.232992 1.328051 1.551145 0.03046984 1.461223 1.646601 0.08851767
-#>     sd.a.INT   a.INT.lo  a.INT.up      RERI sd.lnRERI   RERI.lo   RERI.up
-#> 1         NA         NA        NA        NA        NA        NA        NA
-#> 2         NA         NA        NA        NA        NA        NA        NA
-#> 3         NA         NA        NA        NA        NA        NA        NA
-#> 4 0.01877567 0.05171803 0.1253173 0.2361409 0.2093574 0.1566628 0.3559398
-#>      m.INT sd.ln.m.INT m.INT.lo m.INT.up
-#> 1       NA          NA       NA       NA
-#> 2       NA          NA       NA       NA
-#> 3       NA          NA       NA       NA
-#> 4 1.106738  0.03476694 1.033835 1.184782
+#>   A1 A2         p     sd.p     p.lo      p.up    RD.A1 sd.RD.A1  RD.A1.lo
+#> 1  0  0  94.95138 16.51346  92.7940  97.10876       NA       NA        NA
+#> 2  1  0 107.44079 17.45897 103.4302 111.45134 12.48941 2.221917  8.134537
+#> 3  0  1 126.88989 16.76322 124.2430 129.53677       NA       NA        NA
+#> 4  1  1 158.16163 18.50580 152.0993 164.22391 31.27174 3.307919 24.788336
+#>   RD.A1.up    RD.A2 sd.RD.A2 RD.A2.lo RD.A2.up RR.A1 sd.lnRR.A1 RR.A1.lo
+#> 1       NA       NA       NA       NA       NA    NA         NA       NA
+#> 2 16.84429       NA       NA       NA       NA    NA         NA       NA
+#> 3       NA 31.93851 1.611474 28.78008 35.09694    NA         NA       NA
+#> 4 37.75514 50.72084 3.645280 43.57622 57.86545    NA         NA       NA
+#>   RR.A1.up RR.A2 sd.lnRR.A2 RR.A2.lo RR.A2.up    a.INT sd.a.INT a.INT.lo
+#> 1       NA    NA         NA       NA       NA       NA       NA       NA
+#> 2       NA    NA         NA       NA       NA       NA       NA       NA
+#> 3       NA    NA         NA       NA       NA       NA       NA       NA
+#> 4       NA    NA         NA       NA       NA 18.78232 3.983958 10.97391
+#>   a.INT.up RERI sd.lnRERI RERI.lo RERI.up m.INT sd.ln.m.INT m.INT.lo m.INT.up
+#> 1       NA   NA        NA      NA      NA    NA          NA       NA       NA
+#> 2       NA   NA        NA      NA      NA    NA          NA       NA       NA
+#> 3       NA   NA        NA      NA      NA    NA          NA       NA       NA
+#> 4 26.59074   NA        NA      NA      NA    NA          NA       NA       NA
 #> 
 #> $Anodes
 #> [1] "sex" "env"
@@ -350,6 +343,136 @@ est.tmle
 #> $Ynodes
 #> [1] "hlth.outcome"
 #> 
+#> $transformOutcome
+#> [1] TRUE
+#> attr(,"Yrange")
+#> [1]  15.41274 227.60003
+#> 
 #> $bootstrap.res
 #> NULL
 ```
+
+The results can be presented in a table showing the mean marginal
+outcome under the four potential exposures. The `out.table` object
+contains the table and the `interaction.effects` object contains the
+additive interaction effects. Relative risks and multiplicative
+interaction effects are not shown for quantitative outcomes.
+
+The interaction table can be rendered using the `kableExtra` package.
+
+``` r
+table_inter <- out.int.table(int.r = est.tmle)
+table_inter$out.table
+#>                                       A2=0                               A2=1
+#> A1=0       $p_{00}$=94.951 [92.794,97.109]  $p_{01}$=126.89 [124.243,129.537]
+#> A1=1     $p_{10}$=107.441 [103.43,111.451] $p_{11}$=158.162 [152.099,164.224]
+#> RD.A1|A2             12.489 [8.135,16.844]             31.272 [24.788,37.755]
+#>                        RD.A2|A1
+#> A1=0      31.939 [28.78,35.097]
+#> A1=1     50.721 [43.576,57.865]
+#> RD.A1|A2
+table_inter$interaction.effects
+#> [1] "additive Interaction = 18.782 [10.974;26.591]"
+#> [2] "RERI = NA [NA;NA]"                            
+#> [3] "multiplicative Interaction = NA [NA;NA]"
+library(kableExtra)
+kbl(table_inter$out.table,
+    caption = "Interaction effects estimated by TMLE") %>%
+  kable_classic() %>%
+  footnote(general = table_inter$interaction.effects)
+```
+
+<table class=" lightable-classic" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; margin-left: auto; margin-right: auto;border-bottom: 0;">
+<caption>
+Interaction effects estimated by TMLE
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+A2=0
+</th>
+<th style="text-align:left;">
+A2=1
+</th>
+<th style="text-align:left;">
+RD.A2\|A1
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+A1=0
+</td>
+<td style="text-align:left;">
+$p_{00}$=94.951 \[92.794,97.109\]
+</td>
+<td style="text-align:left;">
+$p_{01}$=126.89 \[124.243,129.537\]
+</td>
+<td style="text-align:left;">
+31.939 \[28.78,35.097\]
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A1=1
+</td>
+<td style="text-align:left;">
+$p_{10}$=107.441 \[103.43,111.451\]
+</td>
+<td style="text-align:left;">
+$p_{11}$=158.162 \[152.099,164.224\]
+</td>
+<td style="text-align:left;">
+50.721 \[43.576,57.865\]
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RD.A1\|A2
+</td>
+<td style="text-align:left;">
+12.489 \[8.135,16.844\]
+</td>
+<td style="text-align:left;">
+31.272 \[24.788,37.755\]
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> additive Interaction = 18.782 \[10.974;26.591\]
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> RERI = NA \[NA;NA\]
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> multiplicative Interaction = NA \[NA;NA\]
+</td>
+</tr>
+</tfoot>
+</table>
+
+We can also plot the results using the `out.int.fig()` function from the
+output of the `estim.int.effects()` function.
+
+``` r
+out.int.fig(est.tmle)
+```
+
+<img src="man/figures/README-interaction_plot_continuous-1.png" width="100%" />

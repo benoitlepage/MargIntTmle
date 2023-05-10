@@ -49,7 +49,7 @@
 out.int.table <- function(int.r = int.r,
                           probab.digits = 3,
                           RR.digits = 2) {
-  ##  tableau des effets marginaux
+  ##  table of marginal effects
   out.table <- data.frame(c1 = rep("",4), c2 = rep("",4), c3 = rep("",4), c4 = rep("",4))
   names(out.table) <- c("A2=0", "A2=1", "RD.A2|A1", "RR.A2|A1")
   rownames(out.table) <- c("A1=0", "A1=1", "RD.A1|A2", "RR.A1|A2")
@@ -153,6 +153,10 @@ out.int.table <- function(int.r = int.r,
                                   ";",
                                   round(int_res$m.INT.up[which(int_res$A1==1 & int_res$A2==1)], digits = RR.digits),
                                   "]"))
+
+  if (int.r$transformOutcome == TRUE) {
+    out.table <- out.table[1:3,1:3]
+  }
 
   return(list(out.table = out.table,
               interaction.effects = interaction.effects))
@@ -292,4 +296,8 @@ out.int.fig <- function(int.r = int.r) {
                     linetype = ggplot2::guide_legend(title = paste0(int.r$Anodes[1])))
 
   ggpubr::ggarrange(g1, g2, g3, g4, g5, g6, ncol = 2, nrow = 3)
+
+  if (int.r$transformOutcome == TRUE) {
+    ggpubr::ggarrange(g1, g2, g3, g4, ncol = 2, nrow = 2)
+  }
 }

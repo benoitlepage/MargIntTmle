@@ -154,3 +154,23 @@ continuous.interaction$ltmle_MSM$msm$coefficients
 est.tmle <- estim.int.effects(continuous.interaction, estimator = "tmle")
 est.tmle
 ```
+
+The results can be presented in a table showing the mean marginal outcome under the four potential exposures. The `out.table` object contains the table and the `interaction.effects` object contains the additive interaction effects. Relative risks and multiplicative interaction effects are not shown for quantitative outcomes.
+
+The interaction table can be rendered using the `kableExtra` package.
+```{r table_interaction_continuous}
+table_inter <- out.int.table(int.r = est.tmle)
+table_inter$out.table
+table_inter$interaction.effects
+library(kableExtra)
+kbl(table_inter$out.table,
+    caption = "Interaction effects estimated by TMLE") %>%
+  kable_classic() %>%
+  footnote(general = table_inter$interaction.effects)
+```
+
+We can also plot the results using the `out.int.fig()` function from the output of the `estim.int.effects()` function.
+
+```{r interaction_plot_continuous}
+out.int.fig(est.tmle)
+```

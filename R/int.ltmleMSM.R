@@ -194,7 +194,7 @@ int.ltmleMSM <- function(data = data,
 
   if(gcomp == TRUE) {
     # test length SL.library$Q
-    SL.library$Q <- ifelse(length(SL.library$Q) > 1, "SL.glm", SL.library$Q) # +++++ DELETE +++++++++++ ?????
+    SL.library$Q <- ifelse(length(SL.library$Q) > 1, "glm", SL.library$Q) # +++++ DELETE +++++++++++ ?????
 
     # simplify SL.library$g because g functions are useless with g-computation
     SL.library$g <- "SL.mean"
@@ -238,8 +238,8 @@ int.ltmleMSM <- function(data = data,
                                 "beta.A2" = rep(NA, B),
                                 "beta.A1A2" = rep(NA, B))
 
-    try(if(is.null(boot.seed))
-      stop("boot.seed argument is null, please add a seed in the int.ltmleMSM function"))
+    if (is.null(boot.seed)) {
+      print("boot.seed argument is null, please add a seed in the int.ltmleMSM function")}
     set.seed <- boot.seed
 
     for (b in 1:B){

@@ -417,7 +417,302 @@ and the variance of $\log RR$ is:
   var(\log RR) = \left( \frac{\partial \log RR}{\partial \beta}\right)^T \times var(\beta) \times \left( \frac{\partial \log RR}{\partial \beta}\right)
 \end{equation*}
 
-With $p=\frac{1}{1+e}$, we have: $(\log p)^\prime = \frac{p^\prime}{p} = \frac{-e^\prime}{(1+e)^2} \times (1+e) = \frac{-e^\prime}{1+e}$
+With $m_\beta=\frac{1}{1+e}$, we have: $(\log m_\beta)^\prime = \frac{m_\beta^\prime}{m_\beta} = \frac{-e^\prime}{(1+e)^2} \times (1+e) = \frac{-e^\prime}{1+e}$
 
 where $e_{00} = \exp(-\beta_0)$ and $e_{10} = \exp(-\beta_0 - \beta_1)$.
 
+\begin{align*}
+  \frac{\partial \log RR_{A_1 \mid A_2 = 0}}{\partial \beta_0} =& \frac{-(-e_{10})}{1 + e_{10}} - \frac{-(-e_{00})}{1 + e_{00}} \\
+  =& \frac{1 + e_{10} - 1}{1 + e_{10}} - \frac{1 + e_{00} - 1}{1 + e_{00}} \\
+  =& \left[1- m_\beta(1,0)\right] - \left[1 - m_\beta(0,0)\right] = m_\beta(0,0) - m_\beta(1,0)
+\end{align*}
+
+\begin{align*}
+  \frac{\partial \log RR_{A_1 \mid A_2 = 0}}{\partial \beta_1} =& \frac{-(-e_{10})}{1 + e_{10}} - 0 \\
+  =& \frac{1 + e_{10} - 1}{1 + e_{10}} = 1- m_\beta(1,0)
+\end{align*}
+
+\begin{equation*}
+  \frac{\partial \log RR_{A_1 \mid A_2 = 0}}{\partial \beta_2} =\frac{\partial \log RR_{A_1 \mid A_2 = 0}}{\partial \beta_3} = 0
+\end{equation*}
+
+\begin{equation*}
+  \frac{\partial \log RR_{A_1 \mid A_2 = 0}}{\partial \beta} = \begin{pmatrix} 
+    m_\beta(0,0) - m_\beta(1,0) \\
+    1- m_\beta(1,0) \\
+    0 \\
+    0
+    \end{pmatrix} = \Delta
+\end{equation*}
+
+The variance of $\log RR_{A_1 \mid A_2 = 0}$ can then be calculated by:
+\begin{equation*}
+  var\left( \log RR_{A_1 \mid A_2 = 0}\right) = \Delta^T \times \frac{var(IC)}{n} \times \Delta
+\end{equation*}
+
+<!-- ######################################################################## -->
+\newpage
+## 4.2) Relative risk for the effect of $A_1$, setting $A_2=1$
+\begin{equation*}
+  \log RR_{A_1 \mid A_2 = 1} = \log \frac{m_\beta(1,1)}{m_\beta(0,1)}  = \log m_\beta(1,1) - \log m_\beta(0,1)
+\end{equation*}
+
+With $m_\beta=\frac{1}{1+e}$, we have: $(\log m_\beta)^\prime = \frac{m_\beta^\prime}{m_\beta} = \frac{-e^\prime}{(1+e)^2} \times (1+e) = \frac{-e^\prime}{1+e}$
+
+where $e_{01} = \exp(-\beta_0 - \beta_2)$ and $e_{11} = \exp(-\beta_0 - \beta_1 - \beta_2 -\beta_3)$.
+
+\begin{align*}
+  \frac{\partial \log RR_{A_1 \mid A_2 = 1}}{\partial \beta_0} =& \frac{-(-e_{11})}{1 + e_{11}} - \frac{-(-e_{01})}{1 + e_{01}} \\
+  =& \frac{1 + e_{11} - 1}{1 + e_{11}} - \frac{1 + e_{01} - 1}{1 + e_{01}} \\
+  =& \left[1- m_\beta(1,1)\right] - \left[1 - m_\beta(0,1)\right] = m_\beta(0,1) - m_\beta(1,1)
+\end{align*}
+
+\begin{align*}
+  \frac{\partial \log RR_{A_1 \mid A_2 = 1}}{\partial \beta_1} =& \frac{-(-e_{11})}{1 + e_{11}} - 0 \\
+  =& \frac{1 + e_{11} - 1}{1 + e_{11}} = 1- m_\beta(1,1)
+\end{align*}
+
+\begin{equation*}
+  \frac{\partial \log RR_{A_1 \mid A_2 = 1}}{\partial \beta_2} = m_\beta(0,1) - m_\beta(1,1)
+\end{equation*}
+
+\begin{align*}
+  \frac{\partial \log RR_{A_1 \mid A_2 = 1}}{\partial \beta_3} =& \frac{-(-e_{11})}{1 + e_{11}} - 0 \\
+  =& \frac{1 + e_{11} - 1}{1 + e_{11}} = 1- m_\beta(1,1)
+\end{align*}
+
+
+
+\begin{equation*}
+  \frac{\partial \log RR_{A_1 \mid A_2 = 1}}{\partial \beta} = \begin{pmatrix} 
+    m_\beta(0,1) - m_\beta(1,1) \\
+    1- m_\beta(1,1) \\
+    m_\beta(0,1) - m_\beta(1,1) \\
+    1- m_\beta(1,1)
+    \end{pmatrix} = \Delta
+\end{equation*}
+
+The variance of $\log RR_{A_1 \mid A_2 = 1}$ can then be calculated by:
+\begin{equation*}
+  var\left( \log RR_{A_1 \mid A_2 = 1}\right) = \Delta^T \times \frac{var(IC)}{n} \times \Delta
+\end{equation*}
+
+
+<!-- ######################################################################## -->
+\newpage
+## 4.3) Relative risk for the effect of $A_2$, setting $A_1=0$
+\begin{equation*}
+  \log RR_{A_2 \mid A_1 = 0} = \log \frac{m_\beta(0,1)}{m_\beta(0,0)}  = \log m_\beta(0,1) - \log m_\beta(0,0)
+\end{equation*}
+
+With $m_\beta=\frac{1}{1+e}$, we have: $(\log m_\beta)^\prime = \frac{m_\beta^\prime}{m_\beta} = \frac{-e^\prime}{(1+e)^2} \times (1+e) = \frac{-e^\prime}{1+e}$
+
+where $e_{01} = \exp(-\beta_0 - \beta_2)$ and $e_{00} = \exp(-\beta_0)$.
+
+\begin{align*}
+  \frac{\partial \log RR_{A_2 \mid A_1 = 0}}{\partial \beta_0} =& \frac{-(-e_{01})}{1 + e_{01}} - \frac{-(-e_{00})}{1 + e_{00}} \\
+  =& \frac{1 + e_{01} - 1}{1 + e_{01}} - \frac{1 + e_{00} - 1}{1 + e_{00}} \\
+  =& \left[1- m_\beta(0,1)\right] - \left[1 - m_\beta(0,0)\right] = m_\beta(0,0) - m_\beta(0,1)
+\end{align*}
+
+\begin{equation*}
+  \frac{\partial \log RR_{A_2 \mid A_1 = 0}}{\partial \beta_1} =\frac{\partial \log RR_{A_2 \mid A_1 = 0}}{\partial \beta_3} = 0
+\end{equation*}
+
+\begin{align*}
+  \frac{\partial \log RR_{A_2 \mid A_1 = 0}}{\partial \beta_2} =& \frac{-(-e_{01})}{1 + e_{01}} - 0 \\
+  =& \frac{1 + e_{01} - 1}{1 + e_{01}} = 1- m_\beta(0,1)
+\end{align*}
+
+\begin{equation*}
+  \frac{\partial \log RR_{A_2 \mid A_1 = 0}}{\partial \beta} = \begin{pmatrix} 
+    m_\beta(0,0) - m_\beta(0,1) \\
+    0 \\
+    1- m_\beta(0,1) \\
+    0
+    \end{pmatrix} = \Delta
+\end{equation*}
+
+The variance of $\log RR_{A_2 \mid A_1 = 0}$ can then be calculated by:
+\begin{equation*}
+  var\left( \log RR_{A_2 \mid A_1 = 0}\right) = \Delta^T \times \frac{var(IC)}{n} \times \Delta
+\end{equation*}
+
+<!-- ######################################################################## -->
+\newpage
+## 4.4) Relative risk for the effect of $A_2$, setting $A_1=1$
+\begin{equation*}
+  \log RR_{A_2 \mid A_1 = 1} = \log \frac{m_\beta(1,1)}{m_\beta(1,0)}  = \log m_\beta(1,1) - \log m_\beta(1,0)
+\end{equation*}
+
+With $m_\beta=\frac{1}{1+e}$, we have: $(\log m_\beta)^\prime = \frac{m_\beta^\prime}{m_\beta} = \frac{-e^\prime}{(1+e)^2} \times (1+e) = \frac{-e^\prime}{1+e}$
+
+where $e_{10} = \exp(-\beta_0 - \beta_1)$ and $e_{11} = \exp(-\beta_0- \beta_1 - \beta_2 - \beta_3)$.
+
+\begin{align*}
+  \frac{\partial \log RR_{A_2 \mid A_1 = 1}}{\partial \beta_0} =& \frac{-(-e_{11})}{1 + e_{11}} - \frac{-(-e_{10})}{1 + e_{10}} \\
+  =& \frac{1 + e_{11} - 1}{1 + e_{11}} - \frac{1 + e_{10} - 1}{1 + e_{10}} \\
+  =& \left[1- m_\beta(1,1)\right] - \left[1 - m_\beta(1,0)\right] = m_\beta(1,0) - m_\beta(1,1)
+\end{align*}
+
+\begin{align*}
+  \frac{\partial \log RR_{A_2 \mid A_1 = 1}}{\partial \beta_1} =& \frac{1 + e_{11} - 1}{1 + e_{11}} - \frac{1 + e_{10} - 1}{1 + e_{10}} \\
+  =& \left[1- m_\beta(1,1)\right] - \left[1 - m_\beta(1,0)\right] = m_\beta(1,0) - m_\beta(1,1)
+\end{align*}
+
+\begin{align*}
+  \frac{\partial \log RR_{A_2 \mid A_1 = 1}}{\partial \beta_2} =& \frac{-(-e_{11})}{1 + e_{11}} - 0 \\
+  =& \frac{1 + e_{11} - 1}{1 + e_{11}} = 1- m_\beta(1,1)
+\end{align*}
+
+\begin{align*}
+  \frac{\partial \log RR_{A_2 \mid A_1 = 1}}{\partial \beta_3} =& \frac{-(-e_{11})}{1 + e_{11}} - 0 \\
+  =& \frac{1 + e_{11} - 1}{1 + e_{11}} = 1- m_\beta(1,1)
+\end{align*}
+
+\begin{equation*}
+  \frac{\partial \log RR_{A_2 \mid A_1 = 1}}{\partial \beta} = \begin{pmatrix} 
+    m_\beta(1,0) - m_\beta(1,1) \\
+    m_\beta(1,0) - m_\beta(1,1) \\
+    1- m_\beta(1,1) \\
+    1- m_\beta(1,1)
+    \end{pmatrix} = \Delta
+\end{equation*}
+
+The variance of $\log RR_{A_2 \mid A_1 = 1}$ can then be calculated by:
+\begin{equation*}
+  var\left( \log RR_{A_2 \mid A_1 = 1}\right) = \Delta^T \times \frac{var(IC)}{n} \times \Delta
+\end{equation*}
+
+
+<!-- ######################################################################## -->
+\newpage
+# 5) Standard errors of interaction effects
+## 5.1) Additive interaction
+The additive interaction is defined by:
+\begin{align*}
+  \text{a.INT} =& m_\beta(1,1) - m_\beta(0,0) - \left[ \left( m_\beta(1,0) - m_\beta(0,0) \right) + \left( m_\beta(0,1) - m_\beta(0,0) \right)\right] \\
+   =& m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)
+\end{align*}
+
+where
+\begin{align*}
+  m_\beta(1,1) =& \frac{1}{1 + e_{11}} \quad \text{ and } \quad e_{11} = \exp(-\beta_0 - \beta_1 - \beta_2 - \beta_3) \\
+  m_\beta(1,0) =& \frac{1}{1 + e_{10}} \quad \text{ and } \quad e_{10} = \exp(-\beta_0 - \beta_1) \\
+  m_\beta(0,1) =& \frac{1}{1 + e_{01}} \quad \text{ and } \quad e_{01} = \exp(-\beta_0 - \beta_2) \\
+  m_\beta(0,0) =& \frac{1}{1 + e_{00}} \quad \text{ and } \quad e_{00} = \exp(-\beta_0)
+\end{align*}
+
+\begin{equation*}
+\frac{\partial \text{a.INT}}{\partial \beta}  = \frac{-e_{11}^\prime}{(1 + e_{11})^2} - \frac{-e_{10}^\prime}{(1 + e_{10})^2} - \frac{-e_{01}^\prime}{(1+ e_{01})^2} + \frac{-e_{00}^\prime}{(1+e_{00})^2}
+\end{equation*}
+
+\begin{align*}
+\frac{\partial \text{a.INT}}{\partial \beta_0}  =& \left(1-m_\beta(1,1)\right)m_\beta(1,1) - \left(1-m_\beta(1,0)\right)m_\beta(1,0) - \left(1-m_\beta(0,1)\right)m_\beta(0,1) + \left(1-m_\beta(0,0)\right)m_\beta(0,0) \\
+\frac{\partial \text{a.INT}}{\partial \beta_1}  =& \left(1-m_\beta(1,1)\right)m_\beta(1,1) - \left(1-m_\beta(1,0)\right)m_\beta(1,0) \\
+\frac{\partial \text{a.INT}}{\partial \beta_2}  =& \left(1-m_\beta(1,1)\right)m_\beta(1,1) - \left(1-m_\beta(0,1)\right)m_\beta(0,1) \\
+\frac{\partial \text{a.INT}}{\partial \beta_3}  =& \left(1-m_\beta(1,1)\right)m_\beta(1,1) 
+\end{align*}
+
+\begin{equation*} \scriptsize
+\frac{\partial \text{a.INT}}{\partial \beta}  = \begin{pmatrix} 
+\left(1-m_\beta(1,1)\right)m_\beta(1,1) - \left(1-m_\beta(1,0)\right)m_\beta(1,0) - \left(1-m_\beta(0,1)\right)m_\beta(0,1) + \left(1-m_\beta(0,0)\right)m_\beta(0,0) \\
+\left(1-m_\beta(1,1)\right)m_\beta(1,1) - \left(1-m_\beta(1,0)\right)m_\beta(1,0) \\
+\left(1-m_\beta(1,1)\right)m_\beta(1,1) - \left(1-m_\beta(0,1)\right)m_\beta(0,1) \\
+\left(1-m_\beta(1,1)\right)m_\beta(1,1) 
+\end{pmatrix} 
+\end{equation*}
+
+The variance of $\text{a.INT}$ can then be calculated by:
+\begin{equation*}
+  var(\text{a.INT} ) = \left( \frac{\partial \text{a.INT}}{\partial \beta}\right)^T \times \frac{var(IC)}{n} \times \left( \frac{\partial \text{a.INT}}{\partial \beta}\right)
+\end{equation*}
+
+
+<!-- ######################################################################## -->
+\newpage
+## 5.2) Multiplicative interaction
+The multiplicative interaction is defined by:
+\begin{align*}
+  \text{m.INT} =& \frac{m_\beta(1,1) \times m_\beta(0,0)}{m_\beta(1,0) \times m_\beta(0,1)} \\
+   \log \text{m.INT} =& \log m_\beta(1,1) - \log m_\beta(1,0) -  \log m_\beta(0,1) + \log m_\beta(0,0)
+\end{align*}
+
+with $\frac{\partial}{\partial \beta} \log m_\beta = \frac{-e^\prime}{1+e}$, where
+\begin{align*}
+  e_{11} =& \exp(-\beta_0 - \beta_1 - \beta_2 - \beta_3) \\
+  e_{10} =& \exp(-\beta_0 - \beta_1) \\
+  e_{01} =& \exp(-\beta_0 - \beta_2) \\
+  e_{00} =& \exp(-\beta_0)
+\end{align*}
+
+\begin{equation*}
+\frac{\partial}{\partial \beta} \log \text{m.INT} = \frac{-e_{11}^\prime}{1 + e_{11}} - \frac{-e_{10}^\prime}{1 + e_{10}} - \frac{-e_{01}^\prime}{1+ e_{01}} + \frac{-e_{00}^\prime}{1+e_{00}}
+\end{equation*}
+
+\begin{align*}
+\frac{\partial \log \text{m.INT}}{\partial \beta_0}  =& \frac{-(-e_{11})}{1 + e_{11}} - \frac{-(-e_{10})}{1 + e_{10}} - \frac{-(-e_{01})}{1+e_{01}} + \frac{-(-e_{00})}{1+e_{00}} \\
+=& \left( 1 - m_\beta(1,1)\right) - \left( 1 - m_\beta(1,0)\right) - \left( 1 - m_\beta(0,1)\right) + \left( 1 - m_\beta(0,0)\right)\\
+=& m_\beta(1,0) + m_\beta(0,1) - m_\beta(1,1) - m_\beta(0,0) \\
+\frac{\partial \log \text{m.INT}}{\partial \beta_1}  =& \left(1-m_\beta(1,1)\right) - \left(1-m_\beta(1,0)\right) \\
+=& m_\beta(1,0) - m_\beta(1,1) \\
+\frac{\partial \log \text{m.INT}}{\partial \beta_2}  =& \left(1-m_\beta(1,1)\right) - \left(1-m_\beta(0,1)\right) \\
+=& m_\beta(0,1) - m_\beta(1,1) \\
+\frac{\partial \log \text{m.INT}}{\partial \beta_3}  =& \left(1-m_\beta(1,1)\right)
+\end{align*}
+
+\begin{equation*} \scriptsize
+\frac{\partial \log \text{m.INT}}{\partial \beta}  = \begin{pmatrix} 
+m_\beta(1,0) + m_\beta(0,1) - m_\beta(1,1) - m_\beta(0,0) \\
+m_\beta(1,0) - m_\beta(1,1) \\
+m_\beta(0,1) - m_\beta(1,1) \\
+1-m_\beta(1,1)
+\end{pmatrix} 
+\end{equation*}
+
+The variance of $\log \text{m.INT}$ can then be calculated by:
+\begin{equation*}
+  var(\log \text{m.INT} ) = \left( \frac{\partial \log \text{m.INT}}{\partial \beta}\right)^T \times \frac{var(IC)}{n} \times \left( \frac{\partial \log \text{m.INT}}{\partial \beta}\right)
+\end{equation*}
+
+<!-- ######################################################################## -->
+\newpage
+## 5.3) RERI
+The RERI is defined by:
+\begin{align*}
+  \text{RERI} =& \frac{m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)}{m_\beta(0,0)} \\
+   \log \text{RERI} =& \log \left[m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)\right] - \log m_\beta(0,0)
+\end{align*}
+
+denoting
+\begin{align*}
+  e_{11} =& \exp(-\beta_0 - \beta_1 - \beta_2 - \beta_3) \\
+  e_{10} =& \exp(-\beta_0 - \beta_1) \\
+  e_{01} =& \exp(-\beta_0 - \beta_2) \\
+  e_{00} =& \exp(-\beta_0)
+\end{align*}
+
+\begin{equation*}
+  \frac{\partial}{\partial \beta} \log m_\beta(0,0) = \frac{m_\beta(0,0)^\prime}{m_\beta(0,0)} = \frac{-e_{00}^\prime}{(1+e_{00})^2} (1 + e_{00}) = \frac{-e_{00}^\prime}{1+e_{00}}
+\end{equation*}
+
+\begin{equation*}
+  \frac{\partial}{\partial \beta} \log \left[m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)\right] = \frac{m_\beta(1,1)^\prime - m_\beta(1,0)^\prime - m_\beta(0,1)^\prime + m_\beta(0,0)^\prime}{m_\beta(1,1)  - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)}
+\end{equation*}
+
+\begin{multline*}
+\frac{\partial \log \text{RERI}}{\partial \beta_0} = \frac{\left[1 - m_\beta(1,1)\right]m_\beta(1,1) - \left[1 - m_\beta(1,0)\right]m_\beta(1,0) - \left[1 - m_\beta(0,1)\right]m_\beta(0,1) + \left[1 - m_\beta(0,0)\right]m_\beta(0,0)}{m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)}\\
+- \left[1 - m_\beta(0,0)\right] 
+\end{multline*}
+
+\begin{align*}
+  \frac{\partial \log \text{RERI}}{\partial \beta_1} =& \frac{\left[1 - m_\beta(1,1)\right]m_\beta(1,1) - \left[1 - m_\beta(1,0) \right]m_\beta(1,0)}{m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)} \\
+  \frac{\partial \log \text{RERI}}{\partial \beta_2} =& \frac{\left[1 - m_\beta(1,1)\right]m_\beta(1,1) - \left[1 - m_\beta(0,1) \right]m_\beta(0,1)}{m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)} \\
+  \frac{\partial \log \text{RERI}}{\partial \beta_3} =& \frac{\left[1 - m_\beta(1,1)\right]m_\beta(1,1)}{m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)}
+\end{align*}
+
+
+The variance of $\log \text{RERI}$ can then be calculated by:
+\begin{equation*}
+  var(\log \text{RERI} ) = \left( \frac{\partial \log \text{RERI}}{\partial \beta}\right)^T \times \frac{var(IC)}{n} \times \left( \frac{\partial \log \text{RERI}}{\partial \beta}\right)
+\end{equation*}

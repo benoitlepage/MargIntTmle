@@ -257,7 +257,7 @@ a.INT.cont <- E.Y11 - E.Y10 - E.Y01 + E.Y00 # [1] 30
 ################################################################################
 ### 1) Simulations with binary outcomes
 ################################################################################
-n.simu <- 100
+n.simu <- 10
 library(MargIntTmle)
 Q_form_Ybin <- c(Y.bin="Q.kplus1 ~ conf1 + conf2 + conf3 + fact.A1 * fact.A2")
 g_form <- c("fact.A1 ~ conf1 + conf2",
@@ -500,7 +500,7 @@ for (i in 1:n.simu) {
                              iptw.only = FALSE,
                              survivalOutcome = FALSE,
                              variance.method = "ic",
-                             B = 200)
+                             B = 1000)
   results.bin.gcomp <- estim.int.effects(Ybin.gcomp, estimator = "gcomp")$int.r
   # save results
   # p

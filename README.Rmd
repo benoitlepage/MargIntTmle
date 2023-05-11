@@ -174,3 +174,4 @@ We can also plot the results using the `out.int.fig()` function from the output 
 ```{r interaction_plot_continuous}
 out.int.fig(est.tmle)
 ```
+

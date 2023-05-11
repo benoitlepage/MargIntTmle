@@ -93,16 +93,16 @@ The interaction table can be rendered using the `kableExtra` package.
 ``` r
 table_inter <- out.int.table(int.r = est.tmle)
 table_inter$out.table
-#>                                  A2=0                         A2=1
-#> A1=0      $p_{00}$=0.088 [0.06,0.116]  $p_{01}$=0.186 [0.14,0.231]
-#> A1=1     $p_{10}$=0.356 [0.269,0.444] $p_{11}$=0.894 [0.776,1.012]
-#> RD.A1|A2           0.269 [0.177,0.36]          0.708 [0.582,0.835]
-#> RR.A1|A2             4.05 [2.72,6.05]             4.82 [4.54,5.09]
-#>                     RD.A2|A1         RR.A2|A1
-#> A1=0     0.098 [0.045,0.151] 2.11 [1.42,3.15]
-#> A1=1     0.538 [0.391,0.684]  2.51 [1.9,3.32]
-#> RD.A1|A2                                     
-#> RR.A1|A2
+#>                                   env=0                        env=1
+#> sex=0       $p_{00}$=0.088 [0.06,0.116]  $p_{01}$=0.186 [0.14,0.231]
+#> sex=1      $p_{10}$=0.356 [0.269,0.444] $p_{11}$=0.894 [0.776,1.012]
+#> RD.sex|env           0.269 [0.177,0.36]          0.708 [0.582,0.835]
+#> RR.sex|env             4.05 [2.72,6.05]             4.82 [4.54,5.09]
+#>                     RD.env|sex       RR.env|sex
+#> sex=0      0.098 [0.045,0.151] 2.11 [1.42,3.15]
+#> sex=1      0.538 [0.391,0.684]  2.51 [1.9,3.32]
+#> RD.sex|env                                     
+#> RR.sex|env
 table_inter$interaction.effects
 #> [1] "additive Interaction = 0.44 [0.284;0.596]"    
 #> [2] "RERI = 5 [3.25;7.7]"                          
@@ -123,23 +123,23 @@ Interaction effects estimated by TMLE
 <th style="text-align:left;">
 </th>
 <th style="text-align:left;">
-A2=0
+env=0
 </th>
 <th style="text-align:left;">
-A2=1
+env=1
 </th>
 <th style="text-align:left;">
-RD.A2\|A1
+RD.env\|sex
 </th>
 <th style="text-align:left;">
-RR.A2\|A1
+RR.env\|sex
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-A1=0
+sex=0
 </td>
 <td style="text-align:left;">
 $p_{00}$=0.088 \[0.06,0.116\]
@@ -156,7 +156,7 @@ $p_{01}$=0.186 \[0.14,0.231\]
 </tr>
 <tr>
 <td style="text-align:left;">
-A1=1
+sex=1
 </td>
 <td style="text-align:left;">
 $p_{10}$=0.356 \[0.269,0.444\]
@@ -173,7 +173,7 @@ $p_{11}$=0.894 \[0.776,1.012\]
 </tr>
 <tr>
 <td style="text-align:left;">
-RD.A1\|A2
+RD.sex\|env
 </td>
 <td style="text-align:left;">
 0.269 \[0.177,0.36\]
@@ -188,7 +188,7 @@ RD.A1\|A2
 </tr>
 <tr>
 <td style="text-align:left;">
-RR.A1\|A2
+RR.sex\|env
 </td>
 <td style="text-align:left;">
 4.05 \[2.72,6.05\]
@@ -363,14 +363,14 @@ The interaction table can be rendered using the `kableExtra` package.
 ``` r
 table_inter <- out.int.table(int.r = est.tmle)
 table_inter$out.table
-#>                                       A2=0                               A2=1
-#> A1=0       $p_{00}$=94.951 [92.794,97.109]  $p_{01}$=126.89 [124.243,129.537]
-#> A1=1     $p_{10}$=107.441 [103.43,111.451] $p_{11}$=158.162 [152.099,164.224]
-#> RD.A1|A2             12.489 [8.135,16.844]             31.272 [24.788,37.755]
-#>                        RD.A2|A1
-#> A1=0      31.939 [28.78,35.097]
-#> A1=1     50.721 [43.576,57.865]
-#> RD.A1|A2
+#>                                        env=0                              env=1
+#> sex=0        $p_{00}$=94.951 [92.794,97.109]  $p_{01}$=126.89 [124.243,129.537]
+#> sex=1      $p_{10}$=107.441 [103.43,111.451] $p_{11}$=158.162 [152.099,164.224]
+#> RD.sex|env             12.489 [8.135,16.844]             31.272 [24.788,37.755]
+#>                        RD.env|sex
+#> sex=0       31.939 [28.78,35.097]
+#> sex=1      50.721 [43.576,57.865]
+#> RD.sex|env
 table_inter$interaction.effects
 #> [1] "additive Interaction = 18.782 [10.974;26.591]"
 #> [2] "RERI = NA [NA;NA]"                            
@@ -391,20 +391,20 @@ Interaction effects estimated by TMLE
 <th style="text-align:left;">
 </th>
 <th style="text-align:left;">
-A2=0
+env=0
 </th>
 <th style="text-align:left;">
-A2=1
+env=1
 </th>
 <th style="text-align:left;">
-RD.A2\|A1
+RD.env\|sex
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-A1=0
+sex=0
 </td>
 <td style="text-align:left;">
 $p_{00}$=94.951 \[92.794,97.109\]
@@ -418,7 +418,7 @@ $p_{01}$=126.89 \[124.243,129.537\]
 </tr>
 <tr>
 <td style="text-align:left;">
-A1=1
+sex=1
 </td>
 <td style="text-align:left;">
 $p_{10}$=107.441 \[103.43,111.451\]
@@ -432,7 +432,7 @@ $p_{11}$=158.162 \[152.099,164.224\]
 </tr>
 <tr>
 <td style="text-align:left;">
-RD.A1\|A2
+RD.sex\|env
 </td>
 <td style="text-align:left;">
 12.489 \[8.135,16.844\]

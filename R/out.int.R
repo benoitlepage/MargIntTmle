@@ -154,6 +154,15 @@ out.int.table <- function(int.r = int.r,
                                   round(int_res$m.INT.up[which(int_res$A1==1 & int_res$A2==1)], digits = RR.digits),
                                   "]"))
 
+  names(out.table) <- c(paste0(int.r$Anodes[2],"=0"),
+                        paste0(int.r$Anodes[2],"=1"),
+                        paste0("RD.",int.r$Anodes[2],"|",int.r$Anodes[1]),
+                        paste0("RR.",int.r$Anodes[2],"|",int.r$Anodes[1]))
+  rownames(out.table) <- c(paste0(int.r$Anodes[1],"=0"),
+                           paste0(int.r$Anodes[1],"=1"),
+                           paste0("RD.",int.r$Anodes[1],"|",int.r$Anodes[2]),
+                           paste0("RR.",int.r$Anodes[1],"|",int.r$Anodes[2]))
+
   if (int.r$transformOutcome == TRUE) {
     out.table <- out.table[1:3,1:3]
   }

@@ -1,4 +1,8 @@
 
+
+
+
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # MargIntTmle
@@ -31,7 +35,10 @@ devtools::install_github("benoitlepage/MargIntTmle")
 In this first example, we simulate a data set of `N` = 1000 rows, with
 three baseline confounders (`conf1`, `conf2`, and `conf3`), two
 exposures (`sex` and `env`) and one outcome `hlth.outcome`. We used the
-default parameters defined in the `param.causal.model()` function.
+default parameters defined in the `param.causal.model()` function. The
+data generating model corresponds to the following DAG:
+
+<img src="man/figures/README-unnamed-chunk-2-1.svg" width="100%" />
 
 ``` r
 require(MargIntTmle)
@@ -50,7 +57,11 @@ head(df)
 
 The `int.ltmleMSM` function is used to call the `ltmleMSM` function from
 the `ltmle` package, in order to estimate marginal interaction effects
-from a Marginal structural model. In this example, we use the TMLE
+from a Marginal structural model.
+
+### TMLE and IPTW estimator
+
+In the following example, we show how to apply the IPTW and TMLE
 estimator.
 
 Several quantities of interest are then calculated using the
@@ -59,17 +70,22 @@ Several quantities of interest are then calculated using the
 ``` r
 require(ltmle)
 require(SuperLearner)
-# define Q and g formulas following the argument notation of the ltmle package:
+## Define Q and g formulas following the argument notation of the ltmle package:
+# specify the outcome model Q:
 Q_formulas = c(hlth.outcome="Q.kplus1 ~ conf1 + conf2 + conf3 + sex * env")
-g_formulas = c("sex ~ conf1 + conf2","env ~ conf1 + conf3")
-# choose a set of fitting libraries to pass to SuperLearner:
+# specify the treatment mechanisms g for each exposure A1 and A2:
+g_formulas = c("sex ~ conf1 + conf2",
+               "env ~ conf1 + conf3")
+
+## choose a set of fitting libraries to pass to SuperLearner:
 SL.library = list(Q=list("SL.glm"),g=list("SL.glm"))
-# apply the int.ltmleMSM function. In order to apply the TMLE and IPTW estimators, 
-# gcomp argument is set to FALSE.
+
+## Apply the int.ltmleMSM function. 
+# In order to compute the TMLE and IPTW estimators, gcomp argument is set to FALSE.
 interaction.ltmle <- int.ltmleMSM(data = df,
                                   Qform = Q_formulas,
                                   gform = g_formulas,
-                                  Anodes = c("sex", "env"),
+                                  Anodes = c("sex", "env"), # c(A1,A2)
                                   Lnodes = c("conf1", "conf2", "conf3"),
                                   Ynodes = c("hlth.outcome"),
                                   SL.library = SL.library,
@@ -79,13 +95,94 @@ interaction.ltmle <- int.ltmleMSM(data = df,
                                   variance.method = "ic")
 # several quantities of interest for interaction effects are calculated using the 
 # estim.int.effects() function
+
+# TMLE estimation can be calculated using the estim.int.effects() function setting 
+# the estimator argument to "tmle":
 est.tmle <- estim.int.effects(interaction.ltmle, estimator = "tmle")
+
+# IPTW estimation can be calculated using the same 'interaction.ltmle' output, setting
+# the estimator argument to "iptw":
+est.iptw <- estim.int.effects(interaction.ltmle, estimator = "iptw")
 ```
+
+### G-computation
+
+In order to compute g-computation, the argument `gcomp` should be set to
+`TRUE`. 95% confidence intervals are estimated by bootstrap. The number
+of bootstrap sample has to be specified and for reproducibility, it is
+recommended to specify a seed number.
+
+Applying a family of data-adaptive algorithms with the SuperLearner
+package is less adapted for g-computation: cross-validation risk
+(loss-function) is not well estimated in bootstrap samples (the approach
+might select algorithms that overfit the data) because of ties in the
+bootstrap samples and between the cross-validation folds (the folds used
+to train the algorithms are not independent from the fold used to test
+and estimate the loss-function). So for g-computation estimation, it is
+simpler to apply a single arbitrary glm model.
+
+``` r
+# Q is the same as previously
+Q_formulas = c(hlth.outcome="Q.kplus1 ~ conf1 + conf2 + conf3 + sex * env")
+# Because the treatment mechanism g is not used in g-computation,
+# we can simplify the g_form argument:
+g_formulas = c("sex ~ 1",
+               "env ~ 1")
+# choose a set of fitting libraries to pass to SuperLearner:
+SL.library = list(Q=list("glm"),g=list("glm"))
+# apply the int.ltmleMSM function. In order to apply the TMLE and IPTW estimators,
+# gcomp argument is set to FALSE.
+interaction.gcomp <- int.ltmleMSM(data = df,
+                                  Qform = Q_formulas,
+                                  gform = g_formulas,
+                                  Anodes = c("sex", "env"),
+                                  Lnodes = c("conf1", "conf2", "conf3"),
+                                  Ynodes = c("hlth.outcome"),
+                                  SL.library = SL.library,
+                                  gcomp = TRUE,
+                                  iptw.only = FALSE,
+                                  survivalOutcome = FALSE,
+                                  variance.method = "ic",
+                                  B = 1000, # number of bootstrap samples
+                                  boot.seed = 42) # seed for bootstrap
+#> [1] "bootstrap number 100"
+#> [1] "bootstrap number 200"
+#> [1] "bootstrap number 300"
+#> [1] "bootstrap number 400"
+#> [1] "bootstrap number 500"
+#> [1] "bootstrap number 600"
+#> [1] "bootstrap number 700"
+#> [1] "bootstrap number 800"
+#> [1] "bootstrap number 900"
+#> [1] "bootstrap number 1000"
+# several quantities of interest for interaction effects are calculated using the
+# estim.int.effects() function
+
+# TMLE estimation can be calculated using the estim.int.effects() function setting
+# the estimator argument to "gcomp":
+est.gcomp <- estim.int.effects(interaction.gcomp, estimator = "gcomp")
+
+# You can check the distribution of the bootstrap estimates
+# for exemple, for the risk difference estimates
+par(mfrow = c(2,2))
+hist(est.gcomp$bootstrap.res$RD.A1.A2_0, main = "RD.A1|A2=0")
+hist(est.gcomp$bootstrap.res$RD.A1.A2_1, main = "RD.A1|A2=1")
+hist(est.gcomp$bootstrap.res$RD.A2.A1_0, main = "RD.A2|A1=0")
+hist(est.gcomp$bootstrap.res$RD.A2.A1_1, main = "RD.A2|A1=1")
+```
+
+<img src="man/figures/README-example_binary_gcomp-1.png" width="100%" />
+
+``` r
+par(mfrow = c(1,1))
+```
+
+### Presentation of the results
 
 The results can be presented in a table following
 [`Knol and VanderWeele`](https://doi-org.proxy.insermbiblio.inist.fr/10.1093/ije/dyr218)
-recommendations (2012). The out.table object contains the table and the
-interaction.effects object contains the additive, multiplicative
+recommendations (2012). The `out.table` object contains the table and
+the `interaction.effects` object contains the additive, multiplicative
 interaction effects and the RERI.
 
 The interaction table can be rendered using the `kableExtra` package.

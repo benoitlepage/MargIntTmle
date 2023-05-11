@@ -250,10 +250,10 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
     v <- t(grad) %*% var(IC) %*% grad
     int.r$sd.lnRR.A1[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
 
-    int.r$RR.A1.lo[int.r$A1 == 1 & int.r$A2 == 1] <- exp(log(int.r$RR.A1[int.r$A1 == 1 & int.r$A2 == 1] -
-                                                               qnorm(0.975) * int.r$sd.lnRR.A1[int.r$A1 == 1 & int.r$A2 == 1]))
-    int.r$RR.A1.up[int.r$A1 == 1 & int.r$A2 == 1] <- exp(log(int.r$RR.A1[int.r$A1 == 1 & int.r$A2 == 1] +
-                                                               qnorm(0.975) * int.r$sd.lnRR.A1[int.r$A1 == 1 & int.r$A2 == 1]))
+    int.r$RR.A1.lo[int.r$A1 == 1 & int.r$A2 == 1] <- exp(log(int.r$RR.A1[int.r$A1 == 1 & int.r$A2 == 1]) -
+                                                               qnorm(0.975) * int.r$sd.lnRR.A1[int.r$A1 == 1 & int.r$A2 == 1])
+    int.r$RR.A1.up[int.r$A1 == 1 & int.r$A2 == 1] <- exp(log(int.r$RR.A1[int.r$A1 == 1 & int.r$A2 == 1]) +
+                                                               qnorm(0.975) * int.r$sd.lnRR.A1[int.r$A1 == 1 & int.r$A2 == 1])
 
     # RR.A2.A1is0
     grad <- c(int.r$p[int.r$A1 == 0 & int.r$A2 == 0] - int.r$p[int.r$A1 == 0 & int.r$A2 == 1], 0,
@@ -357,23 +357,23 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
     ltmle_MSM$bootstrap.res$RD.A2.A1_0 <- ltmle_MSM$bootstrap.res$p.A1_0.A2_1 - ltmle_MSM$bootstrap.res$p.A1_0.A2_0
     ltmle_MSM$bootstrap.res$RD.A2.A1_1 <- ltmle_MSM$bootstrap.res$p.A1_1.A2_1 - ltmle_MSM$bootstrap.res$p.A1_1.A2_0
 
-    ltmle_MSM$bootstrap.res$lnRR.A1.A2_0 <- log(ltmle_MSM$bootstrap.res$p.A1_1.A2_0 / ltmle_MSM$bootstrap.res$p.A1_0.A2_0)
-    ltmle_MSM$bootstrap.res$lnRR.A1.A2_1 <- log(ltmle_MSM$bootstrap.res$p.A1_1.A2_1 / ltmle_MSM$bootstrap.res$p.A1_0.A2_1)
-    ltmle_MSM$bootstrap.res$lnRR.A2.A1_0 <- log(ltmle_MSM$bootstrap.res$p.A1_0.A2_1 / ltmle_MSM$bootstrap.res$p.A1_0.A2_0)
-    ltmle_MSM$bootstrap.res$lnRR.A2.A1_1 <- log(ltmle_MSM$bootstrap.res$p.A1_1.A2_1 / ltmle_MSM$bootstrap.res$p.A1_1.A2_0)
+    ltmle_MSM$bootstrap.res$lnRR.A1.A2_0 <- log(ltmle_MSM$bootstrap.res$p.A1_1.A2_0) - log(ltmle_MSM$bootstrap.res$p.A1_0.A2_0)
+    ltmle_MSM$bootstrap.res$lnRR.A1.A2_1 <- log(ltmle_MSM$bootstrap.res$p.A1_1.A2_1) - log(ltmle_MSM$bootstrap.res$p.A1_0.A2_1)
+    ltmle_MSM$bootstrap.res$lnRR.A2.A1_0 <- log(ltmle_MSM$bootstrap.res$p.A1_0.A2_1) - log(ltmle_MSM$bootstrap.res$p.A1_0.A2_0)
+    ltmle_MSM$bootstrap.res$lnRR.A2.A1_1 <- log(ltmle_MSM$bootstrap.res$p.A1_1.A2_1) - log(ltmle_MSM$bootstrap.res$p.A1_1.A2_0)
 
     ltmle_MSM$bootstrap.res$a.INT <- ltmle_MSM$bootstrap.res$p.A1_1.A2_1 -
       ltmle_MSM$bootstrap.res$p.A1_1.A2_0 -
       ltmle_MSM$bootstrap.res$p.A1_0.A2_1 +
       ltmle_MSM$bootstrap.res$p.A1_0.A2_0
 
-    ltmle_MSM$bootstrap.res$lnRERI <- log((ltmle_MSM$bootstrap.res$p.A1_1.A2_1 -
-                                             ltmle_MSM$bootstrap.res$p.A1_1.A2_0 -
-                                             ltmle_MSM$bootstrap.res$p.A1_0.A2_1 +
-                                             ltmle_MSM$bootstrap.res$p.A1_0.A2_0) / ltmle_MSM$bootstrap.res$p.A1_0.A2_0)
+    ltmle_MSM$bootstrap.res$lnRERI <- log(ltmle_MSM$bootstrap.res$p.A1_1.A2_1 -
+                                            ltmle_MSM$bootstrap.res$p.A1_1.A2_0 -
+                                            ltmle_MSM$bootstrap.res$p.A1_0.A2_1 +
+                                            ltmle_MSM$bootstrap.res$p.A1_0.A2_0) - log(ltmle_MSM$bootstrap.res$p.A1_0.A2_0)
 
-    ltmle_MSM$bootstrap.res$ln.m.INT <- log((ltmle_MSM$bootstrap.res$p.A1_1.A2_1 * ltmle_MSM$bootstrap.res$p.A1_0.A2_0) /
-                                              (ltmle_MSM$bootstrap.res$p.A1_1.A2_0 * ltmle_MSM$bootstrap.res$p.A1_0.A2_1))
+    ltmle_MSM$bootstrap.res$ln.m.INT <- log(ltmle_MSM$bootstrap.res$p.A1_1.A2_1) + log(ltmle_MSM$bootstrap.res$p.A1_0.A2_0) -
+                                              log(ltmle_MSM$bootstrap.res$p.A1_1.A2_0) - log(ltmle_MSM$bootstrap.res$p.A1_0.A2_1)
 
     # A1 = 0 et A2 = 0
     int.r$sd.p[int.r$A1 == 0 & int.r$A2 == 0] <- sd(ltmle_MSM$bootstrap.res$p.A1_0.A2_0)

@@ -43,65 +43,65 @@ gen.sim.data <- function(N, do.A1, do.A2) {
 
 ### 0) True values
 ### 0.1) Estimated by simulations
-set.seed(12345)
-p00 <- gen.sim.data(N = 1e6, do.A1 = 0, do.A2 = 0)
-p10 <- gen.sim.data(N = 1e6, do.A1 = 1, do.A2 = 0)
-p01 <- gen.sim.data(N = 1e6, do.A1 = 0, do.A2 = 1)
-p11 <- gen.sim.data(N = 1e6, do.A1 = 1, do.A2 = 1)
-
-### For Y binary
-p00$mean.Y.bin # [1] 0.03441
-p10$mean.Y.bin # [1] 0.059572
-p01$mean.Y.bin # [1] 0.071873
-p11$mean.Y.bin # [1] 0.212607
-
-# Risk Difference
-# RD_A1_A2is0
-p10$mean.Y.bin - p00$mean.Y.bin # [1] 0.025162
-# RD_A1_A2is1
-p11$mean.Y.bin - p01$mean.Y.bin # [1] 0.140734
-# RD_A2_A1is0
-p01$mean.Y.bin - p00$mean.Y.bin # [1] 0.037463
-# RD_A2_A1is1
-p11$mean.Y.bin - p10$mean.Y.bin # [1] 0.153035
-
-# Relative risk
-# RR_A1_A2is0
-p10$mean.Y.bin / p00$mean.Y.bin # [1] 1.731241
-# RR_A1_A2is1
-p11$mean.Y.bin / p01$mean.Y.bin # [1] 2.958093
-# RR_A2_A1is0
-p01$mean.Y.bin / p00$mean.Y.bin # [1] 2.088724
-# RR_A2_A1is1
-p11$mean.Y.bin / p10$mean.Y.bin # [1] 3.568908
-
-# interaction effects
-# a.INT
-p11$mean.Y.bin - p10$mean.Y.bin - p01$mean.Y.bin + p00$mean.Y.bin # [1] 0.115572
-# m.INT
-(p11$mean.Y.bin * p00$mean.Y.bin) / (p10$mean.Y.bin * p01$mean.Y.bin)  # [1] 1.708655
-# RERI
-(p11$mean.Y.bin - p10$mean.Y.bin - p01$mean.Y.bin + p00$mean.Y.bin) / p00$mean.Y.bin # [1] 3.358675
-
-### For Y continuous
-p00$mean.Y.cont # [1] 132.0172
-p10$mean.Y.cont # [1] 152.0218
-p01$mean.Y.cont # [1] 172.0286
-p11$mean.Y.cont # [1] 221.992
-
-# Risk Difference
-# RD_A1_A2is0
-p10$mean.Y.cont - p00$mean.Y.cont # [1] 20.00453
-# RD_A1_A2is1
-p11$mean.Y.cont - p01$mean.Y.cont # [1] 49.96336
-# RD_A2_A1is0
-p01$mean.Y.cont - p00$mean.Y.cont # [1] 40.01139
-# RD_A2_A1is1
-p11$mean.Y.cont - p10$mean.Y.cont # [1] 69.97023
-
-# interaction effects
-# a.INT
-p11$mean.Y.cont - p10$mean.Y.cont - p01$mean.Y.cont + p00$mean.Y.cont # [1] 29.95883
+# set.seed(12345)
+# p00 <- gen.sim.data(N = 1e6, do.A1 = 0, do.A2 = 0)
+# p10 <- gen.sim.data(N = 1e6, do.A1 = 1, do.A2 = 0)
+# p01 <- gen.sim.data(N = 1e6, do.A1 = 0, do.A2 = 1)
+# p11 <- gen.sim.data(N = 1e6, do.A1 = 1, do.A2 = 1)
+#
+# ### For Y binary
+# p00$mean.Y.bin # [1] 0.03441
+# p10$mean.Y.bin # [1] 0.059572
+# p01$mean.Y.bin # [1] 0.071873
+# p11$mean.Y.bin # [1] 0.212607
+#
+# # Risk Difference
+# # RD_A1_A2is0
+# p10$mean.Y.bin - p00$mean.Y.bin # [1] 0.025162
+# # RD_A1_A2is1
+# p11$mean.Y.bin - p01$mean.Y.bin # [1] 0.140734
+# # RD_A2_A1is0
+# p01$mean.Y.bin - p00$mean.Y.bin # [1] 0.037463
+# # RD_A2_A1is1
+# p11$mean.Y.bin - p10$mean.Y.bin # [1] 0.153035
+#
+# # Relative risk
+# # RR_A1_A2is0
+# p10$mean.Y.bin / p00$mean.Y.bin # [1] 1.731241
+# # RR_A1_A2is1
+# p11$mean.Y.bin / p01$mean.Y.bin # [1] 2.958093
+# # RR_A2_A1is0
+# p01$mean.Y.bin / p00$mean.Y.bin # [1] 2.088724
+# # RR_A2_A1is1
+# p11$mean.Y.bin / p10$mean.Y.bin # [1] 3.568908
+#
+# # interaction effects
+# # a.INT
+# p11$mean.Y.bin - p10$mean.Y.bin - p01$mean.Y.bin + p00$mean.Y.bin # [1] 0.115572
+# # m.INT
+# (p11$mean.Y.bin * p00$mean.Y.bin) / (p10$mean.Y.bin * p01$mean.Y.bin)  # [1] 1.708655
+# # RERI
+# (p11$mean.Y.bin - p10$mean.Y.bin - p01$mean.Y.bin + p00$mean.Y.bin) / p00$mean.Y.bin # [1] 3.358675
+#
+# ### For Y continuous
+# p00$mean.Y.cont # [1] 132.0172
+# p10$mean.Y.cont # [1] 152.0218
+# p01$mean.Y.cont # [1] 172.0286
+# p11$mean.Y.cont # [1] 221.992
+#
+# # Risk Difference
+# # RD_A1_A2is0
+# p10$mean.Y.cont - p00$mean.Y.cont # [1] 20.00453
+# # RD_A1_A2is1
+# p11$mean.Y.cont - p01$mean.Y.cont # [1] 49.96336
+# # RD_A2_A1is0
+# p01$mean.Y.cont - p00$mean.Y.cont # [1] 40.01139
+# # RD_A2_A1is1
+# p11$mean.Y.cont - p10$mean.Y.cont # [1] 69.97023
+#
+# # interaction effects
+# # a.INT
+# p11$mean.Y.cont - p10$mean.Y.cont - p01$mean.Y.cont + p00$mean.Y.cont # [1] 29.95883
 
 
 ### 0.2) Estimated by analytical computation
@@ -329,10 +329,89 @@ for (i in 1:n.simu) {
                              survivalOutcome = FALSE,
                              variance.method = "ic")
 
-  est.bin.tmle <- estim.int.effects(Ybin.ltmle, estimator = "tmle")
-  est.bin.iptw <- estim.int.effects(Ybin.ltmle, estimator = "iptw")
+  ## TMLE estimation
+  results.bin.tmle <- estim.int.effects(Ybin.ltmle, estimator = "tmle")$int.r
+  # save results
+  # p
+  estim.tmle.bin$p00[estim.gcomp.bin$k == i] <- results.bin.tmle$p[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 0]
+  estim.tmle.bin$p00.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.p[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 0]
+  estim.tmle.bin$p00.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$p.lo[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 0]
+  estim.tmle.bin$p00.ub[estim.gcomp.bin$k == i] <- results.bin.tmle$p.up[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 0]
 
+  estim.tmle.bin$p10[estim.gcomp.bin$k == i] <- results.bin.tmle$p[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 0]
+  estim.tmle.bin$p10.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.p[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 0]
+  estim.tmle.bin$p10.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$p.lo[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 0]
+  estim.tmle.bin$p10.up[estim.gcomp.bin$k == i] <- results.bin.tmle$p.up[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 0]
 
+  estim.tmle.bin$p01[estim.gcomp.bin$k == i] <- results.bin.tmle$p[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$p01.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.p[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$p01.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$p.lo[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$p01.ub[estim.gcomp.bin$k == i] <- results.bin.tmle$p.up[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 1]
+
+  estim.tmle.bin$p11[estim.gcomp.bin$k == i] <- results.bin.tmle$p[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$p11.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.p[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$p11.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$p.lo[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$p11.ub[estim.gcomp.bin$k == i] <- results.bin.tmle$p.up[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  # RD
+  estim.tmle.bin$RD_A1_A2is0[estim.gcomp.bin$k == i] <- results.bin.tmle$RD.A1[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 0]
+  estim.tmle.bin$RD_A1_A2is0.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.RD.A1[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 0]
+  estim.tmle.bin$RD_A1_A2is0.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$RD.A1.lo[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 0]
+  estim.tmle.bin$RD_A1_A2is0.ub[estim.gcomp.bin$k == i] <- results.bin.tmle$RD.A1.up[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 0]
+
+  estim.tmle.bin$RD_A1_A2is1[estim.gcomp.bin$k == i] <- results.bin.tmle$RD.A1[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RD_A1_A2is1.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.RD.A1[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RD_A1_A2is1.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$RD.A1.lo[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RD_A1_A2is1.ub[estim.gcomp.bin$k == i] <- results.bin.tmle$RD.A1.up[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+
+  estim.tmle.bin$RD_A2_A1is0[estim.gcomp.bin$k == i] <- results.bin.tmle$RD.A2[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RD_A2_A1is0.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.RD.A2[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RD_A2_A1is0.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$RD.A2.lo[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RD_A2_A1is0.ub[estim.gcomp.bin$k == i] <- results.bin.tmle$RD.A2.up[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 1]
+
+  estim.tmle.bin$RD_A2_A1is1[estim.gcomp.bin$k == i] <- results.bin.tmle$RD.A2[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RD_A2_A1is1.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.RD.A2[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RD_A2_A1is1.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$RD.A2.lo[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RD_A2_A1is1.ub[estim.gcomp.bin$k == i] <- results.bin.tmle$RD.A2.up[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  # RR
+  estim.tmle.bin$RR_A1_A2is0[estim.gcomp.bin$k == i] <- results.bin.tmle$RR.A1[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 0]
+  estim.tmle.bin$RR_A1_A2is0.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.lnRR.A1[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 0]
+  estim.tmle.bin$RR_A1_A2is0.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$RR.A1.lo[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 0]
+  estim.tmle.bin$RR_A1_A2is0.ub[estim.gcomp.bin$k == i] <- results.bin.tmle$RR.A1.up[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 0]
+
+  estim.tmle.bin$RR_A1_A2is1[estim.gcomp.bin$k == i] <- results.bin.tmle$RR.A1[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RR_A1_A2is1.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.lnRR.A1[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RR_A1_A2is1.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$RR.A1.lo[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RR_A1_A2is1.ub[estim.gcomp.bin$k == i] <- results.bin.tmle$RR.A1.up[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+
+  estim.tmle.bin$RR_A2_A1is0[estim.gcomp.bin$k == i] <- results.bin.tmle$RR.A2[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RR_A2_A1is0.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.lnRR.A2[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RR_A2_A1is0.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$RR.A2.lo[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RR_A2_A1is0.ub[estim.gcomp.bin$k == i] <- results.bin.tmle$RR.A2.up[results.bin.tmle$A1 == 0 & results.bin.tmle$A2 == 1]
+
+  estim.tmle.bin$RR_A2_A1is1[estim.gcomp.bin$k == i] <- results.bin.tmle$RR.A2[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RR_A2_A1is1.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.lnRR.A2[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RR_A2_A1is1.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$RR.A2.lo[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RR_A2_A1is1.ub[estim.gcomp.bin$k == i] <- results.bin.tmle$RR.A2.up[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  # a.INT
+  estim.tmle.bin$a.INT[estim.gcomp.bin$k == i] <- results.bin.tmle$a.INT[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$a.INT.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.a.INT[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$a.INT.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$a.INT.lo[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$a.INT.ub[estim.gcomp.bin$k == i] <- results.bin.tmle$a.INT.up[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  # RERI
+  estim.tmle.bin$RERI[estim.gcomp.bin$k == i] <- results.bin.tmle$RERI[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RERI.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.lnRERI[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RERI.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$RERI.lo[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$RERI.ub[estim.gcomp.bin$k == i] <- results.bin.tmle$RERI.up[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  # m.INT
+  estim.tmle.bin$m.INT[estim.gcomp.bin$k == i] <- results.bin.tmle$m.INT[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$m.INT.se[estim.gcomp.bin$k == i] <- results.bin.tmle$sd.ln.m.INT[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$m.INT.lb[estim.gcomp.bin$k == i] <- results.bin.tmle$m.INT.lo[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+  estim.tmle.bin$m.INT.ub[estim.gcomp.bin$k == i] <- results.bin.tmle$m.INT.up[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
+
+  ## IPTW estimation
+  results.bin.iptw <- estim.int.effects(Ybin.ltmle, estimator = "iptw")
+
+  ## g-computation estimation
   Ybin.gcomp <- int.ltmleMSM(data = subset(df.simu, select = -c(Y.cont)),
                              Qform = Q_form_Ybin,
                              gform = g_form,
@@ -345,7 +424,7 @@ for (i in 1:n.simu) {
                              survivalOutcome = FALSE,
                              variance.method = "ic",
                              B = 200)
-  est.bin.gcomp <- estim.int.effects(Ybin.gcomp, estimator = "gcomp")
+  results.bin.gcomp <- estim.int.effects(Ybin.gcomp, estimator = "gcomp")
 }
 
 

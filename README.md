@@ -38,7 +38,7 @@ exposures (`sex` and `env`) and one outcome `hlth.outcome`. We used the
 default parameters defined in the `param.causal.model()` function. The
 data generating model corresponds to the following DAG:
 
-<img src="man/figures/README-unnamed-chunk-2-1.svg" width="100%" />
+<img src="man/figures/README-unnamed-chunk-2-1.svg" width="50%" />
 
 ``` r
 require(MargIntTmle)

@@ -42,7 +42,7 @@ devtools::install_github("benoitlepage/MargIntTmle")
 
 In this first example, we simulate a data set of `N` = 1000 rows, with three baseline confounders (`conf1`, `conf2`, and `conf3`), two exposures (`sex` and `env`) and one outcome `hlth.outcome`. We used the default parameters defined in the `param.causal.model()` function. The data generating model corresponds to the following DAG:
 
-```{r echo=FALSE, fig.ext='svg', engine='tikz'}
+```{r echo=FALSE, fig.ext='svg', engine='tikz', out.width="50%"}
 \begin{tikzpicture}
   \node (L2) at (-2,3) {$L_2$: $\{$conf2$\}$};
   \node (L1) at (-2,0) {$L_1$: $\{$conf1$\}$};

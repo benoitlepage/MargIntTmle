@@ -254,10 +254,10 @@ RD.cont_A2_A1is1 <- E.Y11 - E.Y10 # [1] 70
 a.INT.cont <- E.Y11 - E.Y10 - E.Y01 + E.Y00 # [1] 30
 
 
-################################################################################
+
 ### 1) Simulations with binary outcomes
 ################################################################################
-n.simu <- 10
+n.simu <- 1000
 library(MargIntTmle)
 Q_form_Ybin <- c(Y.bin="Q.kplus1 ~ conf1 + conf2 + conf3 + fact.A1 * fact.A2")
 g_form <- c("fact.A1 ~ conf1 + conf2",
@@ -410,83 +410,83 @@ for (i in 1:n.simu) {
   estim.tmle.bin$m.INT.ub[estim.tmle.bin$k == i] <- results.bin.tmle$m.INT.up[results.bin.tmle$A1 == 1 & results.bin.tmle$A2 == 1]
 
   ## IPTW estimation
-  results.bin.iptw <- estim.int.effects(Ybin.ltmle, estimator = "iptw")$int.r
+  results.cont.iptw <- estim.int.effects(Ybin.ltmle, estimator = "iptw")$int.r
   # save results
   # p
-  estim.iptw.bin$p00[estim.iptw.bin$k == i] <- results.bin.iptw$p[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 0]
-  estim.iptw.bin$p00.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.p[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 0]
-  estim.iptw.bin$p00.lb[estim.iptw.bin$k == i] <- results.bin.iptw$p.lo[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 0]
-  estim.iptw.bin$p00.ub[estim.iptw.bin$k == i] <- results.bin.iptw$p.up[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 0]
+  estim.iptw.bin$p00[estim.iptw.bin$k == i] <- results.cont.iptw$p[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 0]
+  estim.iptw.bin$p00.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.p[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 0]
+  estim.iptw.bin$p00.lb[estim.iptw.bin$k == i] <- results.cont.iptw$p.lo[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 0]
+  estim.iptw.bin$p00.ub[estim.iptw.bin$k == i] <- results.cont.iptw$p.up[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 0]
 
-  estim.iptw.bin$p10[estim.iptw.bin$k == i] <- results.bin.iptw$p[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 0]
-  estim.iptw.bin$p10.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.p[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 0]
-  estim.iptw.bin$p10.lb[estim.iptw.bin$k == i] <- results.bin.iptw$p.lo[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 0]
-  estim.iptw.bin$p10.ub[estim.iptw.bin$k == i] <- results.bin.iptw$p.up[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 0]
+  estim.iptw.bin$p10[estim.iptw.bin$k == i] <- results.cont.iptw$p[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.bin$p10.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.p[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.bin$p10.lb[estim.iptw.bin$k == i] <- results.cont.iptw$p.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.bin$p10.ub[estim.iptw.bin$k == i] <- results.cont.iptw$p.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
 
-  estim.iptw.bin$p01[estim.iptw.bin$k == i] <- results.bin.iptw$p[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$p01.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.p[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$p01.lb[estim.iptw.bin$k == i] <- results.bin.iptw$p.lo[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$p01.ub[estim.iptw.bin$k == i] <- results.bin.iptw$p.up[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 1]
+  estim.iptw.bin$p01[estim.iptw.bin$k == i] <- results.cont.iptw$p[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$p01.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.p[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$p01.lb[estim.iptw.bin$k == i] <- results.cont.iptw$p.lo[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$p01.ub[estim.iptw.bin$k == i] <- results.cont.iptw$p.up[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
 
-  estim.iptw.bin$p11[estim.iptw.bin$k == i] <- results.bin.iptw$p[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$p11.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.p[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$p11.lb[estim.iptw.bin$k == i] <- results.bin.iptw$p.lo[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$p11.ub[estim.iptw.bin$k == i] <- results.bin.iptw$p.up[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
+  estim.iptw.bin$p11[estim.iptw.bin$k == i] <- results.cont.iptw$p[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$p11.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.p[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$p11.lb[estim.iptw.bin$k == i] <- results.cont.iptw$p.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$p11.ub[estim.iptw.bin$k == i] <- results.cont.iptw$p.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
   # RD
-  estim.iptw.bin$RD_A1_A2is0[estim.iptw.bin$k == i] <- results.bin.iptw$RD.A1[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 0]
-  estim.iptw.bin$RD_A1_A2is0.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.RD.A1[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 0]
-  estim.iptw.bin$RD_A1_A2is0.lb[estim.iptw.bin$k == i] <- results.bin.iptw$RD.A1.lo[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 0]
-  estim.iptw.bin$RD_A1_A2is0.ub[estim.iptw.bin$k == i] <- results.bin.iptw$RD.A1.up[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 0]
+  estim.iptw.bin$RD_A1_A2is0[estim.iptw.bin$k == i] <- results.cont.iptw$RD.A1[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.bin$RD_A1_A2is0.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.RD.A1[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.bin$RD_A1_A2is0.lb[estim.iptw.bin$k == i] <- results.cont.iptw$RD.A1.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.bin$RD_A1_A2is0.ub[estim.iptw.bin$k == i] <- results.cont.iptw$RD.A1.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
 
-  estim.iptw.bin$RD_A1_A2is1[estim.iptw.bin$k == i] <- results.bin.iptw$RD.A1[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RD_A1_A2is1.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.RD.A1[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RD_A1_A2is1.lb[estim.iptw.bin$k == i] <- results.bin.iptw$RD.A1.lo[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RD_A1_A2is1.ub[estim.iptw.bin$k == i] <- results.bin.iptw$RD.A1.up[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
+  estim.iptw.bin$RD_A1_A2is1[estim.iptw.bin$k == i] <- results.cont.iptw$RD.A1[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RD_A1_A2is1.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.RD.A1[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RD_A1_A2is1.lb[estim.iptw.bin$k == i] <- results.cont.iptw$RD.A1.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RD_A1_A2is1.ub[estim.iptw.bin$k == i] <- results.cont.iptw$RD.A1.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
 
-  estim.iptw.bin$RD_A2_A1is0[estim.iptw.bin$k == i] <- results.bin.iptw$RD.A2[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RD_A2_A1is0.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.RD.A2[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RD_A2_A1is0.lb[estim.iptw.bin$k == i] <- results.bin.iptw$RD.A2.lo[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RD_A2_A1is0.ub[estim.iptw.bin$k == i] <- results.bin.iptw$RD.A2.up[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 1]
+  estim.iptw.bin$RD_A2_A1is0[estim.iptw.bin$k == i] <- results.cont.iptw$RD.A2[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RD_A2_A1is0.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.RD.A2[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RD_A2_A1is0.lb[estim.iptw.bin$k == i] <- results.cont.iptw$RD.A2.lo[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RD_A2_A1is0.ub[estim.iptw.bin$k == i] <- results.cont.iptw$RD.A2.up[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
 
-  estim.iptw.bin$RD_A2_A1is1[estim.iptw.bin$k == i] <- results.bin.iptw$RD.A2[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RD_A2_A1is1.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.RD.A2[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RD_A2_A1is1.lb[estim.iptw.bin$k == i] <- results.bin.iptw$RD.A2.lo[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RD_A2_A1is1.ub[estim.iptw.bin$k == i] <- results.bin.iptw$RD.A2.up[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
+  estim.iptw.bin$RD_A2_A1is1[estim.iptw.bin$k == i] <- results.cont.iptw$RD.A2[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RD_A2_A1is1.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.RD.A2[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RD_A2_A1is1.lb[estim.iptw.bin$k == i] <- results.cont.iptw$RD.A2.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RD_A2_A1is1.ub[estim.iptw.bin$k == i] <- results.cont.iptw$RD.A2.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
   # RR
-  estim.iptw.bin$RR_A1_A2is0[estim.iptw.bin$k == i] <- results.bin.iptw$RR.A1[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 0]
-  estim.iptw.bin$RR_A1_A2is0.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.lnRR.A1[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 0]
-  estim.iptw.bin$RR_A1_A2is0.lb[estim.iptw.bin$k == i] <- results.bin.iptw$RR.A1.lo[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 0]
-  estim.iptw.bin$RR_A1_A2is0.ub[estim.iptw.bin$k == i] <- results.bin.iptw$RR.A1.up[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 0]
+  estim.iptw.bin$RR_A1_A2is0[estim.iptw.bin$k == i] <- results.cont.iptw$RR.A1[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.bin$RR_A1_A2is0.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.lnRR.A1[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.bin$RR_A1_A2is0.lb[estim.iptw.bin$k == i] <- results.cont.iptw$RR.A1.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.bin$RR_A1_A2is0.ub[estim.iptw.bin$k == i] <- results.cont.iptw$RR.A1.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
 
-  estim.iptw.bin$RR_A1_A2is1[estim.iptw.bin$k == i] <- results.bin.iptw$RR.A1[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RR_A1_A2is1.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.lnRR.A1[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RR_A1_A2is1.lb[estim.iptw.bin$k == i] <- results.bin.iptw$RR.A1.lo[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RR_A1_A2is1.ub[estim.iptw.bin$k == i] <- results.bin.iptw$RR.A1.up[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
+  estim.iptw.bin$RR_A1_A2is1[estim.iptw.bin$k == i] <- results.cont.iptw$RR.A1[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RR_A1_A2is1.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.lnRR.A1[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RR_A1_A2is1.lb[estim.iptw.bin$k == i] <- results.cont.iptw$RR.A1.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RR_A1_A2is1.ub[estim.iptw.bin$k == i] <- results.cont.iptw$RR.A1.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
 
-  estim.iptw.bin$RR_A2_A1is0[estim.iptw.bin$k == i] <- results.bin.iptw$RR.A2[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RR_A2_A1is0.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.lnRR.A2[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RR_A2_A1is0.lb[estim.iptw.bin$k == i] <- results.bin.iptw$RR.A2.lo[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RR_A2_A1is0.ub[estim.iptw.bin$k == i] <- results.bin.iptw$RR.A2.up[results.bin.iptw$A1 == 0 & results.bin.iptw$A2 == 1]
+  estim.iptw.bin$RR_A2_A1is0[estim.iptw.bin$k == i] <- results.cont.iptw$RR.A2[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RR_A2_A1is0.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.lnRR.A2[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RR_A2_A1is0.lb[estim.iptw.bin$k == i] <- results.cont.iptw$RR.A2.lo[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RR_A2_A1is0.ub[estim.iptw.bin$k == i] <- results.cont.iptw$RR.A2.up[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
 
-  estim.iptw.bin$RR_A2_A1is1[estim.iptw.bin$k == i] <- results.bin.iptw$RR.A2[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RR_A2_A1is1.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.lnRR.A2[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RR_A2_A1is1.lb[estim.iptw.bin$k == i] <- results.bin.iptw$RR.A2.lo[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RR_A2_A1is1.ub[estim.iptw.bin$k == i] <- results.bin.iptw$RR.A2.up[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
+  estim.iptw.bin$RR_A2_A1is1[estim.iptw.bin$k == i] <- results.cont.iptw$RR.A2[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RR_A2_A1is1.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.lnRR.A2[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RR_A2_A1is1.lb[estim.iptw.bin$k == i] <- results.cont.iptw$RR.A2.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RR_A2_A1is1.ub[estim.iptw.bin$k == i] <- results.cont.iptw$RR.A2.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
   # a.INT
-  estim.iptw.bin$a.INT[estim.iptw.bin$k == i] <- results.bin.iptw$a.INT[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$a.INT.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.a.INT[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$a.INT.lb[estim.iptw.bin$k == i] <- results.bin.iptw$a.INT.lo[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$a.INT.ub[estim.iptw.bin$k == i] <- results.bin.iptw$a.INT.up[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
+  estim.iptw.bin$a.INT[estim.iptw.bin$k == i] <- results.cont.iptw$a.INT[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$a.INT.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.a.INT[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$a.INT.lb[estim.iptw.bin$k == i] <- results.cont.iptw$a.INT.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$a.INT.ub[estim.iptw.bin$k == i] <- results.cont.iptw$a.INT.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
   # RERI
-  estim.iptw.bin$RERI[estim.iptw.bin$k == i] <- results.bin.iptw$RERI[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RERI.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.lnRERI[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RERI.lb[estim.iptw.bin$k == i] <- results.bin.iptw$RERI.lo[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$RERI.ub[estim.iptw.bin$k == i] <- results.bin.iptw$RERI.up[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
+  estim.iptw.bin$RERI[estim.iptw.bin$k == i] <- results.cont.iptw$RERI[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RERI.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.lnRERI[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RERI.lb[estim.iptw.bin$k == i] <- results.cont.iptw$RERI.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$RERI.ub[estim.iptw.bin$k == i] <- results.cont.iptw$RERI.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
   # m.INT
-  estim.iptw.bin$m.INT[estim.iptw.bin$k == i] <- results.bin.iptw$m.INT[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$m.INT.se[estim.iptw.bin$k == i] <- results.bin.iptw$sd.ln.m.INT[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$m.INT.lb[estim.iptw.bin$k == i] <- results.bin.iptw$m.INT.lo[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
-  estim.iptw.bin$m.INT.ub[estim.iptw.bin$k == i] <- results.bin.iptw$m.INT.up[results.bin.iptw$A1 == 1 & results.bin.iptw$A2 == 1]
+  estim.iptw.bin$m.INT[estim.iptw.bin$k == i] <- results.cont.iptw$m.INT[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$m.INT.se[estim.iptw.bin$k == i] <- results.cont.iptw$sd.ln.m.INT[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$m.INT.lb[estim.iptw.bin$k == i] <- results.cont.iptw$m.INT.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.bin$m.INT.ub[estim.iptw.bin$k == i] <- results.cont.iptw$m.INT.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
 
   ## g-computation estimation
   Ybin.gcomp <- int.ltmleMSM(data = subset(df.simu, select = -c(Y.cont)),
@@ -500,7 +500,7 @@ for (i in 1:n.simu) {
                              iptw.only = FALSE,
                              survivalOutcome = FALSE,
                              variance.method = "ic",
-                             B = 200)
+                             B = 1000)
   results.bin.gcomp <- estim.int.effects(Ybin.gcomp, estimator = "gcomp")$int.r
   # save results
   # p
@@ -656,14 +656,14 @@ perf.gcomp$bias[which(row.names(perf.gcomp) == "RD_A2_A1is1")] <- mean(estim_gco
 perf.gcomp$var[which(row.names(perf.gcomp) == "RD_A2_A1is1")] <- mean((estim_gcomp_bin$RD_A2_A1is1 - mean(estim_gcomp_bin$RD_A2_A1is1))^2) * (nrow(estim_gcomp_bin)) / (nrow(estim_gcomp_bin) - 1)
 perf.gcomp$std.bias[which(row.names(perf.gcomp) == "RD_A2_A1is1")] <- perf.gcomp$bias[which(row.names(perf.gcomp) == "RD_A2_A1is1")] / sqrt(perf.gcomp$var[which(row.names(perf.gcomp) == "RD_A2_A1is1")])
 perf.gcomp$mse[which(row.names(perf.gcomp) == "RD_A2_A1is1")] <- perf.gcomp$var[which(row.names(perf.gcomp) == "RD_A2_A1is1")] + (perf.gcomp$bias[which(row.names(perf.gcomp) == "RD_A2_A1is1")])^2
-perf.gcomp$av.estim.se[which(row.names(perf.gcomp) == "RD_A2_A1is1")] <- sqrt(mean(estim_gcomp_bin$RR_A1_A2is0.se^2))
+perf.gcomp$av.estim.se[which(row.names(perf.gcomp) == "RD_A2_A1is1")] <- sqrt(mean(estim_gcomp_bin$RD_A2_A1is1.se^2))
 perf.gcomp$cov[which(row.names(perf.gcomp) == "RD_A2_A1is1")] <- mean(as.numeric(RD.bin_A2_A1is1 >= estim_gcomp_bin$RD_A2_A1is1.lb) & (RD.bin_A2_A1is1 <= estim_gcomp_bin$RD_A2_A1is1.ub))
 # logRR_A1_A2is0
 perf.gcomp$bias[which(row.names(perf.gcomp) == "logRR_A1_A2is0")] <- mean(log(estim_gcomp_bin$RR_A1_A2is0)) - log(RR.bin_A1_A2is0)
 perf.gcomp$var[which(row.names(perf.gcomp) == "logRR_A1_A2is0")] <- mean((log(estim_gcomp_bin$RR_A1_A2is0) - mean(log(estim_gcomp_bin$RR_A1_A2is0)))^2) * (nrow(estim_gcomp_bin)) / (nrow(estim_gcomp_bin) - 1)
 perf.gcomp$std.bias[which(row.names(perf.gcomp) == "logRR_A1_A2is0")] <- perf.gcomp$bias[which(row.names(perf.gcomp) == "logRR_A1_A2is0")] / sqrt(perf.gcomp$var[which(row.names(perf.gcomp) == "logRR_A1_A2is0")])
 perf.gcomp$mse[which(row.names(perf.gcomp) == "logRR_A1_A2is0")] <- perf.gcomp$var[which(row.names(perf.gcomp) == "logRR_A1_A2is0")] + (perf.gcomp$bias[which(row.names(perf.gcomp) == "logRR_A1_A2is0")])^2
-perf.gcomp$av.estim.se[which(row.names(perf.gcomp) == "logRR_A1_A2is0")] <- sqrt(mean(estim_gcomp_bin$RD_A2_A1is1.se^2))
+perf.gcomp$av.estim.se[which(row.names(perf.gcomp) == "logRR_A1_A2is0")] <- sqrt(mean(estim_gcomp_bin$RR_A1_A2is0.se^2))
 perf.gcomp$cov[which(row.names(perf.gcomp) == "logRR_A1_A2is0")] <- mean(as.numeric(RR.bin_A1_A2is0 > estim_gcomp_bin$RR_A1_A2is0.lb) & (RR.bin_A1_A2is0 < estim_gcomp_bin$RR_A1_A2is0.ub))
 # logRR_A1_A2is1
 perf.gcomp$bias[which(row.names(perf.gcomp) == "logRR_A1_A2is1")] <- mean(log(estim_gcomp_bin$RR_A1_A2is1)) - log(RR.bin_A1_A2is1)
@@ -763,14 +763,14 @@ perf.iptw$bias[which(row.names(perf.iptw) == "RD_A2_A1is1")] <- mean(estim_iptw_
 perf.iptw$var[which(row.names(perf.iptw) == "RD_A2_A1is1")] <- mean((estim_iptw_bin$RD_A2_A1is1 - mean(estim_iptw_bin$RD_A2_A1is1))^2) * (nrow(estim_iptw_bin)) / (nrow(estim_iptw_bin) - 1)
 perf.iptw$std.bias[which(row.names(perf.iptw) == "RD_A2_A1is1")] <- perf.iptw$bias[which(row.names(perf.iptw) == "RD_A2_A1is1")] / sqrt(perf.iptw$var[which(row.names(perf.iptw) == "RD_A2_A1is1")])
 perf.iptw$mse[which(row.names(perf.iptw) == "RD_A2_A1is1")] <- perf.iptw$var[which(row.names(perf.iptw) == "RD_A2_A1is1")] + (perf.iptw$bias[which(row.names(perf.iptw) == "RD_A2_A1is1")])^2
-perf.iptw$av.estim.se[which(row.names(perf.iptw) == "RD_A2_A1is1")] <- sqrt(mean(estim_iptw_bin$RR_A1_A2is0.se^2))
+perf.iptw$av.estim.se[which(row.names(perf.iptw) == "RD_A2_A1is1")] <- sqrt(mean(estim_iptw_bin$RD_A2_A1is1.se^2))
 perf.iptw$cov[which(row.names(perf.iptw) == "RD_A2_A1is1")] <- mean(as.numeric(RD.bin_A2_A1is1 >= estim_iptw_bin$RD_A2_A1is1.lb) & (RD.bin_A2_A1is1 <= estim_iptw_bin$RD_A2_A1is1.ub))
 # logRR_A1_A2is0
 perf.iptw$bias[which(row.names(perf.iptw) == "logRR_A1_A2is0")] <- mean(log(estim_iptw_bin$RR_A1_A2is0)) - log(RR.bin_A1_A2is0)
 perf.iptw$var[which(row.names(perf.iptw) == "logRR_A1_A2is0")] <- mean((log(estim_iptw_bin$RR_A1_A2is0) - mean(log(estim_iptw_bin$RR_A1_A2is0)))^2) * (nrow(estim_iptw_bin)) / (nrow(estim_iptw_bin) - 1)
 perf.iptw$std.bias[which(row.names(perf.iptw) == "logRR_A1_A2is0")] <- perf.iptw$bias[which(row.names(perf.iptw) == "logRR_A1_A2is0")] / sqrt(perf.iptw$var[which(row.names(perf.iptw) == "logRR_A1_A2is0")])
 perf.iptw$mse[which(row.names(perf.iptw) == "logRR_A1_A2is0")] <- perf.iptw$var[which(row.names(perf.iptw) == "logRR_A1_A2is0")] + (perf.iptw$bias[which(row.names(perf.iptw) == "logRR_A1_A2is0")])^2
-perf.iptw$av.estim.se[which(row.names(perf.iptw) == "logRR_A1_A2is0")] <- sqrt(mean(estim_iptw_bin$RD_A2_A1is1.se^2))
+perf.iptw$av.estim.se[which(row.names(perf.iptw) == "logRR_A1_A2is0")] <- sqrt(mean(estim_iptw_bin$RR_A1_A2is0.se^2))
 perf.iptw$cov[which(row.names(perf.iptw) == "logRR_A1_A2is0")] <- mean(as.numeric(RR.bin_A1_A2is0 > estim_iptw_bin$RR_A1_A2is0.lb) & (RR.bin_A1_A2is0 < estim_iptw_bin$RR_A1_A2is0.ub))
 # logRR_A1_A2is1
 perf.iptw$bias[which(row.names(perf.iptw) == "logRR_A1_A2is1")] <- mean(log(estim_iptw_bin$RR_A1_A2is1)) - log(RR.bin_A1_A2is1)
@@ -870,14 +870,14 @@ perf.tmle$bias[which(row.names(perf.tmle) == "RD_A2_A1is1")] <- mean(estim_tmle_
 perf.tmle$var[which(row.names(perf.tmle) == "RD_A2_A1is1")] <- mean((estim_tmle_bin$RD_A2_A1is1 - mean(estim_tmle_bin$RD_A2_A1is1))^2) * (nrow(estim_tmle_bin)) / (nrow(estim_tmle_bin) - 1)
 perf.tmle$std.bias[which(row.names(perf.tmle) == "RD_A2_A1is1")] <- perf.tmle$bias[which(row.names(perf.tmle) == "RD_A2_A1is1")] / sqrt(perf.tmle$var[which(row.names(perf.tmle) == "RD_A2_A1is1")])
 perf.tmle$mse[which(row.names(perf.tmle) == "RD_A2_A1is1")] <- perf.tmle$var[which(row.names(perf.tmle) == "RD_A2_A1is1")] + (perf.tmle$bias[which(row.names(perf.tmle) == "RD_A2_A1is1")])^2
-perf.tmle$av.estim.se[which(row.names(perf.tmle) == "RD_A2_A1is1")] <- sqrt(mean(estim_tmle_bin$RR_A1_A2is0.se^2))
+perf.tmle$av.estim.se[which(row.names(perf.tmle) == "RD_A2_A1is1")] <- sqrt(mean(estim_tmle_bin$RD_A2_A1is1.se^2))
 perf.tmle$cov[which(row.names(perf.tmle) == "RD_A2_A1is1")] <- mean(as.numeric(RD.bin_A2_A1is1 >= estim_tmle_bin$RD_A2_A1is1.lb) & (RD.bin_A2_A1is1 <= estim_tmle_bin$RD_A2_A1is1.ub))
 # logRR_A1_A2is0
 perf.tmle$bias[which(row.names(perf.tmle) == "logRR_A1_A2is0")] <- mean(log(estim_tmle_bin$RR_A1_A2is0)) - log(RR.bin_A1_A2is0)
 perf.tmle$var[which(row.names(perf.tmle) == "logRR_A1_A2is0")] <- mean((log(estim_tmle_bin$RR_A1_A2is0) - mean(log(estim_tmle_bin$RR_A1_A2is0)))^2) * (nrow(estim_tmle_bin)) / (nrow(estim_tmle_bin) - 1)
 perf.tmle$std.bias[which(row.names(perf.tmle) == "logRR_A1_A2is0")] <- perf.tmle$bias[which(row.names(perf.tmle) == "logRR_A1_A2is0")] / sqrt(perf.tmle$var[which(row.names(perf.tmle) == "logRR_A1_A2is0")])
 perf.tmle$mse[which(row.names(perf.tmle) == "logRR_A1_A2is0")] <- perf.tmle$var[which(row.names(perf.tmle) == "logRR_A1_A2is0")] + (perf.tmle$bias[which(row.names(perf.tmle) == "logRR_A1_A2is0")])^2
-perf.tmle$av.estim.se[which(row.names(perf.tmle) == "logRR_A1_A2is0")] <- sqrt(mean(estim_tmle_bin$RD_A2_A1is1.se^2))
+perf.tmle$av.estim.se[which(row.names(perf.tmle) == "logRR_A1_A2is0")] <- sqrt(mean(estim_tmle_bin$RR_A1_A2is0.se^2))
 perf.tmle$cov[which(row.names(perf.tmle) == "logRR_A1_A2is0")] <- mean(as.numeric(RR.bin_A1_A2is0 > estim_tmle_bin$RR_A1_A2is0.lb) & (RR.bin_A1_A2is0 < estim_tmle_bin$RR_A1_A2is0.ub))
 # logRR_A1_A2is1
 perf.tmle$bias[which(row.names(perf.tmle) == "logRR_A1_A2is1")] <- mean(log(estim_tmle_bin$RR_A1_A2is1)) - log(RR.bin_A1_A2is1)
@@ -928,9 +928,444 @@ saveRDS(perf.iptw, file = "./docs/perf_iptw_bin")
 saveRDS(perf.tmle, file = "./docs/perf_tmle_bin")
 
 
-################################################################################
+
 ### 2) simulations with quantitative outcomes
 ################################################################################
+n.simu <- 1000
+library(MargIntTmle)
 Q_form_Ycont <-c(Y.cont="Q.kplus1 ~ conf1 + conf2 + conf3 + fact.A1 * fact.A2")
 g_form <- c("fact.A1 ~ conf1 + conf2",
             "fact.A2 ~ conf1 + conf3")
+
+
+estim.gcomp.cont <- data.frame(k = 1:n.simu,
+                               p00 = rep(NA, n.simu), p00.se = rep(NA, n.simu), p00.lb = rep(NA, n.simu), p00.ub = rep(NA, n.simu),
+                               p10 = rep(NA, n.simu), p10.se = rep(NA, n.simu), p10.lb = rep(NA, n.simu), p10.ub = rep(NA, n.simu),
+                               p01 = rep(NA, n.simu), p01.se = rep(NA, n.simu), p01.lb = rep(NA, n.simu), p01.ub = rep(NA, n.simu),
+                               p11 = rep(NA, n.simu), p11.se = rep(NA, n.simu), p11.lb = rep(NA, n.simu), p11.ub = rep(NA, n.simu),
+                               RD_A1_A2is0=rep(NA, n.simu), RD_A1_A2is0.se=rep(NA, n.simu), RD_A1_A2is0.lb=rep(NA, n.simu), RD_A1_A2is0.ub=rep(NA, n.simu),
+                               RD_A1_A2is1=rep(NA, n.simu), RD_A1_A2is1.se=rep(NA, n.simu), RD_A1_A2is1.lb=rep(NA, n.simu), RD_A1_A2is1.ub=rep(NA, n.simu),
+                               RD_A2_A1is0=rep(NA, n.simu), RD_A2_A1is0.se=rep(NA, n.simu), RD_A2_A1is0.lb=rep(NA, n.simu), RD_A2_A1is0.ub=rep(NA, n.simu),
+                               RD_A2_A1is1=rep(NA, n.simu), RD_A2_A1is1.se=rep(NA, n.simu), RD_A2_A1is1.lb=rep(NA, n.simu), RD_A2_A1is1.ub=rep(NA, n.simu),
+                               a.INT=rep(NA, n.simu), a.INT.se=rep(NA, n.simu), a.INT.lb=rep(NA, n.simu), a.INT.ub=rep(NA, n.simu))
+
+estim.iptw.cont <- data.frame(k = 1:n.simu,
+                              p00 = rep(NA, n.simu), p00.se = rep(NA, n.simu), p00.lb = rep(NA, n.simu), p00.ub = rep(NA, n.simu),
+                              p10 = rep(NA, n.simu), p10.se = rep(NA, n.simu), p10.lb = rep(NA, n.simu), p10.ub = rep(NA, n.simu),
+                              p01 = rep(NA, n.simu), p01.se = rep(NA, n.simu), p01.lb = rep(NA, n.simu), p01.ub = rep(NA, n.simu),
+                              p11 = rep(NA, n.simu), p11.se = rep(NA, n.simu), p11.lb = rep(NA, n.simu), p11.ub = rep(NA, n.simu),
+                              RD_A1_A2is0=rep(NA, n.simu), RD_A1_A2is0.se=rep(NA, n.simu), RD_A1_A2is0.lb=rep(NA, n.simu), RD_A1_A2is0.ub=rep(NA, n.simu),
+                              RD_A1_A2is1=rep(NA, n.simu), RD_A1_A2is1.se=rep(NA, n.simu), RD_A1_A2is1.lb=rep(NA, n.simu), RD_A1_A2is1.ub=rep(NA, n.simu),
+                              RD_A2_A1is0=rep(NA, n.simu), RD_A2_A1is0.se=rep(NA, n.simu), RD_A2_A1is0.lb=rep(NA, n.simu), RD_A2_A1is0.ub=rep(NA, n.simu),
+                              RD_A2_A1is1=rep(NA, n.simu), RD_A2_A1is1.se=rep(NA, n.simu), RD_A2_A1is1.lb=rep(NA, n.simu), RD_A2_A1is1.ub=rep(NA, n.simu),
+                              a.INT=rep(NA, n.simu), a.INT.se=rep(NA, n.simu), a.INT.lb=rep(NA, n.simu), a.INT.ub=rep(NA, n.simu))
+
+estim.tmle.cont <- data.frame(k = 1:n.simu,
+                              p00 = rep(NA, n.simu), p00.se = rep(NA, n.simu), p00.lb = rep(NA, n.simu), p00.ub = rep(NA, n.simu),
+                              p10 = rep(NA, n.simu), p10.se = rep(NA, n.simu), p10.lb = rep(NA, n.simu), p10.ub = rep(NA, n.simu),
+                              p01 = rep(NA, n.simu), p01.se = rep(NA, n.simu), p01.lb = rep(NA, n.simu), p01.ub = rep(NA, n.simu),
+                              p11 = rep(NA, n.simu), p11.se = rep(NA, n.simu), p11.lb = rep(NA, n.simu), p11.ub = rep(NA, n.simu),
+                              RD_A1_A2is0=rep(NA, n.simu), RD_A1_A2is0.se=rep(NA, n.simu), RD_A1_A2is0.lb=rep(NA, n.simu), RD_A1_A2is0.ub=rep(NA, n.simu),
+                              RD_A1_A2is1=rep(NA, n.simu), RD_A1_A2is1.se=rep(NA, n.simu), RD_A1_A2is1.lb=rep(NA, n.simu), RD_A1_A2is1.ub=rep(NA, n.simu),
+                              RD_A2_A1is0=rep(NA, n.simu), RD_A2_A1is0.se=rep(NA, n.simu), RD_A2_A1is0.lb=rep(NA, n.simu), RD_A2_A1is0.ub=rep(NA, n.simu),
+                              RD_A2_A1is1=rep(NA, n.simu), RD_A2_A1is1.se=rep(NA, n.simu), RD_A2_A1is1.lb=rep(NA, n.simu), RD_A2_A1is1.ub=rep(NA, n.simu),
+                              a.INT=rep(NA, n.simu), a.INT.se=rep(NA, n.simu), a.INT.lb=rep(NA, n.simu), a.INT.ub=rep(NA, n.simu))
+
+set.seed(345678)
+for (i in 1:n.simu) {
+  print(paste0("Simulation n° ",i))
+  df.simu <- gen.sim.data(N = 2000, do.A1 = NULL, do.A2 = NULL)
+  Ycont.ltmle <- int.ltmleMSM(data = subset(df.simu, select = -c(Y.bin)),
+                              Qform = Q_form_Ycont,
+                              gform = g_form,
+                              Anodes = c("fact.A1", "fact.A2"),
+                              Lnodes = c("conf1", "conf2", "conf3"),
+                              Ynodes = c("Y.cont"),
+                              SL.library = "glm",
+                              gcomp = FALSE,
+                              iptw.only = FALSE,
+                              survivalOutcome = FALSE,
+                              variance.method = "ic")
+
+  ## TMLE estimation
+  results.cont.tmle <- estim.int.effects(Ycont.ltmle, estimator = "tmle")$int.r
+  # save results
+  # p
+  estim.tmle.cont$p00[estim.tmle.cont$k == i] <- results.cont.tmle$p[results.cont.tmle$A1 == 0 & results.cont.tmle$A2 == 0]
+  estim.tmle.cont$p00.se[estim.tmle.cont$k == i] <- results.cont.tmle$sd.p[results.cont.tmle$A1 == 0 & results.cont.tmle$A2 == 0]
+  estim.tmle.cont$p00.lb[estim.tmle.cont$k == i] <- results.cont.tmle$p.lo[results.cont.tmle$A1 == 0 & results.cont.tmle$A2 == 0]
+  estim.tmle.cont$p00.ub[estim.tmle.cont$k == i] <- results.cont.tmle$p.up[results.cont.tmle$A1 == 0 & results.cont.tmle$A2 == 0]
+
+  estim.tmle.cont$p10[estim.tmle.cont$k == i] <- results.cont.tmle$p[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 0]
+  estim.tmle.cont$p10.se[estim.tmle.cont$k == i] <- results.cont.tmle$sd.p[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 0]
+  estim.tmle.cont$p10.lb[estim.tmle.cont$k == i] <- results.cont.tmle$p.lo[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 0]
+  estim.tmle.cont$p10.ub[estim.tmle.cont$k == i] <- results.cont.tmle$p.up[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 0]
+
+  estim.tmle.cont$p01[estim.tmle.cont$k == i] <- results.cont.tmle$p[results.cont.tmle$A1 == 0 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$p01.se[estim.tmle.cont$k == i] <- results.cont.tmle$sd.p[results.cont.tmle$A1 == 0 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$p01.lb[estim.tmle.cont$k == i] <- results.cont.tmle$p.lo[results.cont.tmle$A1 == 0 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$p01.ub[estim.tmle.cont$k == i] <- results.cont.tmle$p.up[results.cont.tmle$A1 == 0 & results.cont.tmle$A2 == 1]
+
+  estim.tmle.cont$p11[estim.tmle.cont$k == i] <- results.cont.tmle$p[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$p11.se[estim.tmle.cont$k == i] <- results.cont.tmle$sd.p[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$p11.lb[estim.tmle.cont$k == i] <- results.cont.tmle$p.lo[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$p11.ub[estim.tmle.cont$k == i] <- results.cont.tmle$p.up[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+  # RD
+  estim.tmle.cont$RD_A1_A2is0[estim.tmle.cont$k == i] <- results.cont.tmle$RD.A1[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 0]
+  estim.tmle.cont$RD_A1_A2is0.se[estim.tmle.cont$k == i] <- results.cont.tmle$sd.RD.A1[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 0]
+  estim.tmle.cont$RD_A1_A2is0.lb[estim.tmle.cont$k == i] <- results.cont.tmle$RD.A1.lo[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 0]
+  estim.tmle.cont$RD_A1_A2is0.ub[estim.tmle.cont$k == i] <- results.cont.tmle$RD.A1.up[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 0]
+
+  estim.tmle.cont$RD_A1_A2is1[estim.tmle.cont$k == i] <- results.cont.tmle$RD.A1[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$RD_A1_A2is1.se[estim.tmle.cont$k == i] <- results.cont.tmle$sd.RD.A1[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$RD_A1_A2is1.lb[estim.tmle.cont$k == i] <- results.cont.tmle$RD.A1.lo[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$RD_A1_A2is1.ub[estim.tmle.cont$k == i] <- results.cont.tmle$RD.A1.up[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+
+  estim.tmle.cont$RD_A2_A1is0[estim.tmle.cont$k == i] <- results.cont.tmle$RD.A2[results.cont.tmle$A1 == 0 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$RD_A2_A1is0.se[estim.tmle.cont$k == i] <- results.cont.tmle$sd.RD.A2[results.cont.tmle$A1 == 0 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$RD_A2_A1is0.lb[estim.tmle.cont$k == i] <- results.cont.tmle$RD.A2.lo[results.cont.tmle$A1 == 0 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$RD_A2_A1is0.ub[estim.tmle.cont$k == i] <- results.cont.tmle$RD.A2.up[results.cont.tmle$A1 == 0 & results.cont.tmle$A2 == 1]
+
+  estim.tmle.cont$RD_A2_A1is1[estim.tmle.cont$k == i] <- results.cont.tmle$RD.A2[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$RD_A2_A1is1.se[estim.tmle.cont$k == i] <- results.cont.tmle$sd.RD.A2[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$RD_A2_A1is1.lb[estim.tmle.cont$k == i] <- results.cont.tmle$RD.A2.lo[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$RD_A2_A1is1.ub[estim.tmle.cont$k == i] <- results.cont.tmle$RD.A2.up[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+  # a.INT
+  estim.tmle.cont$a.INT[estim.tmle.cont$k == i] <- results.cont.tmle$a.INT[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$a.INT.se[estim.tmle.cont$k == i] <- results.cont.tmle$sd.a.INT[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$a.INT.lb[estim.tmle.cont$k == i] <- results.cont.tmle$a.INT.lo[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+  estim.tmle.cont$a.INT.ub[estim.tmle.cont$k == i] <- results.cont.tmle$a.INT.up[results.cont.tmle$A1 == 1 & results.cont.tmle$A2 == 1]
+
+  ## IPTW estimation
+  results.cont.iptw <- estim.int.effects(Ycont.ltmle, estimator = "iptw")$int.r
+  # save results
+  # p
+  estim.iptw.cont$p00[estim.iptw.cont$k == i] <- results.cont.iptw$p[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 0]
+  estim.iptw.cont$p00.se[estim.iptw.cont$k == i] <- results.cont.iptw$sd.p[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 0]
+  estim.iptw.cont$p00.lb[estim.iptw.cont$k == i] <- results.cont.iptw$p.lo[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 0]
+  estim.iptw.cont$p00.ub[estim.iptw.cont$k == i] <- results.cont.iptw$p.up[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 0]
+
+  estim.iptw.cont$p10[estim.iptw.cont$k == i] <- results.cont.iptw$p[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.cont$p10.se[estim.iptw.cont$k == i] <- results.cont.iptw$sd.p[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.cont$p10.lb[estim.iptw.cont$k == i] <- results.cont.iptw$p.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.cont$p10.ub[estim.iptw.cont$k == i] <- results.cont.iptw$p.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+
+  estim.iptw.cont$p01[estim.iptw.cont$k == i] <- results.cont.iptw$p[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$p01.se[estim.iptw.cont$k == i] <- results.cont.iptw$sd.p[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$p01.lb[estim.iptw.cont$k == i] <- results.cont.iptw$p.lo[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$p01.ub[estim.iptw.cont$k == i] <- results.cont.iptw$p.up[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+
+  estim.iptw.cont$p11[estim.iptw.cont$k == i] <- results.cont.iptw$p[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$p11.se[estim.iptw.cont$k == i] <- results.cont.iptw$sd.p[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$p11.lb[estim.iptw.cont$k == i] <- results.cont.iptw$p.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$p11.ub[estim.iptw.cont$k == i] <- results.cont.iptw$p.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  # RD
+  estim.iptw.cont$RD_A1_A2is0[estim.iptw.cont$k == i] <- results.cont.iptw$RD.A1[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.cont$RD_A1_A2is0.se[estim.iptw.cont$k == i] <- results.cont.iptw$sd.RD.A1[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.cont$RD_A1_A2is0.lb[estim.iptw.cont$k == i] <- results.cont.iptw$RD.A1.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+  estim.iptw.cont$RD_A1_A2is0.ub[estim.iptw.cont$k == i] <- results.cont.iptw$RD.A1.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 0]
+
+  estim.iptw.cont$RD_A1_A2is1[estim.iptw.cont$k == i] <- results.cont.iptw$RD.A1[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$RD_A1_A2is1.se[estim.iptw.cont$k == i] <- results.cont.iptw$sd.RD.A1[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$RD_A1_A2is1.lb[estim.iptw.cont$k == i] <- results.cont.iptw$RD.A1.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$RD_A1_A2is1.ub[estim.iptw.cont$k == i] <- results.cont.iptw$RD.A1.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+
+  estim.iptw.cont$RD_A2_A1is0[estim.iptw.cont$k == i] <- results.cont.iptw$RD.A2[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$RD_A2_A1is0.se[estim.iptw.cont$k == i] <- results.cont.iptw$sd.RD.A2[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$RD_A2_A1is0.lb[estim.iptw.cont$k == i] <- results.cont.iptw$RD.A2.lo[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$RD_A2_A1is0.ub[estim.iptw.cont$k == i] <- results.cont.iptw$RD.A2.up[results.cont.iptw$A1 == 0 & results.cont.iptw$A2 == 1]
+
+  estim.iptw.cont$RD_A2_A1is1[estim.iptw.cont$k == i] <- results.cont.iptw$RD.A2[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$RD_A2_A1is1.se[estim.iptw.cont$k == i] <- results.cont.iptw$sd.RD.A2[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$RD_A2_A1is1.lb[estim.iptw.cont$k == i] <- results.cont.iptw$RD.A2.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$RD_A2_A1is1.ub[estim.iptw.cont$k == i] <- results.cont.iptw$RD.A2.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  # a.INT
+  estim.iptw.cont$a.INT[estim.iptw.cont$k == i] <- results.cont.iptw$a.INT[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$a.INT.se[estim.iptw.cont$k == i] <- results.cont.iptw$sd.a.INT[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$a.INT.lb[estim.iptw.cont$k == i] <- results.cont.iptw$a.INT.lo[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+  estim.iptw.cont$a.INT.ub[estim.iptw.cont$k == i] <- results.cont.iptw$a.INT.up[results.cont.iptw$A1 == 1 & results.cont.iptw$A2 == 1]
+
+
+  ## g-computation estimation
+  Ycont.gcomp <- int.ltmleMSM(data = subset(df.simu, select = -c(Y.bin)),
+                             Qform = Q_form_Ycont,
+                             gform = g_form,
+                             Anodes = c("fact.A1", "fact.A2"),
+                             Lnodes = c("conf1", "conf2", "conf3"),
+                             Ynodes = c("Y.cont"),
+                             SL.library = list(Q=list("glm"),g=list("glm")),
+                             gcomp = TRUE,
+                             iptw.only = FALSE,
+                             survivalOutcome = FALSE,
+                             variance.method = "ic",
+                             B = 1000)
+  results.cont.gcomp <- estim.int.effects(Ycont.gcomp, estimator = "gcomp")$int.r
+  # save results
+  # p
+  estim.gcomp.cont$p00[estim.gcomp.cont$k == i] <- results.cont.gcomp$p[results.cont.gcomp$A1 == 0 & results.cont.gcomp$A2 == 0]
+  estim.gcomp.cont$p00.se[estim.gcomp.cont$k == i] <- results.cont.gcomp$sd.p[results.cont.gcomp$A1 == 0 & results.cont.gcomp$A2 == 0]
+  estim.gcomp.cont$p00.lb[estim.gcomp.cont$k == i] <- results.cont.gcomp$p.lo[results.cont.gcomp$A1 == 0 & results.cont.gcomp$A2 == 0]
+  estim.gcomp.cont$p00.ub[estim.gcomp.cont$k == i] <- results.cont.gcomp$p.up[results.cont.gcomp$A1 == 0 & results.cont.gcomp$A2 == 0]
+
+  estim.gcomp.cont$p10[estim.gcomp.cont$k == i] <- results.cont.gcomp$p[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 0]
+  estim.gcomp.cont$p10.se[estim.gcomp.cont$k == i] <- results.cont.gcomp$sd.p[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 0]
+  estim.gcomp.cont$p10.lb[estim.gcomp.cont$k == i] <- results.cont.gcomp$p.lo[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 0]
+  estim.gcomp.cont$p10.ub[estim.gcomp.cont$k == i] <- results.cont.gcomp$p.up[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 0]
+
+  estim.gcomp.cont$p01[estim.gcomp.cont$k == i] <- results.cont.gcomp$p[results.cont.gcomp$A1 == 0 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$p01.se[estim.gcomp.cont$k == i] <- results.cont.gcomp$sd.p[results.cont.gcomp$A1 == 0 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$p01.lb[estim.gcomp.cont$k == i] <- results.cont.gcomp$p.lo[results.cont.gcomp$A1 == 0 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$p01.ub[estim.gcomp.cont$k == i] <- results.cont.gcomp$p.up[results.cont.gcomp$A1 == 0 & results.cont.gcomp$A2 == 1]
+
+  estim.gcomp.cont$p11[estim.gcomp.cont$k == i] <- results.cont.gcomp$p[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$p11.se[estim.gcomp.cont$k == i] <- results.cont.gcomp$sd.p[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$p11.lb[estim.gcomp.cont$k == i] <- results.cont.gcomp$p.lo[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$p11.ub[estim.gcomp.cont$k == i] <- results.cont.gcomp$p.up[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+  # RD
+  estim.gcomp.cont$RD_A1_A2is0[estim.gcomp.cont$k == i] <- results.cont.gcomp$RD.A1[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 0]
+  estim.gcomp.cont$RD_A1_A2is0.se[estim.gcomp.cont$k == i] <- results.cont.gcomp$sd.RD.A1[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 0]
+  estim.gcomp.cont$RD_A1_A2is0.lb[estim.gcomp.cont$k == i] <- results.cont.gcomp$RD.A1.lo[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 0]
+  estim.gcomp.cont$RD_A1_A2is0.ub[estim.gcomp.cont$k == i] <- results.cont.gcomp$RD.A1.up[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 0]
+
+  estim.gcomp.cont$RD_A1_A2is1[estim.gcomp.cont$k == i] <- results.cont.gcomp$RD.A1[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$RD_A1_A2is1.se[estim.gcomp.cont$k == i] <- results.cont.gcomp$sd.RD.A1[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$RD_A1_A2is1.lb[estim.gcomp.cont$k == i] <- results.cont.gcomp$RD.A1.lo[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$RD_A1_A2is1.ub[estim.gcomp.cont$k == i] <- results.cont.gcomp$RD.A1.up[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+
+  estim.gcomp.cont$RD_A2_A1is0[estim.gcomp.cont$k == i] <- results.cont.gcomp$RD.A2[results.cont.gcomp$A1 == 0 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$RD_A2_A1is0.se[estim.gcomp.cont$k == i] <- results.cont.gcomp$sd.RD.A2[results.cont.gcomp$A1 == 0 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$RD_A2_A1is0.lb[estim.gcomp.cont$k == i] <- results.cont.gcomp$RD.A2.lo[results.cont.gcomp$A1 == 0 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$RD_A2_A1is0.ub[estim.gcomp.cont$k == i] <- results.cont.gcomp$RD.A2.up[results.cont.gcomp$A1 == 0 & results.cont.gcomp$A2 == 1]
+
+  estim.gcomp.cont$RD_A2_A1is1[estim.gcomp.cont$k == i] <- results.cont.gcomp$RD.A2[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$RD_A2_A1is1.se[estim.gcomp.cont$k == i] <- results.cont.gcomp$sd.RD.A2[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$RD_A2_A1is1.lb[estim.gcomp.cont$k == i] <- results.cont.gcomp$RD.A2.lo[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$RD_A2_A1is1.ub[estim.gcomp.cont$k == i] <- results.cont.gcomp$RD.A2.up[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+  # a.INT
+  estim.gcomp.cont$a.INT[estim.gcomp.cont$k == i] <- results.cont.gcomp$a.INT[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$a.INT.se[estim.gcomp.cont$k == i] <- results.cont.gcomp$sd.a.INT[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$a.INT.lb[estim.gcomp.cont$k == i] <- results.cont.gcomp$a.INT.lo[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+  estim.gcomp.cont$a.INT.ub[estim.gcomp.cont$k == i] <- results.cont.gcomp$a.INT.up[results.cont.gcomp$A1 == 1 & results.cont.gcomp$A2 == 1]
+}
+
+# save simulation results
+saveRDS(estim.gcomp.cont, file = "./docs/estim_gcomp_cont")
+saveRDS(estim.iptw.cont, file = "./docs/estim_iptw_cont")
+saveRDS(estim.tmle.cont, file = "./docs/estim_tmle_cont")
+
+estim_gcomp_cont <- readRDS(file = "./docs/estim_gcomp_cont")
+estim_iptw_cont <- readRDS(file = "./docs/estim_iptw_cont")
+estim_tmle_cont <- readRDS(file = "./docs/estim_tmle_cont")
+
+perf.gcomp.cont <- data.frame(bias = rep(NA, 9),
+                              var = rep(NA, 9),
+                              std.bias = rep(NA, 9),
+                              mse = rep(NA, 9),
+                              av.estim.se = rep(NA, 9),
+                              cov = rep(NA, 9))
+
+row.names(perf.gcomp.cont) <- c("p00","p10","p01","p11",
+                                "RD_A1_A2is0","RD_A1_A2is1","RD_A2_A1is0","RD_A2_A1is1","a.INT")
+
+perf.iptw.cont <- perf.tmle.cont <- perf.gcomp.cont
+
+## performance summary - gcomp
+# p00
+perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "p00")] <- mean(estim_gcomp_cont$p00) - E.Y00
+perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "p00")] <- mean((estim_gcomp_cont$p00 - mean(estim_gcomp_cont$p00))^2) * (nrow(estim_gcomp_cont)) / (nrow(estim_gcomp_cont) - 1)
+perf.gcomp.cont$std.bias[which(row.names(perf.gcomp.cont) == "p00")] <- perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "p00")] / sqrt(perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "p00")])
+perf.gcomp.cont$mse[which(row.names(perf.gcomp.cont) == "p00")] <- perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "p00")] + (perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "p00")])^2
+perf.gcomp.cont$av.estim.se[which(row.names(perf.gcomp.cont) == "p00")] <- sqrt(mean(estim_gcomp_cont$p00.se^2))
+perf.gcomp.cont$cov[which(row.names(perf.gcomp.cont) == "p00")] <- mean(as.numeric(E.Y00 >= estim_gcomp_cont$p00.lb) & (E.Y00 <= estim_gcomp_cont$p00.ub))
+# p10
+perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "p10")] <- mean(estim_gcomp_cont$p10) - E.Y10
+perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "p10")] <- mean((estim_gcomp_cont$p10 - mean(estim_gcomp_cont$p10))^2) * (nrow(estim_gcomp_cont)) / (nrow(estim_gcomp_cont) - 1)
+perf.gcomp.cont$std.bias[which(row.names(perf.gcomp.cont) == "p10")] <- perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "p10")] / sqrt(perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "p10")])
+perf.gcomp.cont$mse[which(row.names(perf.gcomp.cont) == "p10")] <- perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "p10")] + (perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "p10")])^2
+perf.gcomp.cont$av.estim.se[which(row.names(perf.gcomp.cont) == "p10")] <- sqrt(mean(estim_gcomp_cont$p10.se^2))
+perf.gcomp.cont$cov[which(row.names(perf.gcomp.cont) == "p10")] <- mean(as.numeric(E.Y10 >= estim_gcomp_cont$p10.lb) & (E.Y10 <= estim_gcomp_cont$p10.ub))
+# p01
+perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "p01")] <- mean(estim_gcomp_cont$p01) - E.Y01
+perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "p01")] <- mean((estim_gcomp_cont$p01 - mean(estim_gcomp_cont$p01))^2) * (nrow(estim_gcomp_cont)) / (nrow(estim_gcomp_cont) - 1)
+perf.gcomp.cont$std.bias[which(row.names(perf.gcomp.cont) == "p01")] <- perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "p01")] / sqrt(perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "p01")])
+perf.gcomp.cont$mse[which(row.names(perf.gcomp.cont) == "p01")] <- perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "p01")] + (perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "p01")])^2
+perf.gcomp.cont$av.estim.se[which(row.names(perf.gcomp.cont) == "p01")] <- sqrt(mean(estim_gcomp_cont$p01.se^2))
+perf.gcomp.cont$cov[which(row.names(perf.gcomp.cont) == "p01")] <- mean(as.numeric(E.Y01 >= estim_gcomp_cont$p01.lb) & (E.Y01 <= estim_gcomp_cont$p01.ub))
+# p11
+perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "p11")] <- mean(estim_gcomp_cont$p11) - E.Y11
+perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "p11")] <- mean((estim_gcomp_cont$p11 - mean(estim_gcomp_cont$p11))^2) * (nrow(estim_gcomp_cont)) / (nrow(estim_gcomp_cont) - 1)
+perf.gcomp.cont$std.bias[which(row.names(perf.gcomp.cont) == "p11")] <- perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "p11")] / sqrt(perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "p11")])
+perf.gcomp.cont$mse[which(row.names(perf.gcomp.cont) == "p11")] <- perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "p11")] + (perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "p11")])^2
+perf.gcomp.cont$av.estim.se[which(row.names(perf.gcomp.cont) == "p11")] <- sqrt(mean(estim_gcomp_cont$p11.se^2))
+perf.gcomp.cont$cov[which(row.names(perf.gcomp.cont) == "p11")] <- mean(as.numeric(E.Y11 >= estim_gcomp_cont$p11.lb) & (E.Y11 <= estim_gcomp_cont$p11.ub))
+# RD_A1_A2is0
+perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "RD_A1_A2is0")] <- mean(estim_gcomp_cont$RD_A1_A2is0) - RD.cont_A1_A2is0
+perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "RD_A1_A2is0")] <- mean((estim_gcomp_cont$RD_A1_A2is0 - mean(estim_gcomp_cont$RD_A1_A2is0))^2) * (nrow(estim_gcomp_cont)) / (nrow(estim_gcomp_cont) - 1)
+perf.gcomp.cont$std.bias[which(row.names(perf.gcomp.cont) == "RD_A1_A2is0")] <- perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "RD_A1_A2is0")] / sqrt(perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "RD_A1_A2is0")])
+perf.gcomp.cont$mse[which(row.names(perf.gcomp.cont) == "RD_A1_A2is0")] <- perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "RD_A1_A2is0")] + (perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "RD_A1_A2is0")])^2
+perf.gcomp.cont$av.estim.se[which(row.names(perf.gcomp.cont) == "RD_A1_A2is0")] <- sqrt(mean(estim_gcomp_cont$RD_A1_A2is0.se^2))
+perf.gcomp.cont$cov[which(row.names(perf.gcomp.cont) == "RD_A1_A2is0")] <- mean(as.numeric(RD.cont_A1_A2is0 >= estim_gcomp_cont$RD_A1_A2is0.lb) & (RD.cont_A1_A2is0 <= estim_gcomp_cont$RD_A1_A2is0.ub))
+# RD_A1_A2is1
+perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "RD_A1_A2is1")] <- mean(estim_gcomp_cont$RD_A1_A2is1) - RD.cont_A1_A2is1
+perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "RD_A1_A2is1")] <- mean((estim_gcomp_cont$RD_A1_A2is1 - mean(estim_gcomp_cont$RD_A1_A2is1))^2) * (nrow(estim_gcomp_cont)) / (nrow(estim_gcomp_cont) - 1)
+perf.gcomp.cont$std.bias[which(row.names(perf.gcomp.cont) == "RD_A1_A2is1")] <- perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "RD_A1_A2is1")] / sqrt(perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "RD_A1_A2is1")])
+perf.gcomp.cont$mse[which(row.names(perf.gcomp.cont) == "RD_A1_A2is1")] <- perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "RD_A1_A2is1")] + (perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "RD_A1_A2is1")])^2
+perf.gcomp.cont$av.estim.se[which(row.names(perf.gcomp.cont) == "RD_A1_A2is1")] <- sqrt(mean(estim_gcomp_cont$RD_A1_A2is1.se^2))
+perf.gcomp.cont$cov[which(row.names(perf.gcomp.cont) == "RD_A1_A2is1")] <- mean(as.numeric(RD.cont_A1_A2is1 >= estim_gcomp_cont$RD_A1_A2is1.lb) & (RD.cont_A1_A2is1 <= estim_gcomp_cont$RD_A1_A2is1.ub))
+# RD_A2_A1is0
+perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "RD_A2_A1is0")] <- mean(estim_gcomp_cont$RD_A2_A1is0) - RD.cont_A2_A1is0
+perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "RD_A2_A1is0")] <- mean((estim_gcomp_cont$RD_A2_A1is0 - mean(estim_gcomp_cont$RD_A2_A1is0))^2) * (nrow(estim_gcomp_cont)) / (nrow(estim_gcomp_cont) - 1)
+perf.gcomp.cont$std.bias[which(row.names(perf.gcomp.cont) == "RD_A2_A1is0")] <- perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "RD_A2_A1is0")] / sqrt(perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "RD_A2_A1is0")])
+perf.gcomp.cont$mse[which(row.names(perf.gcomp.cont) == "RD_A2_A1is0")] <- perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "RD_A2_A1is0")] + (perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "RD_A2_A1is0")])^2
+perf.gcomp.cont$av.estim.se[which(row.names(perf.gcomp.cont) == "RD_A2_A1is0")] <- sqrt(mean(estim_gcomp_cont$RD_A2_A1is0.se^2))
+perf.gcomp.cont$cov[which(row.names(perf.gcomp.cont) == "RD_A2_A1is0")] <- mean(as.numeric(RD.cont_A2_A1is0 >= estim_gcomp_cont$RD_A2_A1is0.lb) & (RD.cont_A2_A1is0 <= estim_gcomp_cont$RD_A2_A1is0.ub))
+# RD_A2_A1is1
+perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "RD_A2_A1is1")] <- mean(estim_gcomp_cont$RD_A2_A1is1) - RD.cont_A2_A1is1
+perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "RD_A2_A1is1")] <- mean((estim_gcomp_cont$RD_A2_A1is1 - mean(estim_gcomp_cont$RD_A2_A1is1))^2) * (nrow(estim_gcomp_cont)) / (nrow(estim_gcomp_cont) - 1)
+perf.gcomp.cont$std.bias[which(row.names(perf.gcomp.cont) == "RD_A2_A1is1")] <- perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "RD_A2_A1is1")] / sqrt(perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "RD_A2_A1is1")])
+perf.gcomp.cont$mse[which(row.names(perf.gcomp.cont) == "RD_A2_A1is1")] <- perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "RD_A2_A1is1")] + (perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "RD_A2_A1is1")])^2
+perf.gcomp.cont$av.estim.se[which(row.names(perf.gcomp.cont) == "RD_A2_A1is1")] <- sqrt(mean(estim_gcomp_cont$RD_A2_A1is1.se^2))
+perf.gcomp.cont$cov[which(row.names(perf.gcomp.cont) == "RD_A2_A1is1")] <- mean(as.numeric(RD.cont_A2_A1is1 >= estim_gcomp_cont$RD_A2_A1is1.lb) & (RD.cont_A2_A1is1 <= estim_gcomp_cont$RD_A2_A1is1.ub))
+# a.INT
+perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "a.INT")] <- mean(estim_gcomp_cont$a.INT) - a.INT.cont
+perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "a.INT")] <- mean((estim_gcomp_cont$a.INT - mean(estim_gcomp_cont$a.INT))^2) * (nrow(estim_gcomp_cont)) / (nrow(estim_gcomp_cont) - 1)
+perf.gcomp.cont$std.bias[which(row.names(perf.gcomp.cont) == "a.INT")] <- perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "a.INT")] / sqrt(perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "a.INT")])
+perf.gcomp.cont$mse[which(row.names(perf.gcomp.cont) == "a.INT")] <- perf.gcomp.cont$var[which(row.names(perf.gcomp.cont) == "a.INT")] + (perf.gcomp.cont$bias[which(row.names(perf.gcomp.cont) == "a.INT")])^2
+perf.gcomp.cont$av.estim.se[which(row.names(perf.gcomp.cont) == "a.INT")] <- sqrt(mean(estim_gcomp_cont$a.INT.se^2))
+perf.gcomp.cont$cov[which(row.names(perf.gcomp.cont) == "a.INT")] <- mean(as.numeric(a.INT.cont >= estim_gcomp_cont$a.INT.lb) & (a.INT.cont <= estim_gcomp_cont$a.INT.ub))
+
+## performance summary - IPTW
+# p00
+perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "p00")] <- mean(estim_iptw_cont$p00) - E.Y00
+perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "p00")] <- mean((estim_iptw_cont$p00 - mean(estim_iptw_cont$p00))^2) * (nrow(estim_iptw_cont)) / (nrow(estim_iptw_cont) - 1)
+perf.iptw.cont$std.bias[which(row.names(perf.iptw.cont) == "p00")] <- perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "p00")] / sqrt(perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "p00")])
+perf.iptw.cont$mse[which(row.names(perf.iptw.cont) == "p00")] <- perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "p00")] + (perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "p00")])^2
+perf.iptw.cont$av.estim.se[which(row.names(perf.iptw.cont) == "p00")] <- sqrt(mean(estim_iptw_cont$p00.se^2))
+perf.iptw.cont$cov[which(row.names(perf.iptw.cont) == "p00")] <- mean(as.numeric(E.Y00 >= estim_iptw_cont$p00.lb) & (E.Y00 <= estim_iptw_cont$p00.ub))
+# p10
+perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "p10")] <- mean(estim_iptw_cont$p10) - E.Y10
+perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "p10")] <- mean((estim_iptw_cont$p10 - mean(estim_iptw_cont$p10))^2) * (nrow(estim_iptw_cont)) / (nrow(estim_iptw_cont) - 1)
+perf.iptw.cont$std.bias[which(row.names(perf.iptw.cont) == "p10")] <- perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "p10")] / sqrt(perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "p10")])
+perf.iptw.cont$mse[which(row.names(perf.iptw.cont) == "p10")] <- perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "p10")] + (perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "p10")])^2
+perf.iptw.cont$av.estim.se[which(row.names(perf.iptw.cont) == "p10")] <- sqrt(mean(estim_iptw_cont$p10.se^2))
+perf.iptw.cont$cov[which(row.names(perf.iptw.cont) == "p10")] <- mean(as.numeric(E.Y10 >= estim_iptw_cont$p10.lb) & (E.Y10 <= estim_iptw_cont$p10.ub))
+# p01
+perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "p01")] <- mean(estim_iptw_cont$p01) - E.Y01
+perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "p01")] <- mean((estim_iptw_cont$p01 - mean(estim_iptw_cont$p01))^2) * (nrow(estim_iptw_cont)) / (nrow(estim_iptw_cont) - 1)
+perf.iptw.cont$std.bias[which(row.names(perf.iptw.cont) == "p01")] <- perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "p01")] / sqrt(perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "p01")])
+perf.iptw.cont$mse[which(row.names(perf.iptw.cont) == "p01")] <- perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "p01")] + (perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "p01")])^2
+perf.iptw.cont$av.estim.se[which(row.names(perf.iptw.cont) == "p01")] <- sqrt(mean(estim_iptw_cont$p01.se^2))
+perf.iptw.cont$cov[which(row.names(perf.iptw.cont) == "p01")] <- mean(as.numeric(E.Y01 >= estim_iptw_cont$p01.lb) & (E.Y01 <= estim_iptw_cont$p01.ub))
+# p11
+perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "p11")] <- mean(estim_iptw_cont$p11) - E.Y11
+perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "p11")] <- mean((estim_iptw_cont$p11 - mean(estim_iptw_cont$p11))^2) * (nrow(estim_iptw_cont)) / (nrow(estim_iptw_cont) - 1)
+perf.iptw.cont$std.bias[which(row.names(perf.iptw.cont) == "p11")] <- perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "p11")] / sqrt(perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "p11")])
+perf.iptw.cont$mse[which(row.names(perf.iptw.cont) == "p11")] <- perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "p11")] + (perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "p11")])^2
+perf.iptw.cont$av.estim.se[which(row.names(perf.iptw.cont) == "p11")] <- sqrt(mean(estim_iptw_cont$p11.se^2))
+perf.iptw.cont$cov[which(row.names(perf.iptw.cont) == "p11")] <- mean(as.numeric(E.Y11 >= estim_iptw_cont$p11.lb) & (E.Y11 <= estim_iptw_cont$p11.ub))
+# RD_A1_A2is0
+perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "RD_A1_A2is0")] <- mean(estim_iptw_cont$RD_A1_A2is0) - RD.cont_A1_A2is0
+perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "RD_A1_A2is0")] <- mean((estim_iptw_cont$RD_A1_A2is0 - mean(estim_iptw_cont$RD_A1_A2is0))^2) * (nrow(estim_iptw_cont)) / (nrow(estim_iptw_cont) - 1)
+perf.iptw.cont$std.bias[which(row.names(perf.iptw.cont) == "RD_A1_A2is0")] <- perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "RD_A1_A2is0")] / sqrt(perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "RD_A1_A2is0")])
+perf.iptw.cont$mse[which(row.names(perf.iptw.cont) == "RD_A1_A2is0")] <- perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "RD_A1_A2is0")] + (perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "RD_A1_A2is0")])^2
+perf.iptw.cont$av.estim.se[which(row.names(perf.iptw.cont) == "RD_A1_A2is0")] <- sqrt(mean(estim_iptw_cont$RD_A1_A2is0.se^2))
+perf.iptw.cont$cov[which(row.names(perf.iptw.cont) == "RD_A1_A2is0")] <- mean(as.numeric(RD.cont_A1_A2is0 >= estim_iptw_cont$RD_A1_A2is0.lb) & (RD.cont_A1_A2is0 <= estim_iptw_cont$RD_A1_A2is0.ub))
+# RD_A1_A2is1
+perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "RD_A1_A2is1")] <- mean(estim_iptw_cont$RD_A1_A2is1) - RD.cont_A1_A2is1
+perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "RD_A1_A2is1")] <- mean((estim_iptw_cont$RD_A1_A2is1 - mean(estim_iptw_cont$RD_A1_A2is1))^2) * (nrow(estim_iptw_cont)) / (nrow(estim_iptw_cont) - 1)
+perf.iptw.cont$std.bias[which(row.names(perf.iptw.cont) == "RD_A1_A2is1")] <- perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "RD_A1_A2is1")] / sqrt(perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "RD_A1_A2is1")])
+perf.iptw.cont$mse[which(row.names(perf.iptw.cont) == "RD_A1_A2is1")] <- perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "RD_A1_A2is1")] + (perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "RD_A1_A2is1")])^2
+perf.iptw.cont$av.estim.se[which(row.names(perf.iptw.cont) == "RD_A1_A2is1")] <- sqrt(mean(estim_iptw_cont$RD_A1_A2is1.se^2))
+perf.iptw.cont$cov[which(row.names(perf.iptw.cont) == "RD_A1_A2is1")] <- mean(as.numeric(RD.cont_A1_A2is1 >= estim_iptw_cont$RD_A1_A2is1.lb) & (RD.cont_A1_A2is1 <= estim_iptw_cont$RD_A1_A2is1.ub))
+# RD_A2_A1is0
+perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "RD_A2_A1is0")] <- mean(estim_iptw_cont$RD_A2_A1is0) - RD.cont_A2_A1is0
+perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "RD_A2_A1is0")] <- mean((estim_iptw_cont$RD_A2_A1is0 - mean(estim_iptw_cont$RD_A2_A1is0))^2) * (nrow(estim_iptw_cont)) / (nrow(estim_iptw_cont) - 1)
+perf.iptw.cont$std.bias[which(row.names(perf.iptw.cont) == "RD_A2_A1is0")] <- perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "RD_A2_A1is0")] / sqrt(perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "RD_A2_A1is0")])
+perf.iptw.cont$mse[which(row.names(perf.iptw.cont) == "RD_A2_A1is0")] <- perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "RD_A2_A1is0")] + (perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "RD_A2_A1is0")])^2
+perf.iptw.cont$av.estim.se[which(row.names(perf.iptw.cont) == "RD_A2_A1is0")] <- sqrt(mean(estim_iptw_cont$RD_A2_A1is0.se^2))
+perf.iptw.cont$cov[which(row.names(perf.iptw.cont) == "RD_A2_A1is0")] <- mean(as.numeric(RD.cont_A2_A1is0 >= estim_iptw_cont$RD_A2_A1is0.lb) & (RD.cont_A2_A1is0 <= estim_iptw_cont$RD_A2_A1is0.ub))
+# RD_A2_A1is1
+perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "RD_A2_A1is1")] <- mean(estim_iptw_cont$RD_A2_A1is1) - RD.cont_A2_A1is1
+perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "RD_A2_A1is1")] <- mean((estim_iptw_cont$RD_A2_A1is1 - mean(estim_iptw_cont$RD_A2_A1is1))^2) * (nrow(estim_iptw_cont)) / (nrow(estim_iptw_cont) - 1)
+perf.iptw.cont$std.bias[which(row.names(perf.iptw.cont) == "RD_A2_A1is1")] <- perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "RD_A2_A1is1")] / sqrt(perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "RD_A2_A1is1")])
+perf.iptw.cont$mse[which(row.names(perf.iptw.cont) == "RD_A2_A1is1")] <- perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "RD_A2_A1is1")] + (perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "RD_A2_A1is1")])^2
+perf.iptw.cont$av.estim.se[which(row.names(perf.iptw.cont) == "RD_A2_A1is1")] <- sqrt(mean(estim_iptw_cont$RD_A2_A1is1.se^2))
+perf.iptw.cont$cov[which(row.names(perf.iptw.cont) == "RD_A2_A1is1")] <- mean(as.numeric(RD.cont_A2_A1is1 >= estim_iptw_cont$RD_A2_A1is1.lb) & (RD.cont_A2_A1is1 <= estim_iptw_cont$RD_A2_A1is1.ub))
+# a.INT
+perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "a.INT")] <- mean(estim_iptw_cont$a.INT) - a.INT.cont
+perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "a.INT")] <- mean((estim_iptw_cont$a.INT - mean(estim_iptw_cont$a.INT))^2) * (nrow(estim_iptw_cont)) / (nrow(estim_iptw_cont) - 1)
+perf.iptw.cont$std.bias[which(row.names(perf.iptw.cont) == "a.INT")] <- perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "a.INT")] / sqrt(perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "a.INT")])
+perf.iptw.cont$mse[which(row.names(perf.iptw.cont) == "a.INT")] <- perf.iptw.cont$var[which(row.names(perf.iptw.cont) == "a.INT")] + (perf.iptw.cont$bias[which(row.names(perf.iptw.cont) == "a.INT")])^2
+perf.iptw.cont$av.estim.se[which(row.names(perf.iptw.cont) == "a.INT")] <- sqrt(mean(estim_iptw_cont$a.INT.se^2))
+perf.iptw.cont$cov[which(row.names(perf.iptw.cont) == "a.INT")] <- mean(as.numeric(a.INT.cont >= estim_iptw_cont$a.INT.lb) & (a.INT.cont <= estim_iptw_cont$a.INT.ub))
+
+## performance summary - TMLE
+# p00
+perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "p00")] <- mean(estim_tmle_cont$p00) - E.Y00
+perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "p00")] <- mean((estim_tmle_cont$p00 - mean(estim_tmle_cont$p00))^2) * (nrow(estim_tmle_cont)) / (nrow(estim_tmle_cont) - 1)
+perf.tmle.cont$std.bias[which(row.names(perf.tmle.cont) == "p00")] <- perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "p00")] / sqrt(perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "p00")])
+perf.tmle.cont$mse[which(row.names(perf.tmle.cont) == "p00")] <- perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "p00")] + (perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "p00")])^2
+perf.tmle.cont$av.estim.se[which(row.names(perf.tmle.cont) == "p00")] <- sqrt(mean(estim_tmle_cont$p00.se^2))
+perf.tmle.cont$cov[which(row.names(perf.tmle.cont) == "p00")] <- mean(as.numeric(E.Y00 >= estim_tmle_cont$p00.lb) & (E.Y00 <= estim_tmle_cont$p00.ub))
+# p10
+perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "p10")] <- mean(estim_tmle_cont$p10) - E.Y10
+perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "p10")] <- mean((estim_tmle_cont$p10 - mean(estim_tmle_cont$p10))^2) * (nrow(estim_tmle_cont)) / (nrow(estim_tmle_cont) - 1)
+perf.tmle.cont$std.bias[which(row.names(perf.tmle.cont) == "p10")] <- perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "p10")] / sqrt(perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "p10")])
+perf.tmle.cont$mse[which(row.names(perf.tmle.cont) == "p10")] <- perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "p10")] + (perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "p10")])^2
+perf.tmle.cont$av.estim.se[which(row.names(perf.tmle.cont) == "p10")] <- sqrt(mean(estim_tmle_cont$p10.se^2))
+perf.tmle.cont$cov[which(row.names(perf.tmle.cont) == "p10")] <- mean(as.numeric(E.Y10 >= estim_tmle_cont$p10.lb) & (E.Y10 <= estim_tmle_cont$p10.ub))
+# p01
+perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "p01")] <- mean(estim_tmle_cont$p01) - E.Y01
+perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "p01")] <- mean((estim_tmle_cont$p01 - mean(estim_tmle_cont$p01))^2) * (nrow(estim_tmle_cont)) / (nrow(estim_tmle_cont) - 1)
+perf.tmle.cont$std.bias[which(row.names(perf.tmle.cont) == "p01")] <- perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "p01")] / sqrt(perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "p01")])
+perf.tmle.cont$mse[which(row.names(perf.tmle.cont) == "p01")] <- perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "p01")] + (perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "p01")])^2
+perf.tmle.cont$av.estim.se[which(row.names(perf.tmle.cont) == "p01")] <- sqrt(mean(estim_tmle_cont$p01.se^2))
+perf.tmle.cont$cov[which(row.names(perf.tmle.cont) == "p01")] <- mean(as.numeric(E.Y01 >= estim_tmle_cont$p01.lb) & (E.Y01 <= estim_tmle_cont$p01.ub))
+# p11
+perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "p11")] <- mean(estim_tmle_cont$p11) - E.Y11
+perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "p11")] <- mean((estim_tmle_cont$p11 - mean(estim_tmle_cont$p11))^2) * (nrow(estim_tmle_cont)) / (nrow(estim_tmle_cont) - 1)
+perf.tmle.cont$std.bias[which(row.names(perf.tmle.cont) == "p11")] <- perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "p11")] / sqrt(perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "p11")])
+perf.tmle.cont$mse[which(row.names(perf.tmle.cont) == "p11")] <- perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "p11")] + (perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "p11")])^2
+perf.tmle.cont$av.estim.se[which(row.names(perf.tmle.cont) == "p11")] <- sqrt(mean(estim_tmle_cont$p11.se^2))
+perf.tmle.cont$cov[which(row.names(perf.tmle.cont) == "p11")] <- mean(as.numeric(E.Y11 >= estim_tmle_cont$p11.lb) & (E.Y11 <= estim_tmle_cont$p11.ub))
+# RD_A1_A2is0
+perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "RD_A1_A2is0")] <- mean(estim_tmle_cont$RD_A1_A2is0) - RD.cont_A1_A2is0
+perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "RD_A1_A2is0")] <- mean((estim_tmle_cont$RD_A1_A2is0 - mean(estim_tmle_cont$RD_A1_A2is0))^2) * (nrow(estim_tmle_cont)) / (nrow(estim_tmle_cont) - 1)
+perf.tmle.cont$std.bias[which(row.names(perf.tmle.cont) == "RD_A1_A2is0")] <- perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "RD_A1_A2is0")] / sqrt(perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "RD_A1_A2is0")])
+perf.tmle.cont$mse[which(row.names(perf.tmle.cont) == "RD_A1_A2is0")] <- perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "RD_A1_A2is0")] + (perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "RD_A1_A2is0")])^2
+perf.tmle.cont$av.estim.se[which(row.names(perf.tmle.cont) == "RD_A1_A2is0")] <- sqrt(mean(estim_tmle_cont$RD_A1_A2is0.se^2))
+perf.tmle.cont$cov[which(row.names(perf.tmle.cont) == "RD_A1_A2is0")] <- mean(as.numeric(RD.cont_A1_A2is0 >= estim_tmle_cont$RD_A1_A2is0.lb) & (RD.cont_A1_A2is0 <= estim_tmle_cont$RD_A1_A2is0.ub))
+# RD_A1_A2is1
+perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "RD_A1_A2is1")] <- mean(estim_tmle_cont$RD_A1_A2is1) - RD.cont_A1_A2is1
+perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "RD_A1_A2is1")] <- mean((estim_tmle_cont$RD_A1_A2is1 - mean(estim_tmle_cont$RD_A1_A2is1))^2) * (nrow(estim_tmle_cont)) / (nrow(estim_tmle_cont) - 1)
+perf.tmle.cont$std.bias[which(row.names(perf.tmle.cont) == "RD_A1_A2is1")] <- perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "RD_A1_A2is1")] / sqrt(perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "RD_A1_A2is1")])
+perf.tmle.cont$mse[which(row.names(perf.tmle.cont) == "RD_A1_A2is1")] <- perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "RD_A1_A2is1")] + (perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "RD_A1_A2is1")])^2
+perf.tmle.cont$av.estim.se[which(row.names(perf.tmle.cont) == "RD_A1_A2is1")] <- sqrt(mean(estim_tmle_cont$RD_A1_A2is1.se^2))
+perf.tmle.cont$cov[which(row.names(perf.tmle.cont) == "RD_A1_A2is1")] <- mean(as.numeric(RD.cont_A1_A2is1 >= estim_tmle_cont$RD_A1_A2is1.lb) & (RD.cont_A1_A2is1 <= estim_tmle_cont$RD_A1_A2is1.ub))
+# RD_A2_A1is0
+perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "RD_A2_A1is0")] <- mean(estim_tmle_cont$RD_A2_A1is0) - RD.cont_A2_A1is0
+perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "RD_A2_A1is0")] <- mean((estim_tmle_cont$RD_A2_A1is0 - mean(estim_tmle_cont$RD_A2_A1is0))^2) * (nrow(estim_tmle_cont)) / (nrow(estim_tmle_cont) - 1)
+perf.tmle.cont$std.bias[which(row.names(perf.tmle.cont) == "RD_A2_A1is0")] <- perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "RD_A2_A1is0")] / sqrt(perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "RD_A2_A1is0")])
+perf.tmle.cont$mse[which(row.names(perf.tmle.cont) == "RD_A2_A1is0")] <- perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "RD_A2_A1is0")] + (perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "RD_A2_A1is0")])^2
+perf.tmle.cont$av.estim.se[which(row.names(perf.tmle.cont) == "RD_A2_A1is0")] <- sqrt(mean(estim_tmle_cont$RD_A2_A1is0.se^2))
+perf.tmle.cont$cov[which(row.names(perf.tmle.cont) == "RD_A2_A1is0")] <- mean(as.numeric(RD.cont_A2_A1is0 >= estim_tmle_cont$RD_A2_A1is0.lb) & (RD.cont_A2_A1is0 <= estim_tmle_cont$RD_A2_A1is0.ub))
+# RD_A2_A1is1
+perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "RD_A2_A1is1")] <- mean(estim_tmle_cont$RD_A2_A1is1) - RD.cont_A2_A1is1
+perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "RD_A2_A1is1")] <- mean((estim_tmle_cont$RD_A2_A1is1 - mean(estim_tmle_cont$RD_A2_A1is1))^2) * (nrow(estim_tmle_cont)) / (nrow(estim_tmle_cont) - 1)
+perf.tmle.cont$std.bias[which(row.names(perf.tmle.cont) == "RD_A2_A1is1")] <- perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "RD_A2_A1is1")] / sqrt(perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "RD_A2_A1is1")])
+perf.tmle.cont$mse[which(row.names(perf.tmle.cont) == "RD_A2_A1is1")] <- perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "RD_A2_A1is1")] + (perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "RD_A2_A1is1")])^2
+perf.tmle.cont$av.estim.se[which(row.names(perf.tmle.cont) == "RD_A2_A1is1")] <- sqrt(mean(estim_tmle_cont$RD_A2_A1is1.se^2))
+perf.tmle.cont$cov[which(row.names(perf.tmle.cont) == "RD_A2_A1is1")] <- mean(as.numeric(RD.cont_A2_A1is1 >= estim_tmle_cont$RD_A2_A1is1.lb) & (RD.cont_A2_A1is1 <= estim_tmle_cont$RD_A2_A1is1.ub))
+# a.INT
+perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "a.INT")] <- mean(estim_tmle_cont$a.INT) - a.INT.cont
+perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "a.INT")] <- mean((estim_tmle_cont$a.INT - mean(estim_tmle_cont$a.INT))^2) * (nrow(estim_tmle_cont)) / (nrow(estim_tmle_cont) - 1)
+perf.tmle.cont$std.bias[which(row.names(perf.tmle.cont) == "a.INT")] <- perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "a.INT")] / sqrt(perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "a.INT")])
+perf.tmle.cont$mse[which(row.names(perf.tmle.cont) == "a.INT")] <- perf.tmle.cont$var[which(row.names(perf.tmle.cont) == "a.INT")] + (perf.tmle.cont$bias[which(row.names(perf.tmle.cont) == "a.INT")])^2
+perf.tmle.cont$av.estim.se[which(row.names(perf.tmle.cont) == "a.INT")] <- sqrt(mean(estim_tmle_cont$a.INT.se^2))
+perf.tmle.cont$cov[which(row.names(perf.tmle.cont) == "a.INT")] <- mean(as.numeric(a.INT.cont >= estim_tmle_cont$a.INT.lb) & (a.INT.cont <= estim_tmle_cont$a.INT.ub))
+
+# save simulation results
+saveRDS(perf.gcomp.cont, file = "./docs/perf_gcomp_cont")
+saveRDS(perf.iptw.cont, file = "./docs/perf_iptw_cont")
+saveRDS(perf.tmle.cont, file = "./docs/perf_tmle_cont")
+

@@ -500,7 +500,7 @@ for (i in 1:n.simu) {
                              iptw.only = FALSE,
                              survivalOutcome = FALSE,
                              variance.method = "ic",
-                             B = 1000)
+                             B = 200)
   results.bin.gcomp <- estim.int.effects(Ybin.gcomp, estimator = "gcomp")$int.r
   # save results
   # p

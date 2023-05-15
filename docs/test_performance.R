@@ -1369,3 +1369,6 @@ saveRDS(perf.gcomp.cont, file = "./docs/perf_gcomp_cont")
 saveRDS(perf.iptw.cont, file = "./docs/perf_iptw_cont")
 saveRDS(perf.tmle.cont, file = "./docs/perf_tmle_cont")
 
+perf_gcomp_cont <- readRDS(file = "./docs/perf_gcomp_cont")
+perf_iptw_cont <- readRDS(file = "./docs/perf_iptw_cont")
+perf_tmle_cont <- readRDS(file = "./docs/perf_tmle_cont")

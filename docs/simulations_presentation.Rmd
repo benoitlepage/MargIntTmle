@@ -1,0 +1,149 @@
+---
+title: "Test performance on simulations"
+author: "Benoit Lepage"
+date: "2023-05-15"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(magrittr)
+```
+
+# Simulations
+
+Simulation setting
+
+```{r load_results, include=FALSE}
+perf_gcomp_bin <- readRDS(file = "perf_gcomp_bin")
+perf_iptw_bin <- readRDS(file = "perf_iptw_bin")
+perf_tmle_bin <- readRDS(file = "perf_tmle_bin")
+
+perf_gcomp_bin$bias <- perf_gcomp_bin$bias * 100
+perf_gcomp_bin$std.bias <- perf_gcomp_bin$std.bias * 100
+perf_gcomp_bin$av.estim.se <- perf_gcomp_bin$av.estim.se * 100
+perf_gcomp_bin$cov <- perf_gcomp_bin$cov * 100
+
+perf_iptw_bin$bias <- perf_iptw_bin$bias * 100
+perf_iptw_bin$std.bias <- perf_iptw_bin$std.bias * 100
+perf_iptw_bin$av.estim.se <- perf_iptw_bin$av.estim.se * 100
+perf_iptw_bin$cov <- perf_iptw_bin$cov * 100
+
+perf_tmle_bin$bias <- perf_tmle_bin$bias * 100
+perf_tmle_bin$std.bias <- perf_tmle_bin$std.bias * 100
+perf_tmle_bin$av.estim.se <- perf_tmle_bin$av.estim.se * 100
+perf_tmle_bin$cov <- perf_tmle_bin$cov * 100
+
+perf_gcomp_cont <- readRDS(file = "perf_gcomp_cont")
+perf_iptw_cont <- readRDS(file = "perf_iptw_cont")
+perf_tmle_cont <- readRDS(file = "perf_tmle_cont")
+
+perf_gcomp_cont$std.bias <- perf_gcomp_cont$std.bias * 100
+perf_gcomp_cont$cov <- perf_gcomp_cont$cov * 100
+
+perf_iptw_cont$std.bias <- perf_iptw_cont$std.bias * 100
+perf_iptw_cont$cov <- perf_iptw_cont$cov * 100
+
+perf_tmle_cont$std.bias <- perf_tmle_cont$std.bias * 100
+perf_tmle_cont$cov <- perf_tmle_cont$cov * 100
+```
+
+# 2) Results for the binary outcome
+## 2.1) Estimation by g-computation
+
+```{r table_gcomp_bin, echo=FALSE}
+perf_gcomp_bin %>%
+  kable(format = "latex",
+        digits = c(3,5,2,5,2,1), 
+        col.names = c("Bias (%)",
+                      "Variance",
+                     "Std.bias (%)",
+                     "MSE",
+                     "Av.SE (%)", 
+                     "Coverage (%)"),
+        caption = "Results from g-computation estimation with a binary outcome",
+        escape = TRUE)
+```
+Note that the standard error was not estimated in 150 simulations out of 1000, resulting in a missing average standard error and coverage for the $\log\text{RERI}$ indicator.
+
+## 2.2) Estimation by IPTW
+```{r table_iptw_bin, echo=FALSE}
+perf_iptw_bin %>%
+  kable(format = "latex",
+        digits = c(3,5,2,5,2,1), 
+        col.names = c("Bias (%)",
+                      "Variance",
+                     "Std.bias (%)",
+                     "MSE",
+                     "Av.SE (%)", 
+                     "Coverage (%)"),
+        caption = "Results from IPTW estimation with a binary outcome",
+        escape = TRUE)
+```
+
+## 2.3) Estimation by TMLE
+```{r table_tmle_bin, echo=FALSE}
+perf_tmle_bin %>%
+  kable(format = "latex",
+        digits = c(3,5,2,5,2,1), 
+        col.names = c("Bias (%)",
+                      "Variance",
+                     "Std.bias (%)",
+                     "MSE",
+                     "Av.SE (%)", 
+                     "Coverage (%)"),
+        caption = "Results from TMLE estimation with a binary outcome",
+        escape = TRUE)
+```
+
+
+# 3) Results for the continuous outcome
+## 3.1) Estimation by g-computation
+
+```{r table_gcomp_cont, echo=FALSE}
+perf_gcomp_cont %>%
+  kable(format = "latex",
+        digits = c(3,2,2,2,1,1), 
+        col.names = c("Bias (%)",
+                      "Variance",
+                     "Std.bias (%)",
+                     "MSE",
+                     "Av.SE (%)", 
+                     "Coverage (%)"),
+        caption = "Results from g-computation estimation with a continuous outcome",
+        escape = TRUE)
+```
+
+## 3.2) Estimation by IPTW
+
+```{r table_iptw_cont, echo=FALSE}
+perf_iptw_cont %>%
+  kable(format = "latex",
+        digits = c(3,2,2,2,1,1), 
+        col.names = c("Bias (%)",
+                      "Variance",
+                     "Std.bias (%)",
+                     "MSE",
+                     "Av.SE (%)", 
+                     "Coverage (%)"),
+        caption = "Results from IPTW estimation with a continuous outcome",
+        escape = TRUE)
+```
+
+## 3.3) Estimation by TMLE
+
+```{r table_tmle_cont, echo=FALSE}
+perf_tmle_cont %>%
+  kable(format = "latex",
+        digits = c(3,2,2,2,1,1), 
+        col.names = c("Bias (%)",
+                      "Variance",
+                     "Std.bias (%)",
+                     "MSE",
+                     "Av.SE (%)", 
+                     "Coverage (%)"),
+        caption = "Results from TMLE estimation with a continuous outcome",
+        escape = TRUE)
+```
+

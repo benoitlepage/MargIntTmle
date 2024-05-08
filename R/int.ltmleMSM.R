@@ -9,6 +9,8 @@
 #' \code{ltmle} package.
 #' @param Anodes column names or indicies in \code{data} of treatment nodes
 #' \code{c("A1","A2")}
+#' @param Vnodes column name or index in \code{data} of effect modifier node
+#' \code{c("V")}
 #' @param Cnodes olumn names or indicies in \code{data} of censoring nodes.
 #' \code{NULL} by default, survival is not yet implemented for the
 #' \code{int.ltmleMSM function}
@@ -138,6 +140,7 @@
 #'                                   boot.seed = 54321)
 int.ltmleMSM <- function(data = data,
                          Anodes = Anodes, # c("A1", "A2")
+                         Vnode = Vnode,
                          Cnodes = NULL,
                          Lnodes = NULL, # c("L1", "L2", "L3")
                          Ynodes = Ynodes, # "Y"

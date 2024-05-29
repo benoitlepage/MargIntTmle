@@ -7,10 +7,12 @@
 #'
 #' @param data data frame following the time-ordering of the nodes. See help of
 #' \code{ltmle} package.
-#' @param Anodes column names or indicies in \code{data} of treatment nodes
-#' \code{c("A1","A2")}
+#' @param A1nodes column names or indicies in \code{data} of treatment nodes for the 1st exposure
+#' \code{c("A1.1","A1.2",...)}. Dummy variables for categorical exposures with > 2 levels.
+#' @param A2nodes column names or indicies in \code{data} of treatment nodes for the 2nd exposure
+#' \code{c("A2.1","A2.2",...)}. Dummy variables for categorical exposures with > 2 levels.
 #' @param Vnodes column name or index in \code{data} of effect modifier node
-#' \code{c("V")}
+#' \code{c("V.1","V.2",...)}. Dummy variables for categorical exposures with > 2 levels.
 #' @param Cnodes olumn names or indicies in \code{data} of censoring nodes.
 #' \code{NULL} by default, survival is not yet implemented for the
 #' \code{int.ltmleMSM function}
@@ -95,17 +97,26 @@
 #' @export
 #'
 #' @examples
+#' ## Example 1
 #' set.seed(12345)
-#' b = param.causal.model()
-#' df <- generate.data(N = 10000, b = b)
-#' summary(df)
+#' df <- generate.data.multcat(N = 1000, b = param.causal.model.multcat())
+#' head(df)
+#' df <- data.frame(df[,c("conf1","conf2","conf3")],
+#'                  behav.2 = ifelse(df$behav == 2, 1, 0),
+#'                  behav.3 = ifelse(df$behav == 3, 1, 0),
+#'                  env.2 = ifelse(df$env == 2, 1, 0),
+#'                  env.3 = ifelse(df$env == 3, 1, 0),
+#'                  hlth.outcome = df$hlth.outcome)
+#' head(df)
 #'
 #' # Define Q and g formulas
 #' # an A1 * A2 interaction term is recommended in the Q formula for the estimation
 #' # of interaction effects
-#' Q_formulas = c(hlth.outcome="Q.kplus1 ~ conf1 + conf2 + conf3 + sex * env")
-#' g_formulas = c("sex ~ conf1 + conf2",
-#'                "env ~ conf1 + conf3")
+#' Q_formulas = c(hlth.outcome="Q.kplus1 ~ conf1 + conf2 + conf3 + behav.2 * env.2 + behav.2 * env.3 + behav.3 * env.2 + behav.3 * env.3")
+#' g_formulas = c("behav.2 ~ conf1 + conf2",
+#'                "behav.3 ~ conf1 + conf2 + behav.2",
+#'                "env.2 ~ conf1 + conf3",
+#'                "env.3 ~ conf1 + conf3 + env.2")
 #'
 #' # Define SuperLearner libraries
 #' SL.library = list(Q=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"),
@@ -115,8 +126,10 @@
 #' interaction.ltmle <- int.ltmleMSM(data = df,
 #'                                   Qform = Q_formulas,
 #'                                   gform = g_formulas,
-#'                                   Anodes = c("sex", "env"),
-#'                                   Lnodes = c("conf1", "conf2", "conf3"),
+#'                                   A1nodes = c("behav.2","behav.3"),
+#'                                   A2nodes = c("env.2","env.3"),
+#'                                   Vnodes = NULL,
+#'                                   Lnodes = NULL,
 #'                                   Ynodes = c("hlth.outcome"),
 #'                                   SL.library = SL.library,
 #'                                   gcomp = FALSE,
@@ -128,8 +141,10 @@
 #' interaction.gcomp <- int.ltmleMSM(data = df,
 #'                                   Qform = Q_formulas,
 #'                                   gform = g_formulas,
-#'                                   Anodes = c("sex", "env"),
-#'                                   Lnodes = c("conf1", "conf2", "conf3"),
+#'                                   A1nodes = c("behav.2","behav.3"),
+#'                                   A2nodes = c("env.2","env.3"),
+#'                                   Vnodes = NULL,
+#'                                   Lnodes = NULL,
 #'                                   Ynodes = c("hlth.outcome"),
 #'                                   SL.library = list(Q="SL.lm", g="SL.mean"),
 #'                                   gcomp = TRUE,
@@ -138,9 +153,47 @@
 #'                                   variance.method = "ic",
 #'                                   B = 5, # it should be at least 1000 or 2000
 #'                                   boot.seed = 54321)
+#'
+#' ## Example 2 - c(env.2, env3) are effect modifiers among baseline confounders
+#' set.seed(12345)
+#' df <- generate.data.multcat(N = 1000, b = param.causal.model.multcat())
+#' head(df)
+#' df <- data.frame(df[,c("conf1","conf2","conf3")],
+#'                  env.2 = ifelse(df$env == 2, 1, 0),
+#'                  env.3 = ifelse(df$env == 3, 1, 0),
+#'                  behav.2 = ifelse(df$behav == 2, 1, 0),
+#'                  behav.3 = ifelse(df$behav == 3, 1, 0),
+#'                  hlth.outcome = df$hlth.outcome)
+#' head(df)
+#'
+#' # Define Q and g formulas
+#' # an (A1 * Effect.modifier) interaction term is recommended in the Q formula for the estimation
+#' # of interaction effects
+#' Q_formulas = c(hlth.outcome="Q.kplus1 ~ conf1 + conf2 + conf3 + behav.2 * env.2 + behav.2 * env.3 + behav.3 * env.2 + behav.3 * env.3")
+#' g_formulas = c("behav.2 ~ conf1 + conf2",
+#'                "behav.3 ~ conf1 + conf2 + behav.2") #c(behav2,behav.3) are the only exposure variables
+#'
+#' # Define SuperLearner libraries
+#' SL.library = list(Q = list("SL.glm"), g = list("SL.glm"))
+#'
+#' # Estimate MSM parameters by IPTW and TMLE
+#' interaction.ltmle <- int.ltmleMSM(data = df,
+#'                                   Qform = Q_formulas,
+#'                                   gform = g_formulas,
+#'                                   A1nodes = c("behav.2","behav.3"),
+#'                                   A2nodes = NULL,
+#'                                   Vnodes = c("env.2","env.3"),
+#'                                   Lnodes = NULL,
+#'                                   Ynodes = c("hlth.outcome"),
+#'                                   SL.library = SL.library,
+#'                                   gcomp = FALSE,
+#'                                   iptw.only = FALSE,
+#'                                   survivalOutcome = FALSE,
+#'                                   variance.method = "ic")
 int.ltmleMSM <- function(data = data,
-                         Anodes = Anodes, # c("A1", "A2")
-                         Vnode = Vnode,
+                         A1nodes = A1nodes, # c("A1.1", "A1.2",...)
+                         A2nodes = A2nodes, # c("A2.1", "A2.2",...)
+                         Vnodes = Vnodes,
                          Cnodes = NULL,
                          Lnodes = NULL, # c("L1", "L2", "L3")
                          Ynodes = Ynodes, # "Y"
@@ -157,43 +210,216 @@ int.ltmleMSM <- function(data = data,
                          stratify = FALSE,
                          msm.weights = "empirical",
                          estimate.time = FALSE,
-                         gcomp = gcomp,
+                         gcomp = FALSE,
                          iptw.only = iptw.only,
                          deterministic.Q.function = NULL,
-                         variance.method = "ic",
+                         variance.method = "tmle",
                          observation.weights = NULL,
                          id = NULL,
-                         B = 2000,
+                         B = 1000,
                          boot.seed = NULL) {
-  # format data set with baseline confounders, 2 exposures (A1,A2) and the outcome Y
-  # TO DO: modify to enable intermediate confounders between A1 and A2
-  # df.int <- data.frame(data[,which(names(data) == Lnodes)],          +++++ DELETE +++++++++++
-  #                      A1 = data[,which(names(data) == Anodes[1])],  +++++ DELETE +++++++++++
-  #                      A2 = data[,which(names(data) == Anodes[2])],  +++++ DELETE +++++++++++
-  #                      Y = data[,which(names(data) == Ynodes)])      +++++ DELETE +++++++++++
+  # check arguments effect modifiers arguments
+  if(!is.null(A2nodes)) {
+    try(if(!is.null(Vnodes))
+      stop("if A2nodes is not NULL, then Vnodes should be NULL"))
+  }
+  if(!is.null(Vnodes)) {
+    try(if(!is.null(A2nodes))
+      stop("if Vnode is not NULL, then A2nodes should be NULL"))
+  }
 
-  # regime=
-  # binary array: n x numAnodes x numRegimes of counterfactual treatment or a list of 'rule' functions
-  regimes.MSM <- array(NA, dim = c(nrow(data), 2, 4)) # 2 variables d'exposition (A1, A2), 4 régimes d'exposition (0,0) (1,0) (0,1) (1,1)
-  regimes.MSM[,,1] <- matrix(c(0,0), ncol = 2, nrow = nrow(data), byrow = TRUE) # exposé ni à A1, ni à A2
-  regimes.MSM[,,2] <- matrix(c(1,0), ncol = 2, nrow = nrow(data), byrow = TRUE) # exposé à A1 uniquement
-  regimes.MSM[,,3] <- matrix(c(0,1), ncol = 2, nrow = nrow(data), byrow = TRUE) # exposé à A2 uniquement
-  regimes.MSM[,,4] <- matrix(c(1,1), ncol = 2, nrow = nrow(data), byrow = TRUE) # exposé à A1 et à A2
+  ## format data set
+  baseline.Lnodes <- names(df)[1:(min(c(which(names(df) %in% A1nodes),
+                                        which(names(df) %in% A2nodes))) - 1)]
+  interm.Lnodes <- Lnodes[which(!(Lnodes %in% baseline.Lnodes))]
 
-  # summary.measures = valeurs des coefficients du MSM associés à chaque régime
-  # array: num.regimes x num.summary.measures x num.final.Ynodes -
-  # measures summarizing the regimes that will be used on the right hand side of working.msm
-  # (baseline covariates may also be used in the right hand side of working.msm and do not need to be included in summary.measures)
-  summary.measures.reg <- array(NA, dim = c(4, 3, 1))
-  summary.measures.reg[,,1] <- matrix(c(0, 0, 0, # aucun effet ni de A1, ni de A2
-                                        1, 0, 0, # effet de A1 isolé
-                                        0, 1, 0, # effet de A2 isolé
-                                        1, 1, 1), # effet de A1 + A2 + A1:A2
-                                      ncol = 3, nrow = 4, byrow = TRUE)
-  colnames(summary.measures.reg) <- c(Anodes[1],
-                                      Anodes[2],
-                                      paste0(Anodes[1],":",Anodes[2]))
-  # colnames(summary.measures.reg) <- c("A1", "A2", "A1:A2") +++++ DELETE +++++++++++
+  if(!is.null(Vnodes)) {
+    for(i in length(Vnodes)) {
+      try(if(!(Vnodes[i] %in% baseline.Lnodes))
+        stop(paste0("The effect modifier ",Vnodes[i], " should be in the set of baseline confounders")))
+    }
+  }
+
+  # # NON EN FAIT IL VAUDRAIT MIEUX SAISIR DIRECTEMENT LES DUMMIES POUR EVITER UN TRAITEMENT DIFFERENT ENTRE EXPOSITION ET AUTRES VARIABLES +++
+  # # AU MOMENT DE L'IMPORT DES DONNEES
+  # # create dummy variables for the exposures (or effect modifier)
+  # if(length(Anodes) == 2) {
+  #   levels.A1 <- sort(unique(data[,Anodes[1]]))
+  #   A1 <- list()
+  #   index <- 1
+  #   for(i in which(!(levels.A1 %in% Anodes.ref[1]))) {
+  #     A1[[index]] <- ifelse(data[,Anodes[1]] == i, 1, 0)
+  #     names(A1)[index] <- paste0(Anodes[1],".",i)
+  #     index <- index + 1
+  #   }
+  #
+  #   levels.A2 <- sort(unique(data[,Anodes[2]]))
+  #   A2 <- list()
+  #   index <- 1
+  #   for(i in which(!(levels.A2 %in% Anodes.ref[2]))) {
+  #     A2[[index]] <- ifelse(data[,Anodes[2]] == i, 1, 0)
+  #     names(A2)[index] <- paste0(Anodes[2],".",i)
+  #     index <- index + 1
+  #   }
+  #   rm(index)
+  #
+  #   data.int <- data[,baseline.Lnodes]
+  #   for(i in 1:length(A1)) {
+  #     data.int <- cbind(data.int, A1[[i]])
+  #     names(data.int)[ncol(data.int)] <- names(A1)[i]
+  #   }
+  #   data.int <- cbind(data.int, data[,interm.Lnodes])
+  #   for(i in 1:length(A1)) {
+  #     data.int <- cbind(data.int, A2[[i]])
+  #     names(data.int)[ncol(data.int)] <- names(A2)[i]
+  #   }
+  #   rm(i)
+  #   data.int <- cbind(data.int, data[,Ynodes])
+  #   names(data.int)[ncol(data.int)] <- Ynodes
+  # }
+  #
+  #
+
+  if(!is.null(A2nodes)) {
+    Anodes <- c(A1nodes, A2nodes)
+    nb.regimes <- (length(A1nodes) + 1) * (length(A2nodes) + 1)
+    numAnodes <- length(A1nodes) + length(A2nodes)
+
+    int.terms <- list()
+    index <- 1
+    for(i in 1:length(A1nodes)) {
+      for(j in 1:length(A2nodes)) {
+        int.terms[[index]] <- paste0(A1nodes[i]," * ",A2nodes[j])
+        index <- index + 1
+      }
+    }
+
+    working.msm <- paste0("Y ~")
+    model.msm <- paste0(Ynodes, " ~")
+    for(i in 1:length(int.terms)) {
+      working.msm <- paste0(working.msm," + ",int.terms[[i]])
+      model.msm <- paste0(model.msm," + ",int.terms[[i]])
+    }
+    rm(index,i,j,int.terms)
+
+    # summary.measures = valeurs des coefficients du MSM associés à chaque régime
+    # array: num.regimes x num.summary.measures x num.final.Ynodes -
+    # measures summarizing the regimes that will be used on the right hand side of working.msm
+    # (baseline covariates may also be used in the right hand side of working.msm and do not need to be included in summary.measures)
+    summary.measures.reg <- array(NA, dim = c((length(A1nodes) + 1) * (length(A2nodes) + 1),
+                                              (length(A1nodes) + length(A2nodes)),
+                                              length(Ynodes)))
+    # summary.measures.reg <- array(NA, dim = c((length(A1nodes) + 1) * (length(A2nodes) + 1),
+    #                                           (length(A1nodes) + length(A2nodes) + length(A1nodes) * length(A2nodes)),
+    #                                           length(Ynodes)))
+    summary.measures.reg[,,1] <- unique(model.matrix(as.formula(model.msm), data = data))[,-1][,1:(length(A1nodes) + length(A2nodes))]
+    colnames(summary.measures.reg) <- colnames(unique(model.matrix(as.formula(model.msm), data = data))[,-1][,1:(length(A1nodes) + length(A2nodes))])
+
+    for(i in length(Anodes)) {
+      try(if(!(Anodes[i] %in% colnames(summary.measures.reg)))
+        stop("Problem in creation of the summary.measures argument"))
+    }
+
+    # regime=
+    # binary array: n x numAnodes x numRegimes of counterfactual treatment or a list of 'rule' functions
+    # colnames(regime) should be the same as Anodes (in the same order)
+    regimes.MSM.temp <- array(NA, dim = c(nrow(data), numAnodes, nb.regimes))
+    for(i in 1:nb.regimes) {
+      for(r in 1:nrow(data)) {
+        regimes.MSM.temp[r,,i] <- summary.measures.reg[i,1:numAnodes,1]
+      }
+    }
+    colnames(regimes.MSM.temp) <- colnames(summary.measures.reg)[1:numAnodes]
+    regimes.MSM <- array(NA, dim = c(nrow(data), numAnodes, nb.regimes))
+    for(i in 1:length(Anodes)) {
+      regimes.MSM[,i,] <- regimes.MSM.temp[,Anodes[i],]
+    }
+    colnames(regimes.MSM) <- Anodes
+    rm(i,regimes.MSM.temp)
+
+    try(if(dim(regimes.MSM)[3] != (length(A1nodes) + 1) * (length(A2nodes) + 1))
+      stop("Interaction effects cannot be identified from this data set (MSM is not saturated)"))
+  }
+
+  if(!is.null(Vnodes)) {
+    Anodes <- c(A1nodes)
+    nb.regimes <- (length(A1nodes) + 1)
+    numAnodes <- length(A1nodes)
+
+    int.terms <- list()
+    index <- 1
+    for(i in 1:length(A1nodes)) {
+      for(j in 1:length(Vnodes)) {
+        int.terms[[index]] <- paste0(A1nodes[i]," * ",Vnodes[j])
+        index <- index + 1
+      }
+    }
+
+    working.msm <- paste0("Y ~")
+    model.msm <- paste0(Ynodes, " ~")
+    for(i in 1:length(int.terms)) {
+      working.msm <- paste0(working.msm," + ",int.terms[[i]])
+      model.msm <- paste0(model.msm," + ",int.terms[[i]])
+    }
+    rm(index,i,j,int.terms)
+
+    # summary.measures = valeurs des coefficients du MSM associés à chaque régime
+    # array: num.regimes x num.summary.measures x num.final.Ynodes -
+    # measures summarizing the regimes that will be used on the right hand side of working.msm
+    # (baseline covariates may also be used in the right hand side of working.msm and do not need to be included in summary.measures)
+    summary.measures.reg <- array(0, dim = c(length(A1nodes) + 1,
+                                              length(A1nodes),
+                                              length(Ynodes)))
+    for(i in 1:length(A1nodes)) {
+      summary.measures.reg[1 + i,i,] <- 1
+    }
+    colnames(summary.measures.reg) <- A1nodes
+
+    # regime=
+    # binary array: n x numAnodes x numRegimes of counterfactual treatment or a list of 'rule' functions
+    # colnames(regime) should be the same as Anodes (in the same order)
+    regimes.MSM <- array(NA, dim = c(nrow(data), numAnodes, nb.regimes))
+    for(i in 1:nb.regimes) {
+      for(r in 1:nrow(data)) {
+        regimes.MSM[r,,i] <- summary.measures.reg[i,1:numAnodes,1]
+      }
+    }
+    colnames(regimes.MSM) <- A1nodes
+  }
+
+  # A1node.matrix <- matrix(0, nrow = (length(A1nodes) + 1), ncol = length(A1nodes))
+  # for(i in 1:ncol(A1node.matrix)) {
+  #   A1node.matrix[i+1,i] <- 1
+  # }
+  # colnames(A1node.matrix) <- A1nodes
+  # A2node.matrix <- matrix(0, nrow = (length(A2nodes) + 1), ncol = length(A2nodes))
+  # for(i in 1:ncol(A2node.matrix)) {
+  #   A2node.matrix[i+1,i] <- 1
+  # }
+  # colnames(A2node.matrix) <- A2nodes
+  #
+  #
+  #
+  # Anode.matrix <- matrix(NA, nrow = 0, #nrow = nrow(A1node.matrix) * nrow(A2node.matrix),
+  #                        ncol = length(A1nodes) * length(A2nodes))
+  # for(i in 1:nrow(A1node.matrix)) {
+  #   for(j in 1:nrow(A2node.matrix)) {
+  #     Anode.matrix <- rbind(Anode.matrix,
+  #                           c(A1node.matrix[i,],A2node.matrix[j,]))
+  #   }
+  # }
+  # for(i in 1:length(A1nodes)) {
+  #   for(j in (length(A1nodes) +1):(length(A1nodes) + length(A2nodes))) {
+  #     Anode.matrix <- cbind(Anode.matrix,
+  #                           as.data.frame(Anode.matrix)[,i] * as.data.frame(Anode.matrix)[,j])
+  #   }
+  # }
+
+
+
+
+
+
 
   if(gcomp == TRUE) {
     # test length SL.library$Q
@@ -205,12 +431,12 @@ int.ltmleMSM <- function(data = data,
     iptw.only <- FALSE
   }
 
-  working.msm <- paste0("Y ~ ",Anodes[1]," + ",Anodes[2]," + ",Anodes[1],":",Anodes[2])
+
 
   ltmle_MSM <- ltmle::ltmleMSM(data = data,
                                Anodes = Anodes,
                                Cnodes = Cnodes,
-                               Lnodes = Lnodes,
+                               Lnodes = c(interm.Lnodes),
                                Ynodes = Ynodes,
                                survivalOutcome = survivalOutcome,
                                Qform = Qform,
@@ -236,10 +462,12 @@ int.ltmleMSM <- function(data = data,
   bootstrap.res <- NULL
 
   if(gcomp == TRUE) {
-    bootstrap.res <- data.frame("beta.Intercept" = rep(NA, B),
-                                "beta.A1" = rep(NA, B),
-                                "beta.A2" = rep(NA, B),
-                                "beta.A1A2" = rep(NA, B))
+    # bootstrap.res <- data.frame("beta.Intercept" = rep(NA, B),
+    #                             "beta.A1" = rep(NA, B),
+    #                             "beta.A2" = rep(NA, B),
+    #                             "beta.A1A2" = rep(NA, B))
+
+    bootstrap.res.list <- list()
 
     if (is.null(boot.seed)) {
       print("boot.seed argument is null, please add a seed in the int.ltmleMSM function")}
@@ -254,7 +482,8 @@ int.ltmleMSM <- function(data = data,
 
       suppressMessages(boot_ltmle_MSM <- ltmle::ltmleMSM(data = bootData,
                                                          Anodes = Anodes,
-                                                         Lnodes = Lnodes,
+                                                         Cnodes = Cnodes,
+                                                         Lnodes = c(interm.Lnodes),
                                                          Ynodes = Ynodes,
                                                          survivalOutcome = survivalOutcome,
                                                          Qform = Qform,
@@ -270,7 +499,7 @@ int.ltmleMSM <- function(data = data,
                                                          final.Ynodes = final.Ynodes,
                                                          stratify = stratify,
                                                          msm.weights = msm.weights,
-                                                         estimate.time = FALSE,
+                                                         estimate.time = estimate.time,
                                                          gcomp = gcomp,
                                                          iptw.only = iptw.only,
                                                          deterministic.Q.function = deterministic.Q.function,
@@ -278,16 +507,25 @@ int.ltmleMSM <- function(data = data,
                                                          observation.weights = observation.weights,
                                                          id = id))
 
-      bootstrap.res$beta.Intercept[b] <- boot_ltmle_MSM$beta["(Intercept)"]
-      bootstrap.res$beta.A1[b] <- boot_ltmle_MSM$beta[Anodes[1]]
-      bootstrap.res$beta.A2[b] <- boot_ltmle_MSM$beta[Anodes[2]]
-      bootstrap.res$beta.A1A2[b] <- boot_ltmle_MSM$beta[paste0(Anodes[1],":",Anodes[2])]
+      bootstrap.res.list[[b]] <- boot_ltmle_MSM$beta
     }
+
+    bootstrap.res <- matrix(NA, nrow = B, ncol = length(bootstrap.res.list[[1]]))
+    for(b in 1:B) {
+      for(i in 1:length(bootstrap.res.list[[1]])) {
+        bootstrap.res[b,i] <- bootstrap.res.list[[b]][i]
+      }
+    }
+    colnames(bootstrap.res) <- names(boot_ltmle_MSM$beta)
+    bootstrap.res <- data.frame(bootstrap.res)
   }
 
   return(list(ltmle_MSM = ltmle_MSM,
+              working.msm = working.msm,
               data = data,
-              Anodes = Anodes,
+              A1nodes = A1nodes,
+              A2nodes = A2nodes,
+              Vnodes = Vnodes,
               Ynodes = Ynodes,
               bootstrap.res = bootstrap.res))
 }

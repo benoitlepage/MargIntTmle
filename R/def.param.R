@@ -2,7 +2,8 @@
 #'
 #' This function defines parameters that are used to simulate illustrative data sets
 #' consisting of three baseline confounders \eqn{L_1, L_2, L_3}, two exposures of interest
-#' \eqn{A_1, A_2} and one outcome \eqn{Y}. All the variables are binary.
+#' \eqn{A_1, A_2} and one outcome \eqn{Y}. All the variables are binary
+#' (except for the outcome which can be continuous).
 #'
 #' @param p_L1 Probability \eqn{P(L_1 = 1) = p_{L_1}}.
 #' @param p_L2 Probability \eqn{P(L_2 = 1) = p_{L_2}}.

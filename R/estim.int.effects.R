@@ -373,10 +373,10 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
       ltmle_MSM$bootstrap.res$p.A1_0.A2_1 +
       ltmle_MSM$bootstrap.res$p.A1_0.A2_0
 
-    ltmle_MSM$bootstrap.res$lnRERI <- log(ltmle_MSM$bootstrap.res$p.A1_1.A2_1 -
-                                            ltmle_MSM$bootstrap.res$p.A1_1.A2_0 -
-                                            ltmle_MSM$bootstrap.res$p.A1_0.A2_1 +
-                                            ltmle_MSM$bootstrap.res$p.A1_0.A2_0) - log(ltmle_MSM$bootstrap.res$p.A1_0.A2_0)
+    ltmle_MSM$bootstrap.res$RERI <- (ltmle_MSM$bootstrap.res$p.A1_1.A2_1 -
+                                       ltmle_MSM$bootstrap.res$p.A1_1.A2_0 -
+                                       ltmle_MSM$bootstrap.res$p.A1_0.A2_1 +
+                                       ltmle_MSM$bootstrap.res$p.A1_0.A2_0) / log(ltmle_MSM$bootstrap.res$p.A1_0.A2_0)
 
     ltmle_MSM$bootstrap.res$ln.m.INT <- log(ltmle_MSM$bootstrap.res$p.A1_1.A2_1) + log(ltmle_MSM$bootstrap.res$p.A1_0.A2_0) -
                                               log(ltmle_MSM$bootstrap.res$p.A1_1.A2_0) - log(ltmle_MSM$bootstrap.res$p.A1_0.A2_1)
@@ -473,11 +473,11 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
       qnorm(0.975) * int.r$sd.a.INT[int.r$A1 == 1 & int.r$A2 == 1]
 
     # RERI
-    int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1] <- sd(ltmle_MSM$bootstrap.res$lnRERI)
-    int.r$RERI.lo[int.r$A1 == 1 & int.r$A2 == 1] <- exp(log(int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1]) -
-                                                          qnorm(0.975) * int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1])
-    int.r$RERI.up[int.r$A1 == 1 & int.r$A2 == 1] <- exp(log(int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1]) +
-                                                          qnorm(0.975) * int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1])
+    int.r$sd.RERI[int.r$A1 == 1 & int.r$A2 == 1] <- sd(ltmle_MSM$bootstrap.res$RERI)
+    int.r$RERI.lo[int.r$A1 == 1 & int.r$A2 == 1] <- (int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1] -
+                                                       qnorm(0.975) * int.r$sd.RERI[int.r$A1 == 1 & int.r$A2 == 1])
+    int.r$RERI.up[int.r$A1 == 1 & int.r$A2 == 1] <- (int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1] +
+                                                       qnorm(0.975) * int.r$sd.RERI[int.r$A1 == 1 & int.r$A2 == 1])
 
     # multiplicative interaction
     int.r$sd.ln.m.INT[int.r$A1 == 1 & int.r$A2 == 1] <- sd(ltmle_MSM$bootstrap.res$ln.m.INT)

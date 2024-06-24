@@ -1,4 +1,5 @@
 
+
 # ---------------------------------------------------------------------------- #
 ### interaction entre 2 expositions binaires ----
 # ---------------------------------------------------------------------------- #
@@ -45,6 +46,30 @@ interaction.ltmle$ltmle_MSM$beta.iptw
 var(interaction.ltmle$ltmle_MSM$IC)
 var(interaction.ltmle$ltmle_MSM$IC.iptw)
 
+effects.tmle <- estim.int.effects(ltmle_MSM = interaction.ltmle,
+                                  estimator = "tmle")
+
+table_inter <- out.int.table(int.r = effects.tmle,
+                             multipl = "RR",
+                             labels.A1 = data.frame(effects.tmle$values.A1),
+                             #   behav.2 behav.3 behav
+                             # 1       0       0     1
+                             # 2       1       0     2
+                             # 3       0       1     3)
+                             labels.A2 = data.frame(effects.tmle$values.A2),
+                             #   env.2 env.3 env
+                             # 1     0     0   1
+                             # 2     1     0   2
+                             # 3     0     1   3
+                             labels.V = NULL)
+
+library(kableExtra)
+kbl(table_inter$out.table,
+    caption = "Interaction effects estimated by TMLE") %>%
+  kable_classic() %>%
+  footnote(general = table_inter$interaction.effects)
+
+# gcomp
 interaction.gcomp <- int.ltmleMSM(data = df,
                                   Qform = Q_formulas,
                                   gform = g_formulas,
@@ -134,6 +159,59 @@ interaction.ltmle$ltmle_MSM$beta.iptw
 var(interaction.ltmle$ltmle_MSM$IC)
 var(interaction.ltmle$ltmle_MSM$IC.iptw)
 
+effects.3cat.tmle <- estim.int.effects(ltmle_MSM = interaction.ltmle,
+                                       estimator = "tmle")
+effects.3cat.tmle$probs
+effects.3cat.tmle$RD
+effects.3cat.tmle$RR
+effects.3cat.tmle$OR
+effects.3cat.tmle$int
+
+
+
+
+table_inter <- out.int.table(int.r = effects.3cat.tmle,
+                             multipl = "RR",
+                             labels.A1 = data.frame(effects.3cat.tmle$values.A1, behav = c(1,2,3)),
+                             #   behav.2 behav.3 behav
+                             # 1       0       0     1
+                             # 2       1       0     2
+                             # 3       0       1     3)
+                             labels.A2 = data.frame(effects.3cat.tmle$values.A2, env = c(1,2,3)),
+                             #   env.2 env.3 env
+                             # 1     0     0   1
+                             # 2     1     0   2
+                             # 3     0     1   3
+                             labels.V = NULL)
+
+library(kableExtra)
+kbl(table_inter$out.table,
+    caption = "Interaction effects estimated by TMLE") %>%
+  kable_classic() %>%
+  footnote(general = table_inter$interaction.effects)
+
+table_inter_OR <- out.int.table(int.r = effects.3cat.tmle,
+                                multipl = "OR",
+                                labels.A1 = data.frame(effects.3cat.tmle$values.A1, behav = c(1,2,3)),
+                                labels.A2 = data.frame(effects.3cat.tmle$values.A2, env = c(1,2,3)),
+                                labels.V = NULL)
+
+
+
+effects.3cat.iptw <- estim.int.effects(ltmle_MSM = interaction.ltmle,
+                                       estimator = "iptw")
+effects.3cat.iptw$probs
+effects.3cat.iptw$RD
+effects.3cat.iptw$RR
+effects.3cat.iptw$OR
+effects.3cat.iptw$int
+
+estim.int.effects(ltmle_MSM = interaction.ltmle,
+                  estimator = "gcomp")
+# ok cela indique une erreur
+
+
+
 # Estimate MSM parameters by g-computation
 interaction.gcomp <- int.ltmleMSM(data = df,
                                   Qform = Q_formulas,
@@ -170,7 +248,13 @@ hist(interaction.gcomp$bootstrap.res$env.2.behav.3)
 hist(interaction.gcomp$bootstrap.res$env.3.behav.3)
 dim(interaction.gcomp$bootstrap.res)
 
-
+effects.3cat.gcomp <- estim.int.effects(ltmle_MSM = interaction.gcomp,
+                                       estimator = "gcomp")
+effects.3cat.gcomp$probs
+effects.3cat.gcomp$RD
+effects.3cat.gcomp$RR
+effects.3cat.gcomp$OR
+effects.3cat.gcomp$int
 
 ## Example 2 - c(env.2, env3) are effect modifiers among baseline confounders
 set.seed(12345)

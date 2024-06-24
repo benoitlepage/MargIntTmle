@@ -218,6 +218,7 @@ int.ltmleMSM <- function(data = data,
                          id = NULL,
                          B = 1000,
                          boot.seed = NULL) {
+
   # check arguments effect modifiers arguments
   if(!is.null(A2nodes)) {
     try(if(!is.null(Vnodes))

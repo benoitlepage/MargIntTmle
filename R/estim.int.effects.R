@@ -55,6 +55,7 @@
 estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
                               estimator = c("tmle", "iptw", "gcomp")) {
 
+
   data <- ltmle_MSM$data
 
   if(estimator == "gcomp") {
@@ -295,6 +296,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
       probs[row,1:(ncol(values.A1) + ncol(values.A2))] <- c(values.A1[i,],values.A2[j,])
       RD[row,1:(ncol(values.A1) + ncol(values.A2))] <- c(values.A1[i,],values.A2[j,])
       RR[row,1:(ncol(values.A1) + ncol(values.A2))] <- c(values.A1[i,],values.A2[j,])
+      OR[row,1:(ncol(values.A1) + ncol(values.A2))] <- c(values.A1[i,],values.A2[j,])
       int[row,1:(ncol(values.A1) + ncol(values.A2))] <- c(values.A1[i,],values.A2[j,])
 
       row <- row + 1
@@ -303,7 +305,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
   regimes <- probs[,1:(ncol(values.A1) + ncol(values.A2))]
   Xtemp <- model.matrix(as.formula(ltmle_MSM$working.msm), data = data.frame(regimes, Y = 1))
 
-  if(estimator == "tmle" | estimator = "iptw") {
+  if(estimator == "tmle" | estimator == "iptw") {
     ## probabilities
     probs[,"p"] <- plogis(Xtemp %*% beta)
 
@@ -992,11 +994,22 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
     # int.r$m.INT.up[int.r$A1 == 1 & int.r$A2 == 1] <- NA
   }
 
+  if(is.null(ltmle_MSM$Vnodes)) {
+    values.A2 <- values.A2
+    values.V <- NULL
+  }
+  if(is.null(ltmle_MSM$A2nodes)) {
+    values.A2 <- NULL
+    values.V <- values.A2
+  }
   return(list(probs = probs, RD = RD, RR = RR, OR = OR, int = int,
               A1nodes = ltmle_MSM$A1nodes,
               A2nodes = ltmle_MSM$A2nodes,
               Vnodes = ltmle_MSM$Vnodes,
               Ynodes = ltmle_MSM$Ynodes,
+              values.A1 = values.A1,
+              values.A2 = values.A2,
+              values.V = values.V,
               transformOutcome = ltmle_MSM$ltmle_MSM$transformOutcome,
               bootstrap.res = bootstrap.res))
 }

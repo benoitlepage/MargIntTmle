@@ -30,6 +30,7 @@
 #'
 #' @examples
 #' param.causal.model()
+#'
 param.causal.model <- function(p_L1 = 0.50, p_L2 = 0.20, p_L3 = 0.70,  # baseline confounders
                                b_A1 = 0.10, b_L1_A1 = 0.15, b_L2_A1 = 0.25,  # exposure A1
                                b_A2 = 0.15, b_L1_A2 = 0.20, b_L3_A2 = 0.20,  # exposure A2

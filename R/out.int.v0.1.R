@@ -1,3 +1,5 @@
+## FIRST VERSION
+
 #' Create table of the marginal interaction effects
 #'
 #' @param int.r an \code{int.r} data frame from the output obtained by the \code{estim.int.effects} function

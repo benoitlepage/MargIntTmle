@@ -62,6 +62,7 @@ param.causal.model.multcat <- function(p_L1 = 0.50, p_L2 = 0.20, p_L3 = 0.70,  #
                                        b_A1.2A2.2_Y = 0.30,
                                        se_Y = NULL) {
 
+
   # check the sum of A1 parameters is not greater than 100%
   try(if((b_A1.1 + b_L1_A1.1 + b_L1_A1.1 > 1) |
          (b_A1.2 + b_L1_A1.2 + b_L1_A1.2 > 1))

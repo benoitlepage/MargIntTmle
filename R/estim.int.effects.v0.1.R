@@ -1,3 +1,5 @@
+# FIRST VERSION
+
 #' Estimate mean results, relative risks and differences
 #'
 #' @param ltmle_MSM an output from \code{int.ltmleMSM} function

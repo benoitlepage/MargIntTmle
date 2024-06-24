@@ -1,6 +1,6 @@
 Package: MargIntTmle
 Title: Marginal interaction estimation using g-computation, IPTW or TMLE
-Version: 0.0.0.9000
+Version: 0.0.1.0
 Authors@R: 
     person("Benoit", "Lepage", , "benoit.lepage@univ-tlse3.fr", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-1586-2055"))

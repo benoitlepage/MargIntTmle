@@ -299,7 +299,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
       qnorm(0.975) * int.r$sd.a.INT[int.r$A1 == 1 & int.r$A2 == 1]
 
     # RERI
-    sign.RERI <- ifelse(int.r$RERI < 0, -1, 1)
+    sign.RERI <- ifelse(int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1] < 0, -1, 1)
     grad <- sign.RERI * c((int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1]) -
                              int.r$p[int.r$A1 == 1 & int.r$A2 == 0] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 0]) -
                              int.r$p[int.r$A1 == 0 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 1]) +
@@ -321,10 +321,10 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
     v <- t(grad) %*% var(IC) %*% grad
     int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
 
-    abs.RERI <- sign.RERI * int.r$RERI
-    abs.RERI.lo <- exp(log(abs.RERI[int.r$A1 == 1 & int.r$A2 == 1]) -
+    abs.RERI <- sign.RERI * int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1]
+    abs.RERI.lo <- exp(log(abs.RERI) -
                           qnorm(0.975) * int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1])
-    abs.RERI.up <- exp(log(abs.RERI[int.r$A1 == 1 & int.r$A2 == 1]) +
+    abs.RERI.up <- exp(log(abs.RERI) +
                           qnorm(0.975) * int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1])
 
     int.r$RERI.lo[int.r$A1 == 1 & int.r$A2 == 1] <- sign.RERI * abs.RERI.lo

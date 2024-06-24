@@ -681,7 +681,7 @@ The variance of $\log \text{m.INT}$ can then be calculated by:
 The RERI is defined by:
 \begin{align*}
   \text{RERI} =& \frac{m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)}{m_\beta(0,0)} \\
-   \log \text{RERI} =& \log \left[m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)\right] - \log m_\beta(0,0)
+   \log |\text{RERI}| =& \log \left[m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)\right] - \log m_\beta(0,0)
 \end{align*}
 
 denoting
@@ -701,18 +701,18 @@ denoting
 \end{equation*}
 
 \begin{multline*}
-\frac{\partial \log \text{RERI}}{\partial \beta_0} = \frac{\left[1 - m_\beta(1,1)\right]m_\beta(1,1) - \left[1 - m_\beta(1,0)\right]m_\beta(1,0) - \left[1 - m_\beta(0,1)\right]m_\beta(0,1) + \left[1 - m_\beta(0,0)\right]m_\beta(0,0)}{m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)}\\
+\frac{\partial \log |\text{RERI}|}{\partial \beta_0} = \frac{\left[1 - m_\beta(1,1)\right]m_\beta(1,1) - \left[1 - m_\beta(1,0)\right]m_\beta(1,0) - \left[1 - m_\beta(0,1)\right]m_\beta(0,1) + \left[1 - m_\beta(0,0)\right]m_\beta(0,0)}{m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)}\\
 - \left[1 - m_\beta(0,0)\right] 
 \end{multline*}
 
 \begin{align*}
-  \frac{\partial \log \text{RERI}}{\partial \beta_1} =& \frac{\left[1 - m_\beta(1,1)\right]m_\beta(1,1) - \left[1 - m_\beta(1,0) \right]m_\beta(1,0)}{m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)} \\
-  \frac{\partial \log \text{RERI}}{\partial \beta_2} =& \frac{\left[1 - m_\beta(1,1)\right]m_\beta(1,1) - \left[1 - m_\beta(0,1) \right]m_\beta(0,1)}{m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)} \\
-  \frac{\partial \log \text{RERI}}{\partial \beta_3} =& \frac{\left[1 - m_\beta(1,1)\right]m_\beta(1,1)}{m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)}
+  \frac{\partial \log |\text{RERI}|}{\partial \beta_1} =& \frac{\left[1 - m_\beta(1,1)\right]m_\beta(1,1) - \left[1 - m_\beta(1,0) \right]m_\beta(1,0)}{m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)} \\
+  \frac{\partial \log |\text{RERI}|}{\partial \beta_2} =& \frac{\left[1 - m_\beta(1,1)\right]m_\beta(1,1) - \left[1 - m_\beta(0,1) \right]m_\beta(0,1)}{m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)} \\
+  \frac{\partial \log |\text{RERI}|}{\partial \beta_3} =& \frac{\left[1 - m_\beta(1,1)\right]m_\beta(1,1)}{m_\beta(1,1) - m_\beta(1,0) - m_\beta(0,1) + m_\beta(0,0)}
 \end{align*}
 
 
 The variance of $\log \text{RERI}$ can then be calculated by:
 \begin{equation*}
-  var(\log \text{RERI} ) = \left( \frac{\partial \log \text{RERI}}{\partial \beta}\right)^T \times \frac{var(IC)}{n} \times \left( \frac{\partial \log \text{RERI}}{\partial \beta}\right)
+  var(\log |\text{RERI}| ) = \left( \frac{\partial \log |\text{RERI}|}{\partial \beta}\right)^T \times \frac{var(IC)}{n} \times \left( \frac{\partial \log |\text{RERI}|}{\partial \beta}\right)
 \end{equation*}

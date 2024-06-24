@@ -376,7 +376,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
     ltmle_MSM$bootstrap.res$RERI <- (ltmle_MSM$bootstrap.res$p.A1_1.A2_1 -
                                        ltmle_MSM$bootstrap.res$p.A1_1.A2_0 -
                                        ltmle_MSM$bootstrap.res$p.A1_0.A2_1 +
-                                       ltmle_MSM$bootstrap.res$p.A1_0.A2_0) / log(ltmle_MSM$bootstrap.res$p.A1_0.A2_0)
+                                       ltmle_MSM$bootstrap.res$p.A1_0.A2_0) / ltmle_MSM$bootstrap.res$p.A1_0.A2_0
 
     ltmle_MSM$bootstrap.res$ln.m.INT <- log(ltmle_MSM$bootstrap.res$p.A1_1.A2_1) + log(ltmle_MSM$bootstrap.res$p.A1_0.A2_0) -
                                               log(ltmle_MSM$bootstrap.res$p.A1_1.A2_0) - log(ltmle_MSM$bootstrap.res$p.A1_0.A2_1)

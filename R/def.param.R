@@ -102,7 +102,7 @@ param.causal.model <- function(p_L1 = 0.50, p_L2 = 0.20, p_L3 = 0.70,  # baselin
 #'
 #' If Y is continuous,
 #' \eqn{\mathbb{E}(Y|A_1,A_2,L) = \beta_{Y} + \beta_{L_1,Y} L_1 + \beta_{L_2,Y} L_2 + \beta_{L_3,Y} L_3 + \beta_{A_1,Y} A_1 + \beta_{A_2,Y} A_2 + \beta_{A_1 \ast A_2,Y} (A_1 \ast A_2)}
-
+#'
 #' The names of the baseline confounders \eqn{L_1, L_2, L_3} are \code{conf1}, \code{conf2}
 #' and \code{conf3}. The names of the exposure \eqn{A_1} is \code{sex}, the name of
 #' the exposure \eqn{A_2} is \code{env}. The name of the outcome \eqn{Y} is
@@ -125,23 +125,23 @@ generate.data <- function(N, b =  param.causal.model(), Y_type = "binary") {
                   (b[[3]]["b_L1_A2"] * conf1) + (b[[3]]["b_L3_A2"] * conf3))
 
   if (Y_type == "binary") {
-    hlth.outcome <- rbinom(N, size = 1, prob = (b[[4]]["b_Y"] +
-                                                  (b[[4]]["b_L1_Y"] * conf1) +
-                                                  (b[[4]]["b_L2_Y"] * conf2) +
-                                                  (b[[4]]["b_L3_Y"] * conf3) +
-                                                  (b[[4]]["b_A1_Y"] * sex) +
-                                                  (b[[4]]["b_A2_Y"] * env) +
-                                                  (b[[4]]["b_A1A2_Y"] * sex * env)) )
+    hlth.outcome <- stats::rbinom(N, size = 1, prob = (b[[4]]["b_Y"] +
+                                                         (b[[4]]["b_L1_Y"] * conf1) +
+                                                         (b[[4]]["b_L2_Y"] * conf2) +
+                                                         (b[[4]]["b_L3_Y"] * conf3) +
+                                                         (b[[4]]["b_A1_Y"] * sex) +
+                                                         (b[[4]]["b_A2_Y"] * env) +
+                                                         (b[[4]]["b_A1A2_Y"] * sex * env)) )
   }
   if (Y_type == "continuous") {
-    hlth.outcome <- rnorm(N, mean = (b[[4]]["b_Y"] +
-                                       (b[[4]]["b_L1_Y"] * conf1) +
-                                       (b[[4]]["b_L2_Y"] * conf2) +
-                                       (b[[4]]["b_L3_Y"] * conf3) +
-                                       (b[[4]]["b_A1_Y"] * sex) +
-                                       (b[[4]]["b_A2_Y"] * env) +
-                                       (b[[4]]["b_A1A2_Y"] * sex * env)),
-                          sd = b[[5]]["se_Y"])
+    hlth.outcome <- stats::rnorm(N, mean = (b[[4]]["b_Y"] +
+                                              (b[[4]]["b_L1_Y"] * conf1) +
+                                              (b[[4]]["b_L2_Y"] * conf2) +
+                                              (b[[4]]["b_L3_Y"] * conf3) +
+                                              (b[[4]]["b_A1_Y"] * sex) +
+                                              (b[[4]]["b_A2_Y"] * env) +
+                                              (b[[4]]["b_A1A2_Y"] * sex * env)),
+                                 sd = b[[5]]["se_Y"])
   }
 
   data.sim <- data.frame(conf1, conf2, conf3, sex, env, hlth.outcome)

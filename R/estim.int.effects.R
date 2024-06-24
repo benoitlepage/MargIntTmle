@@ -24,6 +24,7 @@
 #' # Define SuperLearner libraries
 #' SL.library = list(Q=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"),
 #'                   g=list("SL.glm", c("SL.glm", "screen.corP"),"SL.glmnet", "SL.mean"))
+#' library(glmnet)
 #'
 #' # Estimate MSM parameters by IPTW and TMLE
 #' interaction.ltmle <- int.ltmleMSM(data = df,

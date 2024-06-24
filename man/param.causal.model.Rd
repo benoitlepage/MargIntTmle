@@ -14,13 +14,15 @@ param.causal.model(
   b_A2 = 0.15,
   b_L1_A2 = 0.2,
   b_L3_A2 = 0.2,
+  Y_type = "binary",
   b_Y = 0.1,
   b_L1_Y = 0.02,
   b_L2_Y = 0.02,
   b_L3_Y = -0.02,
   b_A1_Y = 0.3,
   b_A2_Y = 0.1,
-  b_A1A2_Y = 0.4
+  b_A1A2_Y = 0.4,
+  se_Y = NULL
 )
 }
 \arguments{
@@ -42,7 +44,10 @@ param.causal.model(
 
 \item{b_L3_A2}{Additive effect \eqn{\beta_{L_3,A_2}} of \eqn{L_3 \rightarrow A_2}.}
 
-\item{b_Y}{Probability \eqn{P(Y = 1|L_1 = 0, L_2 = 0, L_3 = 0, A_1 = 0, A_2 = 0) = \beta_{Y}}.}
+\item{Y_type}{Is Y "binary" or "continuous"?}
+
+\item{b_Y}{Probability \eqn{P(Y = 1|L_1 = 0, L_2 = 0, L_3 = 0, A_1 = 0, A_2 = 0) = \beta_{Y}} if Y is binary;
+or expectation \eqn{\mathbb{E}(Y|L_1 = 0, L_2 = 0, L_3 = 0, A_1 = 0, A_2 = 0) = \beta_{Y}}}
 
 \item{b_L1_Y}{Additive effect \eqn{\beta_{L_1,Y}} of \eqn{L_1 \rightarrow Y}.}
 
@@ -55,6 +60,8 @@ param.causal.model(
 \item{b_A2_Y}{Additive effect \eqn{\beta_{A_2,Y}} of \eqn{A_2 \rightarrow Y}.}
 
 \item{b_A1A2_Y}{Interaction additive effect \eqn{\beta_{A_1 \ast A_2,Y}} of \eqn{(A_1 \ast A_2) \rightarrow Y}.}
+
+\item{se_Y}{Standard error of the outcome for quantitative outcomes, should be null for binary outcomes.}
 }
 \value{
 A list of 4 vectors of parameters.

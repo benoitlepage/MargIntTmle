@@ -4,12 +4,14 @@
 \alias{generate.data}
 \title{Simulate an illustrative data set}
 \usage{
-generate.data(N, b = param.causal.model())
+generate.data(N, b = param.causal.model(), Y_type = "binary")
 }
 \arguments{
 \item{N}{Sample size of the illustrative data set.}
 
 \item{b}{A list of 4 vectors of parameters,}
+
+\item{Y_type}{Is Y "binary" or "continuous"?}
 }
 \value{
 A data frame of size \code{N} using the parameters \code{b},
@@ -25,7 +27,11 @@ generated from the following structural causal model:
 
 \eqn{P(A_2 = 1) = \beta_{A_2} + \beta_{L_1,A_2} L_1 + \beta_{L_3,A_2} L_3}
 
+If Y is binary,
 \eqn{P(Y = 1) = \beta_{Y} + \beta_{L_1,Y} L_1 + \beta_{L_2,Y} L_2 + \beta_{L_3,Y} L_3 + \beta_{A_1,Y} A_1 + \beta_{A_2,Y} A_2 + \beta_{A_1 \ast A_2,Y} (A_1 \ast A_2)}
+
+If Y is continuous,
+\eqn{\mathbb{E}(Y|A_1,A_2,L) = \beta_{Y} + \beta_{L_1,Y} L_1 + \beta_{L_2,Y} L_2 + \beta_{L_3,Y} L_3 + \beta_{A_1,Y} A_1 + \beta_{A_2,Y} A_2 + \beta_{A_1 \ast A_2,Y} (A_1 \ast A_2)}
 
 The names of the baseline confounders \eqn{L_1, L_2, L_3} are \code{conf1}, \code{conf2}
 and \code{conf3}. The names of the exposure \eqn{A_1} is \code{sex}, the name of

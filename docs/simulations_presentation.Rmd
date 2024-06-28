@@ -65,7 +65,7 @@ perf_gcomp_bin %>%
         caption = "Results from g-computation estimation with a binary outcome",
         escape = TRUE)
 ```
-Note that the standard error was not estimated in 150 simulations out of 1000, resulting in a missing average standard error and coverage for the $\log\text{RERI}$ indicator.
+Note that the standard error was not estimated in 1 simulation out of 1000, resulting in a missing average standard error and coverage for the $\log\text{RERI}$ indicator.
 
 ## 2.2) Estimation by IPTW
 ```{r table_iptw_bin, echo=FALSE}

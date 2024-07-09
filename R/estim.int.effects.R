@@ -74,7 +74,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
   names(int.r) <- c("A1","A2","p","sd.p","p.lo","p.up",
                     "RD.A1","sd.RD.A1","RD.A1.lo","RD.A1.up","RD.A2","sd.RD.A2","RD.A2.lo","RD.A2.up",
                     "RR.A1","sd.lnRR.A1","RR.A1.lo","RR.A1.up","RR.A2","sd.lnRR.A2","RR.A2.lo","RR.A2.up",
-                    "a.INT", "sd.a.INT", "a.INT.lo", "a.INT.up","RERI","sd.lnRERI","RERI.lo","RERI.up",
+                    "a.INT", "sd.a.INT", "a.INT.lo", "a.INT.up","RERI","sd.RERI","RERI.lo","RERI.up",
                     "m.INT", "sd.ln.m.INT", "m.INT.lo", "m.INT.up" )
   int.r[,c("A1","A2")] <- expand.grid(c(0,1), c(0,1))
 
@@ -125,9 +125,10 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
     int.r$p[int.r$A1 == 0 & int.r$A2 == 1] + int.r$p[int.r$A1 == 0 & int.r$A2 == 0]
 
   # RERI
-  int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1] <- exp(log(int.r$p[int.r$A1 == 1 & int.r$A2 == 1] - int.r$p[int.r$A1 == 1 & int.r$A2 == 0] -
-                                                         int.r$p[int.r$A1 == 0 & int.r$A2 == 1] + int.r$p[int.r$A1 == 0 & int.r$A2 == 0]) -
-                                                     log(int.r$p[int.r$A1 == 0 & int.r$A2 == 0]))
+  int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1] <- int.r$a.INT[int.r$A1 == 1 & int.r$A2 == 1] / int.r$p[int.r$A1 == 0 & int.r$A2 == 0]
+    # exp(log(int.r$p[int.r$A1 == 1 & int.r$A2 == 1] - int.r$p[int.r$A1 == 1 & int.r$A2 == 0] -
+    #                                                      int.r$p[int.r$A1 == 0 & int.r$A2 == 1] + int.r$p[int.r$A1 == 0 & int.r$A2 == 0]) -
+    #                                                  log(int.r$p[int.r$A1 == 0 & int.r$A2 == 0]))
 
   # multiplicative interaction
   int.r$m.INT[int.r$A1 == 1 & int.r$A2 == 1] <- exp(log(int.r$p[int.r$A1 == 1 & int.r$A2 == 1]) - log(int.r$p[int.r$A1 == 1 & int.r$A2 == 0]) -
@@ -290,6 +291,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
               int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1]) -
                 int.r$p[int.r$A1 == 0 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 1]),
               int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1]) )
+    grad.a.INT <- grad
     v <- t(grad) %*% var(IC) %*% grad
     int.r$sd.a.INT[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
 
@@ -299,36 +301,42 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
       qnorm(0.975) * int.r$sd.a.INT[int.r$A1 == 1 & int.r$A2 == 1]
 
     # RERI
-    sign.RERI <- ifelse(int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1] < 0, -1, 1)
-    grad <- sign.RERI * c((int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1]) -
-                             int.r$p[int.r$A1 == 1 & int.r$A2 == 0] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 0]) -
-                             int.r$p[int.r$A1 == 0 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 1]) +
-                             int.r$p[int.r$A1 == 0 & int.r$A2 == 0] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 0])) /
-                            (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] - int.r$p[int.r$A1 == 1 & int.r$A2 == 0] -
-                               int.r$p[int.r$A1 == 0 & int.r$A2 == 1] + int.r$p[int.r$A1 == 0 & int.r$A2 == 0]) -
-                            (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 0]),
-                          (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1]) -
-                             int.r$p[int.r$A1 == 1 & int.r$A2 == 0] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 0])) /
-                            (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] - int.r$p[int.r$A1 == 1 & int.r$A2 == 0] -
-                               int.r$p[int.r$A1 == 0 & int.r$A2 == 1] + int.r$p[int.r$A1 == 0 & int.r$A2 == 0]),
-                          (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1]) -
-                             int.r$p[int.r$A1 == 0 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 1])) /
-                            (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] - int.r$p[int.r$A1 == 1 & int.r$A2 == 0] -
-                               int.r$p[int.r$A1 == 0 & int.r$A2 == 1] + int.r$p[int.r$A1 == 0 & int.r$A2 == 0]),
-                          (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1])) /
-                            (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] - int.r$p[int.r$A1 == 1 & int.r$A2 == 0] -
-                               int.r$p[int.r$A1 == 0 & int.r$A2 == 1] + int.r$p[int.r$A1 == 0 & int.r$A2 == 0]) )
+    # sign.RERI <- ifelse(int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1] < 0, -1, 1)
+    # grad <- sign.RERI * c((int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1]) -
+    #                          int.r$p[int.r$A1 == 1 & int.r$A2 == 0] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 0]) -
+    #                          int.r$p[int.r$A1 == 0 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 1]) +
+    #                          int.r$p[int.r$A1 == 0 & int.r$A2 == 0] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 0])) /
+    #                         (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] - int.r$p[int.r$A1 == 1 & int.r$A2 == 0] -
+    #                            int.r$p[int.r$A1 == 0 & int.r$A2 == 1] + int.r$p[int.r$A1 == 0 & int.r$A2 == 0]) -
+    #                         (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 0]),
+    #                       (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1]) -
+    #                          int.r$p[int.r$A1 == 1 & int.r$A2 == 0] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 0])) /
+    #                         (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] - int.r$p[int.r$A1 == 1 & int.r$A2 == 0] -
+    #                            int.r$p[int.r$A1 == 0 & int.r$A2 == 1] + int.r$p[int.r$A1 == 0 & int.r$A2 == 0]),
+    #                       (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1]) -
+    #                          int.r$p[int.r$A1 == 0 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 1])) /
+    #                         (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] - int.r$p[int.r$A1 == 1 & int.r$A2 == 0] -
+    #                            int.r$p[int.r$A1 == 0 & int.r$A2 == 1] + int.r$p[int.r$A1 == 0 & int.r$A2 == 0]),
+    #                       (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] * (1 - int.r$p[int.r$A1 == 1 & int.r$A2 == 1])) /
+    #                         (int.r$p[int.r$A1 == 1 & int.r$A2 == 1] - int.r$p[int.r$A1 == 1 & int.r$A2 == 0] -
+    #                            int.r$p[int.r$A1 == 0 & int.r$A2 == 1] + int.r$p[int.r$A1 == 0 & int.r$A2 == 0]) )
+    # v <- t(grad) %*% var(IC) %*% grad
+    # int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
+    #
+    # abs.RERI <- sign.RERI * int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1]
+    # abs.RERI.lo <- exp(log(abs.RERI) -
+    #                       qnorm(0.975) * int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1])
+    # abs.RERI.up <- exp(log(abs.RERI) +
+    #                       qnorm(0.975) * int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1])
+    #
+    # int.r$RERI.lo[int.r$A1 == 1 & int.r$A2 == 1] <- sign.RERI * abs.RERI.lo
+    # int.r$RERI.up[int.r$A1 == 1 & int.r$A2 == 1] <- sign.RERI * abs.RERI.up
+    grad <- (grad.a.INT / int.r$p[int.r$A1 == 0 & int.r$A2 == 0]) -
+      (int.r[int.r$A1 == 1 & int.r$A2 == 1,"a.INT"]) * (1 - int.r$p[int.r$A1 == 0 & int.r$A2 == 0]) / int.r$p[int.r$A1 == 0 & int.r$A2 == 0]
     v <- t(grad) %*% var(IC) %*% grad
-    int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data))
-
-    abs.RERI <- sign.RERI * int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1]
-    abs.RERI.lo <- exp(log(abs.RERI) -
-                          qnorm(0.975) * int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1])
-    abs.RERI.up <- exp(log(abs.RERI) +
-                          qnorm(0.975) * int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1])
-
-    int.r$RERI.lo[int.r$A1 == 1 & int.r$A2 == 1] <- sign.RERI * abs.RERI.lo
-    int.r$RERI.up[int.r$A1 == 1 & int.r$A2 == 1] <- sign.RERI * abs.RERI.up
+    int.r$sd.RERI[int.r$A1 == 1 & int.r$A2 == 1] <- sqrt(v / nrow(ltmle_MSM$data)) # sd
+    int.r$RERI.lo[int.r$A1 == 1 & int.r$A2 == 1] <- int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1] - qnorm(0.975) * int.r$sd.RERI[int.r$A1 == 1 & int.r$A2 == 1]
+    int.r$RERI.up[int.r$A1 == 1 & int.r$A2 == 1] <- int.r$RERI[int.r$A1 == 1 & int.r$A2 == 1] + qnorm(0.975) * int.r$sd.RERI[int.r$A1 == 1 & int.r$A2 == 1]
 
     # multiplicative interaction
     grad <- c(int.r$p[int.r$A1 == 1 & int.r$A2 == 0] + int.r$p[int.r$A1 == 0 & int.r$A2 == 1] -
@@ -589,7 +597,7 @@ estim.int.effects <- function(ltmle_MSM = ltmle_MSM,
     int.r$a.INT.lo[int.r$A1 == 1 & int.r$A2 == 1] <- int.r$a.INT.lo[int.r$A1 == 1 & int.r$A2 == 1] * (range.Y[2] - range.Y[1])
     int.r$a.INT.up[int.r$A1 == 1 & int.r$A2 == 1] <- int.r$a.INT.up[int.r$A1 == 1 & int.r$A2 == 1] * (range.Y[2] - range.Y[1])
     # RERI
-    int.r$sd.lnRERI[int.r$A1 == 1 & int.r$A2 == 1] <- NA
+    int.r$sd.RERI[int.r$A1 == 1 & int.r$A2 == 1] <- NA
     int.r$RERI.lo[int.r$A1 == 1 & int.r$A2 == 1] <- NA
     int.r$RERI.up[int.r$A1 == 1 & int.r$A2 == 1] <- NA
     # multiplicative interaction

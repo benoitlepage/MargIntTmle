@@ -304,9 +304,10 @@ out.int.fig <- function(int.r = int.r) {
     ggplot2::guides(color = ggplot2::guide_legend(title = paste0(int.r$Anodes[1])),
                     linetype = ggplot2::guide_legend(title = paste0(int.r$Anodes[1])))
 
-  ggpubr::ggarrange(g1, g2, g3, g4, g5, g6, ncol = 2, nrow = 3)
+  fig <- ggpubr::ggarrange(g1, g2, g3, g4, g5, g6, ncol = 2, nrow = 3)
 
   if (int.r$transformOutcome == TRUE) {
-    ggpubr::ggarrange(g1, g2, g3, g4, ncol = 2, nrow = 2)
+    fig <- ggpubr::ggarrange(g1, g2, g3, g4, ncol = 2, nrow = 2)
   }
+  return(fig)
 }

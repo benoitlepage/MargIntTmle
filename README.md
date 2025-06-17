@@ -8,12 +8,19 @@
 # MargIntTmle
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 The goal of MargIntTmle is to estimate marginal interaction effects
 using g-computation, IPTW or TMLE. Interaction effects are calculated
 from the parameters of a Marginal Structural Model (MSM) estimated using
 the [`ltmle`](https://github.com/joshuaschwab/ltmle) R package.
+
+## Warning
+
+Please note that in the current version of the package, the calculation
+of the standard error and confidence interval of the RERI is not
+optimal.
 
 ## Installation
 
@@ -202,7 +209,7 @@ table_inter$out.table
 #> RR.sex|env
 table_inter$interaction.effects
 #> [1] "additive Interaction = 0.44 [0.284;0.596]"    
-#> [2] "RERI = 5 [3.25;7.7]"                          
+#> [2] "RERI = 5 [0.51;9.5]"                          
 #> [3] "multiplicative Interaction = 1.19 [0.73;1.93]"
 library(kableExtra)
 kbl(table_inter$out.table,
@@ -212,115 +219,200 @@ kbl(table_inter$out.table,
 ```
 
 <table class=" lightable-classic" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; margin-left: auto; margin-right: auto;border-bottom: 0;">
+
 <caption>
+
 Interaction effects estimated by TMLE
 </caption>
+
 <thead>
+
 <tr>
+
 <th style="text-align:left;">
+
 </th>
+
 <th style="text-align:left;">
+
 env=0
 </th>
+
 <th style="text-align:left;">
+
 env=1
 </th>
+
 <th style="text-align:left;">
+
 RD.env\|sex
 </th>
+
 <th style="text-align:left;">
+
 RR.env\|sex
 </th>
+
 </tr>
+
 </thead>
+
 <tbody>
+
 <tr>
+
 <td style="text-align:left;">
+
 sex=0
 </td>
+
 <td style="text-align:left;">
+
 $p_{00}$=0.088 \[0.06,0.116\]
 </td>
+
 <td style="text-align:left;">
+
 $p_{01}$=0.186 \[0.14,0.231\]
 </td>
+
 <td style="text-align:left;">
+
 0.098 \[0.045,0.151\]
 </td>
+
 <td style="text-align:left;">
+
 2.11 \[1.42,3.15\]
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:left;">
+
 sex=1
 </td>
+
 <td style="text-align:left;">
+
 $p_{10}$=0.356 \[0.269,0.444\]
 </td>
+
 <td style="text-align:left;">
+
 $p_{11}$=0.894 \[0.776,1.012\]
 </td>
+
 <td style="text-align:left;">
+
 0.538 \[0.391,0.684\]
 </td>
+
 <td style="text-align:left;">
+
 2.51 \[1.9,3.32\]
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:left;">
+
 RD.sex\|env
 </td>
+
 <td style="text-align:left;">
+
 0.269 \[0.177,0.36\]
 </td>
+
 <td style="text-align:left;">
+
 0.708 \[0.582,0.835\]
 </td>
+
 <td style="text-align:left;">
+
 </td>
+
 <td style="text-align:left;">
+
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:left;">
+
 RR.sex\|env
 </td>
+
 <td style="text-align:left;">
+
 4.05 \[2.72,6.05\]
 </td>
+
 <td style="text-align:left;">
+
 4.82 \[3.65,6.35\]
 </td>
+
 <td style="text-align:left;">
+
 </td>
+
 <td style="text-align:left;">
+
 </td>
+
 </tr>
+
 </tbody>
+
 <tfoot>
+
 <tr>
+
 <td style="padding: 0; " colspan="100%">
+
 <span style="font-style: italic;">Note: </span>
 </td>
+
 </tr>
+
 <tr>
+
 <td style="padding: 0; " colspan="100%">
+
 <sup></sup> additive Interaction = 0.44 \[0.284;0.596\]
 </td>
+
 </tr>
+
 <tr>
+
 <td style="padding: 0; " colspan="100%">
-<sup></sup> RERI = 5 \[3.25;7.7\]
+
+<sup></sup> RERI = 5 \[0.51;9.5\]
 </td>
+
 </tr>
+
 <tr>
+
 <td style="padding: 0; " colspan="100%">
+
 <sup></sup> multiplicative Interaction = 1.19 \[0.73;1.93\]
 </td>
+
 </tr>
+
 </tfoot>
+
 </table>
 
 We can also plot the results using the `out.int.fig()` function from the
@@ -329,6 +421,8 @@ output of the `estim.int.effects()` function.
 ``` r
 out.int.fig(est.tmle)
 ```
+
+<img src="man/figures/README-interaction_plot-1.png" width="100%" />
 
 ## Second example, with a continuous outcome
 
@@ -428,11 +522,11 @@ est.tmle
 #> 2       NA    NA         NA       NA       NA       NA       NA       NA
 #> 3       NA    NA         NA       NA       NA       NA       NA       NA
 #> 4       NA    NA         NA       NA       NA 18.78232 3.983958 10.97391
-#>   a.INT.up RERI sd.lnRERI RERI.lo RERI.up m.INT sd.ln.m.INT m.INT.lo m.INT.up
-#> 1       NA   NA        NA      NA      NA    NA          NA       NA       NA
-#> 2       NA   NA        NA      NA      NA    NA          NA       NA       NA
-#> 3       NA   NA        NA      NA      NA    NA          NA       NA       NA
-#> 4 26.59074   NA        NA      NA      NA    NA          NA       NA       NA
+#>   a.INT.up RERI sd.RERI RERI.lo RERI.up m.INT sd.ln.m.INT m.INT.lo m.INT.up
+#> 1       NA   NA      NA      NA      NA    NA          NA       NA       NA
+#> 2       NA   NA      NA      NA      NA    NA          NA       NA       NA
+#> 3       NA   NA      NA      NA      NA    NA          NA       NA       NA
+#> 4 26.59074   NA      NA      NA      NA    NA          NA       NA       NA
 #> 
 #> $Anodes
 #> [1] "sex" "env"
@@ -480,89 +574,154 @@ kbl(table_inter$out.table,
 ```
 
 <table class=" lightable-classic" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; margin-left: auto; margin-right: auto;border-bottom: 0;">
+
 <caption>
+
 Interaction effects estimated by TMLE
 </caption>
+
 <thead>
+
 <tr>
+
 <th style="text-align:left;">
+
 </th>
+
 <th style="text-align:left;">
+
 env=0
 </th>
+
 <th style="text-align:left;">
+
 env=1
 </th>
+
 <th style="text-align:left;">
+
 RD.env\|sex
 </th>
+
 </tr>
+
 </thead>
+
 <tbody>
+
 <tr>
+
 <td style="text-align:left;">
+
 sex=0
 </td>
+
 <td style="text-align:left;">
+
 $p_{00}$=94.951 \[92.794,97.109\]
 </td>
+
 <td style="text-align:left;">
+
 $p_{01}$=126.89 \[124.243,129.537\]
 </td>
+
 <td style="text-align:left;">
+
 31.939 \[28.78,35.097\]
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:left;">
+
 sex=1
 </td>
+
 <td style="text-align:left;">
+
 $p_{10}$=107.441 \[103.43,111.451\]
 </td>
+
 <td style="text-align:left;">
+
 $p_{11}$=158.162 \[152.099,164.224\]
 </td>
+
 <td style="text-align:left;">
+
 50.721 \[43.576,57.865\]
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:left;">
+
 RD.sex\|env
 </td>
+
 <td style="text-align:left;">
+
 12.489 \[8.135,16.844\]
 </td>
+
 <td style="text-align:left;">
+
 31.272 \[24.788,37.755\]
 </td>
+
 <td style="text-align:left;">
+
 </td>
+
 </tr>
+
 </tbody>
+
 <tfoot>
+
 <tr>
+
 <td style="padding: 0; " colspan="100%">
+
 <span style="font-style: italic;">Note: </span>
 </td>
+
 </tr>
+
 <tr>
+
 <td style="padding: 0; " colspan="100%">
+
 <sup></sup> additive Interaction = 18.782 \[10.974;26.591\]
 </td>
+
 </tr>
+
 <tr>
+
 <td style="padding: 0; " colspan="100%">
+
 <sup></sup> RERI = NA \[NA;NA\]
 </td>
+
 </tr>
+
 <tr>
+
 <td style="padding: 0; " colspan="100%">
+
 <sup></sup> multiplicative Interaction = NA \[NA;NA\]
 </td>
+
 </tr>
+
 </tfoot>
+
 </table>
 
 We can also plot the results using the `out.int.fig()` function from the

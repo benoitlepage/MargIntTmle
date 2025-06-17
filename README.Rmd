@@ -24,6 +24,11 @@ knitr::opts_chunk$set(
 
 The goal of MargIntTmle is to estimate marginal interaction effects using g-computation, IPTW or TMLE. Interaction effects are calculated from the parameters of a Marginal Structural Model (MSM) estimated using the [`ltmle`](https://github.com/joshuaschwab/ltmle) R package.
 
+## Warning
+
+Please note that in the current version of the package, the calculation of the 
+standard error and confidence interval of the RERI is not optimal.
+
 ## Installation
 
 You can install the development version of MargIntTmle from [GitHub](https://github.com/) with:
